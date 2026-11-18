@@ -24,7 +24,7 @@
 </head>
 <body>
 <main>
-  <header class="mast"><a class="brand" href="index.html">Lookthrough</a><nav aria-label="Pages"><a href="index.html">Your fund</a><a href="spenders.html">The workings</a><a href="nvidia.html">Companion: NVIDIA</a><a href="method.html" aria-current="page">Method and checks</a></nav></header>
+  <header class="mast"><a class="brand" href="index.html">Lookthrough</a><nav aria-label="Pages"><a href="index.html">The tool</a><a href="spenders.html">Research: the workings</a><a href="nvidia.html">Research: NVIDIA</a><a href="method.html" aria-current="page">Method and checks</a></nav></header>
   <div class="dateline"><span>By Abhay Kumar</span><span>Latest filing read: 17 November 2026</span></div>
 <script src="assets/charts.js"></script>
   <p class="kicker" style="margin-top:34px">Method and checks</p>
@@ -32,9 +32,30 @@
   <p class="lede">Almost every figure on this site comes from a filing with the US securities regulator and can be traced to the sentence it came from. This page says who did what, how to check any number yourself, which calls were judgment, and what changed after the work was reviewed.</p>
 
   <section>
+    <h2>What Lookthrough is</h2>
+    <p>Two things, kept apart on purpose.</p>
+    <div class="parts wide">
+      <div><span class="ptag">Part 1 · The tool</span><b>What is in your fund</b>
+        <ul>
+          <li><b>Where.</b> The top of the first page.</li>
+          <li><b>What it does.</b> Shows how much of a fund is in the six companies building AI's data centers and in the companies selling them equipment.</li>
+          <li><b>Made of.</b> The fund's own holdings report and arithmetic. The only judgment is which companies are on the two lists, and the lists are shown.</li>
+          <li><b>What it is not.</b> A forecast, a rating of a fund, or advice on what to hold.</li>
+        </ul></div>
+      <div><span class="ptag">Part 2 · The research</span><b>What those companies owe</b>
+        <ul>
+          <li><b>Where.</b> The rest of the first page, the workings and the NVIDIA note.</li>
+          <li><b>What it does.</b> Adds up what the six have borrowed and promised to pay, and compares it with what they earn.</li>
+          <li><b>Made of.</b> Figures read from company filings, calculations with stated assumptions, and at the end my own reading, which is labelled as opinion.</li>
+          <li><b>What it is not.</b> Advice, a prediction that anything will go wrong, or a claim that any company has acted improperly.</li>
+        </ul></div>
+    </div>
+  </section>
+
+  <section>
     <h2>Who did what</h2>
-    <p>I built this with Claude Code, an AI coding tool. I chose the subject and the questions, directed the work, and decided what stayed and what was cut. The tool wrote the code, did the first reading of the filings and proposed several of the measures. I then opened the filing behind each of the 24 source figures and confirmed the number myself (latest check 2026-11-18).</p>
-    <p>Because a tool did the first reading, each number is set up to be checked without relying on it:</p>
+    <p>I built this with Claude Code, an AI coding tool. I chose the subject and the questions, directed the work, and decided what stayed and what was cut. Claude Code wrote the code, did the first reading of the filings and proposed several of the measures. I then opened the filing behind each of the 24 source figures and confirmed the number myself (latest check 2026-11-18).</p>
+    <p>Because a program did the first reading, each number is set up to be checked without relying on it:</p>
     <ul>
       <li><b>One topic.</b> Lookthrough asks one thing: what a retirement fund has riding on AI's data centers. The fund tool answers the first half and the ledger of company bills the second. A related question, what NVIDIA has promised on behalf of some builders, is kept as a separate companion note.</li>
       <li><b>A source for every number.</b> Each figure is saved with the sentence it came from and a link to the filing, so it can be checked against the source directly.</li>
@@ -47,7 +68,7 @@
 
   <section>
     <h2>Part by part</h2>
-    <div class="scroll"><table><thead><tr><th>Part</th><th style="text-align:left">Where it comes from and how it was checked</th></tr></thead><tbody><tr><td style='min-width:170px'><b>Leases signed but not started</b></td><td class='wrap'>114 figures, each stored with its sentence and link. When the data was built, every one was read against its sentence in a separate pass by the tool; in the November audit 26 were read again independently. The five-company total for the end of 2025 matches the figure Moody's published.</td></tr><tr><td style='min-width:170px'><b>What the leases are worth today</b></td><td class='wrap'>The method was run first on 12 lease portfolios whose recorded value is known: average miss 2.8%, nearly always on the high side. That confirms the discounting arithmetic. It cannot confirm the interest rate, the start dates or the terms, which are assumptions listed below, so the result is shown as a range.</td></tr><tr><td style='min-width:170px'><b>Cash, borrowing and debt ratios</b></td><td class='wrap'>Taken from the machine-readable financial statements each company files. Twelve-month figures are the latest fiscal year plus the year to date, less the same period a year earlier as it stood when the annual report was filed. A missing item is left blank, never set to zero. In the November 2026 audit each company's borrowings, lease liabilities, cash, operating income and twelve-month cash figures were read again from the printed statements, and the project's own checks now fail if it drifts from those printed lines.</td></tr><tr><td style='min-width:170px'><b>NVIDIA's support for customers</b></td><td class='wrap'>389 disclosed amounts across 29 period-ends. Most were also matched to the machine-readable version of the same filing.</td></tr><tr><td style='min-width:170px'><b>The telecom makers, 1997 to 2003</b></td><td class='wrap'>460 amounts from 60 filings by Lucent, Nortel, Cisco and Motorola. Each recorded sentence was matched by program against the text of the filing it cites. Where a company did not disclose an item the cell is empty.</td></tr><tr><td style='min-width:170px'><b>Fund holdings</b></td><td class='wrap'>Read from each fund's latest holdings report to the regulator. Funds that hold other funds are looked through to the underlying shares. In the audit all nine funds' figures were rebuilt from the raw reports with separate code and matched to two decimals, and the S&P 500 figure was also matched against a second manager's S&P 500 fund.</td></tr><tr><td style='min-width:170px'><b>Landlords and lenders table</b></td><td class='wrap'>25 of 59 rows rest on a filing or company release. The rest are press reports and are labelled.</td></tr><tr><td style='min-width:170px'><b>Server-life model (appendix)</b></td><td class='wrap'>Tested against 12 effects the companies themselves disclosed: average miss 7.5%, worst 22%. One setting was tuned to those same disclosures, so this is a fit, not an independent test.</td></tr></tbody></table></div>
+    <div class="scroll"><table><thead><tr><th>Part</th><th style="text-align:left">Where it comes from and how it was checked</th></tr></thead><tbody><tr><td style='min-width:170px'><b>Leases signed but not started</b></td><td class='wrap'>114 figures, each stored with its sentence and link. When the data was built, every one was read against its sentence in a separate pass by Claude Code; in the November audit 26 were read again independently. The five-company total for the end of 2025 matches the figure Moody's published.</td></tr><tr><td style='min-width:170px'><b>What the leases are worth today</b></td><td class='wrap'>The method was run first on 12 lease portfolios whose recorded value is known: average miss 2.8%, nearly always on the high side. That confirms the discounting arithmetic. It cannot confirm the interest rate, the start dates or the terms, which are assumptions listed below, so the result is shown as a range.</td></tr><tr><td style='min-width:170px'><b>Cash, borrowing and debt ratios</b></td><td class='wrap'>Taken from the machine-readable financial statements each company files. Twelve-month figures are the latest fiscal year plus the year to date, less the same period a year earlier as it stood when the annual report was filed. A missing item is left blank, never set to zero. In the November 2026 audit each company's borrowings, lease liabilities, cash, operating income and twelve-month cash figures were read again from the printed statements, and the project's own checks now fail if it drifts from those printed lines.</td></tr><tr><td style='min-width:170px'><b>NVIDIA's support for customers</b></td><td class='wrap'>389 disclosed amounts across 29 period-ends. Most were also matched to the machine-readable version of the same filing.</td></tr><tr><td style='min-width:170px'><b>The telecom makers, 1997 to 2003</b></td><td class='wrap'>460 amounts from 60 filings by Lucent, Nortel, Cisco and Motorola. Each recorded sentence was matched by program against the text of the filing it cites. Where a company did not disclose an item the cell is empty.</td></tr><tr><td style='min-width:170px'><b>Fund holdings</b></td><td class='wrap'>Read from each fund's latest holdings report to the regulator. Funds that hold other funds are looked through to the underlying shares. In the audit all nine funds' figures were rebuilt from the raw reports with separate code and matched to two decimals, and the S&P 500 figure was also matched against a second manager's S&P 500 fund.</td></tr><tr><td style='min-width:170px'><b>Landlords and lenders table</b></td><td class='wrap'>25 of 59 rows rest on a filing or company release. The rest are press reports and are labelled.</td></tr><tr><td style='min-width:170px'><b>Server-life model (appendix)</b></td><td class='wrap'>Tested against 12 effects the companies themselves disclosed: average miss 7.5%, worst 22%. One setting was tuned to those same disclosures, so this is a fit, not an independent test.</td></tr></tbody></table></div>
   </section>
 
   <section>
@@ -133,9 +154,9 @@
   </section>
 
   <footer>
-    <nav aria-label="Pages"><a href="index.html">Your fund</a><a href="spenders.html">The workings</a><a href="nvidia.html">Companion: NVIDIA</a><a href="method.html" aria-current="page">Method and checks</a></nav>
+    <nav aria-label="Pages"><a href="index.html">The tool</a><a href="spenders.html">Research: the workings</a><a href="nvidia.html">Research: NVIDIA</a><a href="method.html" aria-current="page">Method and checks</a></nav>
     <p>By Abhay Kumar. Built with Claude Code. Every figure comes from a filing with the US securities regulator unless the page says otherwise. Figures read from a sentence link to it; calculated figures show their workings.</p>
-    <p>I am a finance student and this is a research project. It is not investment advice, and nothing here is a claim that any company has acted improperly.</p>
+    <p>Lookthrough is two things. The tool reads what a fund reported holding and does arithmetic; it gives no opinion. The research is a finance student's reading of company filings. Both are information, not investment advice, and nothing here is a claim that any company has acted improperly.</p>
   </footer>
 </main>
 </body>

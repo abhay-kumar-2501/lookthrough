@@ -73,7 +73,7 @@ def body(c: dict, checks: dict) -> str:
             mine += f" {checks['mismatches']} did not match and are noted in the checklist."
     rows = [
         ("Leases signed but not started",
-         f"{c['lease_figures']} figures, each stored with its sentence and link. When the data was built, every one was read against its sentence in a separate pass by the tool; in the November audit 26 were read again independently. The five-company total for the end of 2025 matches the figure Moody's published."),
+         f"{c['lease_figures']} figures, each stored with its sentence and link. When the data was built, every one was read against its sentence in a separate pass by Claude Code; in the November audit 26 were read again independently. The five-company total for the end of 2025 matches the figure Moody's published."),
         ("What the leases are worth today",
          f"The method was run first on {c['pv_n']} lease portfolios whose recorded value is known: average miss {c['pv_err']:.1f}%, nearly always on the high side. That confirms the discounting arithmetic. It cannot confirm the interest rate, the start dates or the terms, which are assumptions listed below, so the result is shown as a range."),
         ("Cash, borrowing and debt ratios",
@@ -95,9 +95,30 @@ def body(c: dict, checks: dict) -> str:
   <p class="lede">Almost every figure on this site comes from a filing with the US securities regulator and can be traced to the sentence it came from. This page says who did what, how to check any number yourself, which calls were judgment, and what changed after the work was reviewed.</p>
 
   <section>
+    <h2>What Lookthrough is</h2>
+    <p>Two things, kept apart on purpose.</p>
+    <div class="parts wide">
+      <div><span class="ptag">Part 1 · The tool</span><b>What is in your fund</b>
+        <ul>
+          <li><b>Where.</b> The top of the first page.</li>
+          <li><b>What it does.</b> Shows how much of a fund is in the six companies building AI's data centers and in the companies selling them equipment.</li>
+          <li><b>Made of.</b> The fund's own holdings report and arithmetic. The only judgment is which companies are on the two lists, and the lists are shown.</li>
+          <li><b>What it is not.</b> A forecast, a rating of a fund, or advice on what to hold.</li>
+        </ul></div>
+      <div><span class="ptag">Part 2 · The research</span><b>What those companies owe</b>
+        <ul>
+          <li><b>Where.</b> The rest of the first page, the workings and the NVIDIA note.</li>
+          <li><b>What it does.</b> Adds up what the six have borrowed and promised to pay, and compares it with what they earn.</li>
+          <li><b>Made of.</b> Figures read from company filings, calculations with stated assumptions, and at the end my own reading, which is labelled as opinion.</li>
+          <li><b>What it is not.</b> Advice, a prediction that anything will go wrong, or a claim that any company has acted improperly.</li>
+        </ul></div>
+    </div>
+  </section>
+
+  <section>
     <h2>Who did what</h2>
-    <p>I built this with Claude Code, an AI coding tool. I chose the subject and the questions, directed the work, and decided what stayed and what was cut. The tool wrote the code, did the first reading of the filings and proposed several of the measures.{mine}</p>
-    <p>Because a tool did the first reading, each number is set up to be checked without relying on it:</p>
+    <p>I built this with Claude Code, an AI coding tool. I chose the subject and the questions, directed the work, and decided what stayed and what was cut. Claude Code wrote the code, did the first reading of the filings and proposed several of the measures.{mine}</p>
+    <p>Because a program did the first reading, each number is set up to be checked without relying on it:</p>
     <ul>
       <li><b>One topic.</b> Lookthrough asks one thing: what a retirement fund has riding on AI's data centers. The fund tool answers the first half and the ledger of company bills the second. A related question, what NVIDIA has promised on behalf of some builders, is kept as a separate companion note.</li>
       <li><b>A source for every number.</b> Each figure is saved with the sentence it came from and a link to the filing, so it can be checked against the source directly.</li>

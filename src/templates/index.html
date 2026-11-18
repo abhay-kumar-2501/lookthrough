@@ -1,8 +1,13 @@
-  <p class="kicker" style="margin-top:34px">Look through your fund</p>
+  <p class="kicker" style="margin-top:34px">A free tool, with the research behind it</p>
   <h1>How much of your retirement fund is riding on AI's data centers?</h1>
   <p class="lede">Pick the fund in your 401(k) or IRA. Lookthrough reads what it reported holding and shows how much of your money is in the six companies building AI's data centers and the companies selling them equipment, then what those six have promised to pay.</p>
+  <div class="parts">
+    <a href="#tool"><span class="ptag">Part 1 · The tool</span><b>What is in your fund</b><span>Pick a fund and it shows the split. It reads the fund's own report and does arithmetic. There is no opinion in it.</span></a>
+    <a href="#research"><span class="ptag">Part 2 · The research</span><b>What those companies owe</b><span>My reading of six companies' filings: what they have borrowed and promised to pay, and what I make of it.</span></a>
+  </div>
   <noscript><p><b>This page needs JavaScript to show its figures.</b> The same numbers are in README.md and in the CSV files under data/processed in the repository.</p></noscript>
     <div class="tool" id="tool">
+      <p class="kicker part-tag">Part 1 · The tool</p>
       <div id="lines"></div>
       <div class="quick" style="margin-top:10px"><button type="button" id="add-line">+ Add another fund</button><span id="quick"></span></div>
       <p class="answer" id="answer"></p>
@@ -30,20 +35,25 @@
           <li><b>The six builders</b> are Microsoft, Alphabet, Amazon, Meta, Oracle and CoreWeave, among the largest buyers of AI chips and data center space. NVIDIA does not name its customers, so this is my list. Each company is counted whole, although each also has large businesses unrelated to AI.</li>
           <li><b>The companies selling the equipment</b> are NVIDIA plus my own list of AI hardware makers: <span id="others"></span>. Each of these is also counted whole. The list is a judgment. It leaves out Intel, Samsung, the storage makers (Western Digital, Seagate, Sandisk) and the makers of chip-manufacturing equipment (Applied Materials, Lam Research, KLA). Counting those too would add about 4.6 cents per dollar in an S&P 500 fund.</li>
           <li><b>Sellers and builders are shown apart on purpose.</b> If spending slowed, the sellers would lose sales while the builders would keep more of their cash, so the two groups do not carry the same risk.</li>
-          <li><b>Not advice.</b> The tool shows what is in a fund. It does not say what anyone should hold.</li>
+          <li><b>A tool, not advice.</b> It shows what is in a fund and stops there. It does not forecast anything and does not say what anyone should hold. The research further down the page is separate and is labelled.</li>
         </ul>
       </div></details>
     </div>
   <p class="small" id="tool-more" style="margin-top:12px"></p>
-  <ul class="toc">
-    <li><a href="#ledger">What the six have promised</a></li>
-    <li><a href="#why">Why the bill keeps growing</a></li>
-    <li><a href="#verdict">My read</a></li>
-    <li><a href="#check">Check it</a></li>
-  </ul>
+  <div class="divide" id="research">
+    <p class="kicker part-tag">Part 2 · The research</p>
+    <p class="divide-head">That was the tool. What follows is research.</p>
+    <p>The tool reported what a fund holds, as the fund itself filed it. From here I look at the six companies those dollars end up in: what they have borrowed and promised to pay, read from their own filings, with my reading of it at the end. It is information to help you understand what you own. It is not advice on what to buy or sell.</p>
+    <ul class="toc">
+      <li><a href="#ledger">What the six have promised</a></li>
+      <li><a href="#why">Why the bill keeps growing</a></li>
+      <li><a href="#verdict">My read</a></li>
+      <li><a href="#check">Check it</a></li>
+    </ul>
+  </div>
 
   <section id="ledger">
-    <p class="kicker">What those six have promised to pay</p>
+    <p class="kicker">Research · what those six have promised to pay</p>
     <h2 class="num-head">The six have borrowed <b id="h-debt"></b>. Count their leases and they have promised <b id="h-total"></b>.</h2>
     <p class="lede">The gap is rent. <span id="lede-running"></span> is for buildings and equipment they already use. <b id="lede-signed"></b> is for buildings, mostly data centers, that are not ready yet: signed, and not on any balance sheet yet. Each company states that figure in one sentence of a footnote. Lookthrough collects the sentence from every report and puts it in a ledger, one bill per company.</p>
     <p class="who"><b>The six:</b> Microsoft, Alphabet (Google), Amazon, Meta, Oracle and CoreWeave. OpenAI and Anthropic are not on this list. They are private companies and do not publish financial statements, and they rent much of their computing from companies that do.</p>
@@ -98,7 +108,7 @@
 
   <section id="verdict">
     <div class="verdict">
-      <p class="kicker">My read</p>
+      <p class="kicker">Research · my read (this part is opinion)</p>
       <h2 id="verdict-head"></h2>
       <p id="verdict-text"></p>
       <p id="verdict-fund"></p>

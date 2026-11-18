@@ -23,9 +23,9 @@ ICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0
         "%3Crect x='7' y='18' width='4' height='7' fill='%23f6f2e9'/%3E%3Crect x='14' y='12' width='4' height='13' fill='%23f6f2e9'/%3E%3Crect x='21' y='7' width='4' height='18' fill='%23a8321f'/%3E%3C/svg%3E")
 AUTHOR = "Abhay Kumar"
 PAGES = [
-    ("index.html", "Your fund"),
-    ("spenders.html", "The workings"),
-    ("nvidia.html", "Companion: NVIDIA"),
+    ("index.html", "The tool"),
+    ("spenders.html", "Research: the workings"),
+    ("nvidia.html", "Research: NVIDIA"),
     ("method.html", "Method and checks"),
 ]
 FONTS = (
@@ -88,7 +88,7 @@ def render(page: str, title: str, description: str, dateline: str, data=None, bo
   <footer>
     <nav aria-label="Pages">{nav}</nav>
     <p>By {AUTHOR}. Built with Claude Code. Every figure comes from a filing with the US securities regulator unless the page says otherwise. Figures read from a sentence link to it; calculated figures show their workings.</p>
-    <p>I am a finance student and this is a research project. It is not investment advice, and nothing here is a claim that any company has acted improperly.</p>
+    <p>Lookthrough is two things. The tool reads what a fund reported holding and does arithmetic; it gives no opinion. The research is a finance student's reading of company filings. Both are information, not investment advice, and nothing here is a claim that any company has acted improperly.</p>
   </footer>
 </main>
 </body>

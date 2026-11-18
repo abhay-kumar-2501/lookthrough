@@ -738,8 +738,13 @@ def test_front_page_keeps_every_chart_behind_a_click(root):
 
 def test_front_page_is_one_topic_fund_first_then_the_bills(root):
     html = (root / "docs" / "index.html").read_text()
-    order = [html.index(f'id="{i}"') for i in ("tool", "ledger", "h-total", "bills", "why", "verdict", "check")]
+    order = [html.index(f'id="{i}"') for i in ("tool", "research", "ledger", "h-total", "bills", "why", "verdict", "check")]
     assert order == sorted(order), "the fund tool opens the page; the ledger of bills comes straight after"
+    # a tool and a research note are different things, and the page says which part is which
+    tool = html[html.index('id="tool"'): html.index('id="research"')]
+    assert "Part 1 · The tool" in tool and "Part 2 · The research" in html[html.index('id="research"'): html.index('id="ledger"')]
+    assert 'href="#tool"' in html[: html.index('id="tool"')] and 'href="#research"' in html[: html.index('id="tool"')]
+    assert "this part is opinion" in html[html.index('id="verdict"'): html.index('id="check"')]
     assert html.count("<h1>") == 1 and "retirement fund" in html[html.index("<h1>"): html.index("</h1>")]
     # the chip seller's guarantees are a separate question: linked as a companion note, not told on this page
     body = html[: html.index("<script>\nconst DATA")]

@@ -4,10 +4,12 @@
 
 By Abhay Kumar. Figures are from filings read up to 17 November 2026.
 
-## What it does
+## What it is
 
-1. **Your fund.** Lookthrough reads what index funds report holding. An S&P 500 fund has 16 cents of every dollar in the six companies building AI's data centers and 15 in the companies that sell them the equipment. A 2060 target-date fund has 17 cents in both together, a 2030 one 11.
-2. **Their bills.** Microsoft, Alphabet, Amazon, Meta, Oracle and CoreWeave have borrowed $608bn. Count their leases and they have promised $1.7 trillion, nearly two thirds of it rent. Each company gets a bill, measured in years of its own cash profit.
+Two things, kept apart on purpose: a tool, and the research behind it.
+
+1. **The tool: your fund.** Pick a fund and see the split: the fund's own report plus arithmetic, no opinion. Lookthrough reads what index funds report holding. An S&P 500 fund has 16 cents of every dollar in the six companies building AI's data centers and 15 in the companies that sell them the equipment. A 2060 target-date fund has 17 cents in both together, a 2030 one 11.
+2. **The research: their bills.** My reading of company filings. Microsoft, Alphabet, Amazon, Meta, Oracle and CoreWeave have borrowed $608bn. Count their leases and they have promised $1.7 trillion, nearly two thirds of it rent. Each company gets a bill, measured in years of its own cash profit.
 
 OpenAI and Anthropic are not on this list. They are private companies and do not publish financial statements, and they rent much of their computing from companies that do.
 
@@ -45,9 +47,9 @@ A companion note, [`nvidia.html`](docs/nvidia.html), looks at a related question
 
 | Page | What it is |
 |---|---|
-| `index.html` | The product: the fund tool, then the ledger. Each company's bill opens to show its lines and the filing behind them. Charts stay folded until asked for. |
-| `spenders.html` | The workings behind each bill: cash, leases, what they are worth today, the ratios, the landlords. |
-| `nvidia.html` | Companion note: what NVIDIA has promised and to whom, collection times, and the telecom comparison. |
+| `index.html` | Part 1, the tool, then Part 2, the research: the ledger. Each company's bill opens to show its lines and the filing behind them. Charts stay folded until asked for. |
+| `spenders.html` | Research. The workings behind each bill: cash, leases, what they are worth today, the ratios, the landlords. |
+| `nvidia.html` | Research, a companion note: what NVIDIA has promised and to whom, collection times, and the telecom comparison. |
 | `method.html` | Who did what, how each number can be checked, the judgment calls, and what changed after review. |
 
 ## What is in this repository
