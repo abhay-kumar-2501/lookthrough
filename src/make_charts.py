@@ -50,8 +50,8 @@ def cash_gap(a: dict) -> None:
     labels = ["FY2019", "FY2020", "FY2021", "FY2022", "FY2023", "FY2024", "FY2025", "Latest 12m"]
     su = a["sources_uses"]
     share = sum(r["capex"] for r in su) / sum(r["cfo"] for r in su)
-    fig, ax = _frame(f"Six AI spenders now put {share * 100:.0f} cents of every dollar they bring in into buildings and equipment",
-                     "Capital spending as a share of cash from operations. Above the dashed line a company spends more than it brings in.")
+    fig, ax = _frame(f"Six AI spenders now put {share * 100:.0f} cents of every dollar of cash they generate into buildings and equipment",
+                     "Capital spending as a share of cash from operations. Above the dashed line a company spends more than it generates.")
     for t in TICKERS:
         if t == "CRWV":
             continue  # off the scale
