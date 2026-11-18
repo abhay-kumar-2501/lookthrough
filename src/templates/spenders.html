@@ -1,0 +1,262 @@
+  <p class="kicker" style="margin-top:34px">Evidence for findings 1 to 3</p>
+  <h1>The six big AI spenders</h1>
+  <p class="lede">Microsoft, Alphabet, Amazon, Meta, Oracle and CoreWeave: what their businesses bring in, what they spend, what they have promised beyond that, and how much each could carry. Every figure links to the sentence in the filing it came from.</p>
+  <ul class="toc">
+    <li><a href="#cash">1 · The gap</a></li><li><a href="#leases">2 · The promises</a></li><li><a href="#value">What they are worth today</a></li><li><a href="#leverage">3 · Who can carry it</a></li><li><a href="#landlords">Who is on the other side</a></li><li><a href="#life">Appendix A · Equipment life</a></li><li><a href="#market">Appendix B · Other companies</a></li>
+  </ul>
+
+  <section id="cash">
+    <p class="kicker">Finding 1</p>
+    <h2>Capital spending has caught up with the cash the businesses bring in</h2>
+    <p id="cash-text"></p>
+    <div class="legend" id="cash-legend"></div>
+    <div class="chart" id="cash-chart"></div>
+    <p class="small">Spending on buildings and equipment as a share of cash from operations: fiscal years, then the latest twelve months. Above the dashed line a company spends more than its operations bring in. CoreWeave (<span id="crwv-share"></span>) is off the scale and not drawn.</p>
+    <h3>Twelve months of cash: where it came from and where it went</h3>
+    <div class="scroll"><table id="su-table"></table></div>
+    <p class="small">From each company's cash-flow statement, latest twelve months. A blank means the company does not report the item, so the totals of those columns are minimums. "New shares sold" includes shares bought by employees through company plans. Not all of the money raised went into buildings: Alphabet, for one, also made acquisitions and holds more cash than it owes.</p>
+    <details class="ev"><summary>Everything else each has signed for the years ahead</summary><div class="ev-body">
+      <div class="scroll"><table id="commit-sum"></table></div>
+      <p class="small">"Other commitments" are purchase and construction commitments, and for some companies they are larger than the leases. They are not part of the argument because their timing is not disclosed in a comparable way. They run for up to 30 years, and they are never added across companies: one company's commitment is often another's order book.</p>
+      <h3>Every commitment figure and the sentence it came from</h3>
+      <div class="scroll"><table id="commit-table"></table></div>
+    </div></details>
+  </section>
+
+  <section id="leases">
+    <p class="kicker">Finding 2</p>
+    <h2>Leases signed but not yet on the balance sheet, mostly for data centers</h2>
+    <p>A lease is recorded only when the landlord hands over the building. Until then a 15-year data center lease appears as one sentence in the lease footnote. This chart collects that sentence from every quarterly and annual report since 2022.</p>
+    <div class="legend" id="lease-legend"></div>
+    <div class="chart" id="lease-chart"></div>
+    <p class="small">Total future payments on leases that have not started, by calendar quarter. Oracle's fiscal quarters end one month earlier. These are undiscounted payments over terms of up to 30 years. Amazon's figure also covers warehouses and aircraft; Meta's and CoreWeave's include some energy, network and office leases.</p>
+    <div class="scroll"><table id="lease-table"></table></div>
+  </section>
+
+  <section id="value">
+    <h2>What those promises are worth today</h2>
+    <p>A dollar of rent due in 2040 is worth less than a dollar today. Discounting the payments at each company's own lease rate turns the headline into a figure that can sit next to debt. The method was first run on leases already on the books, where the answer is known: <span id="pv-check"></span></p>
+    <div class="chart" id="pv-chart"></div>
+    <p class="small">Pale bar: total future payments. Solid bar: value today, middle estimate. Line: low to high (longer leases at higher rates, to shorter leases at the disclosed rate). Start dates and lease terms come from each filing; where a filing gives a wide range the middle term is 15 years.</p>
+    <div class="scroll"><table id="pv-table"></table></div>
+    <p class="small"><b>Where this could be wrong.</b> The discount rates are the ones each company reports on its existing leases, most of which were signed when borrowing was cheaper, so the true value is more likely below the middle estimate than above it. The back-test confirms the discounting arithmetic; it cannot confirm the start dates and terms, which is why the range is wide.</p>
+  </section>
+
+  <section id="leverage">
+    <p class="kicker">Finding 3</p>
+    <h2>Who can carry it</h2>
+    <p>Debt against cash earnings is the first ratio a lender looks at: how many years of today's earnings it would take to repay what is owed. The table gives it twice, on what each company owes now and again with the signed leases counted as if they had started.</p>
+    <div class="legend"><span><i style="background:transparent;border:2px solid var(--text-2);border-radius:50%"></i>Today</span><span><i style="background:var(--text-2);border-radius:50%"></i>With signed leases counted</span><span><i style="background:var(--accent);border-radius:50%"></i>Above 4×</span></div>
+    <div class="chart" id="lev-chart"></div>
+    <div class="scroll"><table id="lev-table"></table></div>
+    <p class="small"><b>How to read it.</b> Cash earnings are operating profit plus depreciation over the last twelve months (EBITDA). They are held at today's level, so the second column is the load if the new data centers earned nothing: a stress reading, not a forecast. Three things make the reading harsh, most of all for Oracle and CoreWeave. Reported profit is already after rent on operating leases, while those leases are also counted as debt. Earnings are the last twelve months, which understates a company growing as fast as CoreWeave. And neither company's signed customer contracts are counted: the table shows them so the two sides can be read together. The columns after cash deduct cash and investments; a negative number means the company holds more cash than it owes.</p>
+  </section>
+
+  <section id="landlords">
+    <h2>Who is on the other side</h2>
+    <p>The filings rarely name a landlord. This table works from the other direction: deals disclosed by landlords, developers and lenders in their own filings and releases since 2024. <span id="cp-summary"></span></p>
+    <div class="quick" id="cp-chips"></div>
+    <div class="scroll"><table id="cp-table"></table></div>
+    <p class="small"><span class="tag" style="margin-left:0">filing</span> read in an SEC filing or company release. <span class="tag">press</span> reported by news outlets only; treat as unconfirmed. Deals do not add up to the lease totals above: many landlords are private, and some rows are capacity contracts or guarantees, not leases.</p>
+  </section>
+
+  <section id="life" class="appendix">
+    <h2>If the equipment does not last as long as the accounts assume</h2>
+    <p>A separate question from the findings above. Since 2020 every large cloud company has lengthened the useful life of its servers, which spreads the cost over more years and lifts reported profit. That changes reported earnings, not the cash measures the findings use. It matters to the argument in one way: equipment that wears out sooner has to be bought again sooner.</p>
+    <details class="ev" id="ev-life"><summary>Open the server-life calculator</summary><div class="ev-body">
+      <div class="control" style="max-width:520px">
+        <label for="life-slider">Assumed useful life <output id="life-out" style="color:var(--text)"></output></label>
+        <input type="range" id="life-slider" min="0" step="1" style="width:100%">
+        <div class="small" style="display:flex;justify-content:space-between"><span id="tick-min"></span><span>companies currently use 5.5 to 6 years</span><span id="tick-max"></span></div>
+      </div>
+      <h3 id="life-title"></h3>
+      <div class="chart" id="life-chart"></div>
+      <p class="small">Bar: middle estimate. Line: range across two modelling choices (how much depreciation an asset gets in the year it is bought, and how long retired assets stay on the books). CoreWeave has an operating loss and appears in the table only.</p>
+      <div class="scroll"><table id="life-table"></table></div>
+      <p class="small">"Run-rate" assumes the company had always used that life. "Switch now" keeps history as reported and changes the life at the start of the latest year. Figures marked <span class="tag">est.</span> rest on an estimated asset base.</p>
+      <h3>How the assumption changed</h3>
+      <div class="scroll"><table id="policy-table"></table></div>
+      <p class="small">Useful life in years applied to servers in each fiscal year, from the accounting-policy notes. <span class="tag">c</span> blended life backed out from a company disclosure. <span class="tag">a</span> assumption where the filing is silent on timing.</p>
+      <h3>Does the model match what the companies said?</h3>
+      <p id="check-text"></p>
+      <div class="scroll"><table id="check-table"></table></div>
+    </div></details>
+  </section>
+
+  <section id="earn-wrap" style="border-top:0;margin-top:0;padding-top:0">
+    <details class="ev" id="ev-earn"><summary>What one year of spending has to earn back, by equipment life</summary><div class="ev-body">
+      <p id="earn-text"></p>
+      <p><label for="earn-life" style="display:inline;text-transform:none;letter-spacing:0;font:inherit;color:inherit">If the equipment lasts</label> <select id="earn-life" style="width:auto;display:inline-block;padding:4px 8px;font-size:.92rem"></select></p>
+      <div class="scroll"><table id="earn-table"></table></div>
+      <p class="small" id="earn-note"></p>
+    </div></details>
+  </section>
+
+  <section id="market" class="appendix">
+    <h2>Is it only these six?</h2>
+    <p id="market-text"></p>
+    <details class="ev"><summary>Show every disclosure of $1bn or more</summary><div class="ev-body"><div class="scroll"><table id="market-table"></table></div></div></details>
+  </section>
+
+<script>
+const DATA = /*__DATA__*/null;
+const NAME = DATA.names;
+const usd = (v,d=2) => (v<0?"-":"")+"$"+Math.abs(v).toFixed(d);
+// Filers' names arrive in capitals ("NVIDIA CORP"); show them as ordinary names, keeping short all-capital words.
+const nice = n => n === n.toUpperCase() ? n.toLowerCase().replace(/\b[a-z]/g, c => c.toUpperCase()).replace(/\b(Nvidia|Ibm|Amd|Att|Usa|Llc|Lp|Sa|Nv|Plc)\b/gi, w => w.toUpperCase()) : n;
+const fmtDate = iso => new Date(iso+"T00:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+
+/* ---------- 1. The gap ---------- */
+(function(){
+  const F = DATA.funding, R = F.rows, SU = DATA.sources_uses, chart = $("#cash-chart");
+  const cfo = sum(SU,r=>r.cfo), capex = sum(SU,r=>r.capex), over = R.filter(r=>r.capex_share>1);
+  const fy19 = TICKERS.map(t=>({t, share:((F.history[t]||[]).find(p=>p.period==="FY2019")||{}).share})).filter(x=>x.share!=null);
+  $("#cash-text").textContent = `Over the last twelve months the six generated ${B(cfo)} from their operations and spent ${B(capex)} on buildings and equipment, ${pct(capex/cfo)} of it. ${over.map(r=>NAME[r.ticker]).join(", ")} spent more than they brought in. The six also paid ${B(sum(SU,r=>r.payouts))} to shareholders, raised ${B(sum(SU,r=>r.raised))} of new debt and sold ${B(sum(SU,r=>r.shares))} of new shares. In fiscal 2019 the highest share among those then reporting was ${pct(Math.max(...fy19.map(x=>x.share)))} (${NAME[fy19.reduce((a,b)=>b.share>a.share?b:a).t]}).`;
+  const shown = Charts.capexShare(chart, F, NAME);
+  $("#cash-legend").innerHTML = legend(shown.map(t=>[COLOR[t],NAME[t]]));
+  $("#crwv-share").textContent = pct(R.find(r=>r.ticker==="CRWV").capex_share);
+  const c = v => v==null ? "" : B(v,1), t = f => B(sum(SU,f),1);
+  $("#su-table").innerHTML = `<thead><tr><th>Company</th><th>Cash from operations</th><th>Buildings and equipment</th><th>Left over</th><th>Paid to shareholders</th><th>Debt raised</th><th>Debt repaid</th><th>New shares sold</th></tr></thead><tbody>` +
+    SU.map(r=>`<tr><td>${dot(r.ticker)}${NAME[r.ticker]}</td><td>${c(r.cfo)}</td><td>${c(r.capex)}</td><td>${c(r.fcf)}</td><td>${c(r.payouts)}</td><td>${c(r.raised)}</td><td>${c(r.repaid)}</td><td>${c(r.shares)}</td></tr>`).join("") +
+    `<tr><td><b>Six together</b></td><td><b>${t(r=>r.cfo)}</b></td><td><b>${t(r=>r.capex)}</b></td><td><b>${t(r=>r.fcf)}</b></td><td><b>${t(r=>r.payouts)}</b></td><td><b>${t(r=>r.raised)}</b></td><td><b>${t(r=>r.repaid)}</b></td><td><b>${t(r=>r.shares)}</b></td></tr></tbody>`;
+  $("#commit-sum").innerHTML = `<thead><tr><th>Company</th><th>Signed leases</th><th>Other commitments</th><th>All commitments</th><th>In years of its operating cash</th><th>Orders from its own customers</th></tr></thead><tbody>` +
+    R.map(r=>`<tr><td>${dot(r.ticker)}${NAME[r.ticker]}</td><td>${B(r.leases,1)}</td><td>${B(r.other,1)}</td><td>${B(r.total,1)}</td><td>${r.years==null?"n/a":r.years.toFixed(1)}</td><td>${r.backlog==null?"not disclosed":B(r.backlog,1)}</td></tr>`).join("") + "</tbody>";
+  const kinds = {purchase_commitments:"Purchase commitments",construction:"Construction",backlog_rpo:"Customer backlog",other:"Other"};
+  $("#commit-table").innerHTML = `<thead><tr><th>Company</th><th>What</th><th>Amount</th><th>As of</th><th style="text-align:left">Sentence in the filing</th></tr></thead><tbody>` +
+    F.items.map(r=>`<tr><td>${NAME[r.ticker]}</td><td style="text-align:left;font-family:var(--sans)">${kinds[r.kind]||esc(r.kind)}${r.in_total?"":'<span class="tag">not in totals</span>'}</td><td>${B(r.amount,1)}</td><td>${fmtDate(r.as_of)}</td><td class="wrap"><a href="${esc(r.url)}">${esc(r.evidence.slice(0,230))}${r.evidence.length>230?"…":""}</a></td></tr>`).join("") + "</tbody>";
+})();
+
+/* ---------- 2. Leases ---------- */
+(function(){
+  const L = DATA.leases, latest = L.latest, total = sum(latest,r=>r.value), ago = sum(latest,r=>r.year_ago);
+  $("#lease-legend").innerHTML = legend(TICKERS.map(t=>[COLOR[t],NAME[t]]));
+  Charts.leases($("#lease-chart"), L.series, NAME);
+  $("#lease-table").innerHTML = `<thead><tr><th>Company</th><th>As of</th><th>Signed, not started</th><th>A year earlier</th><th>Change</th><th>Source</th></tr></thead><tbody>` +
+    latest.map(r=>`<tr><td>${dot(r.ticker)}${r.name}</td><td>${fmtDate(r.period_end)}</td><td>${B(r.value,1)}</td><td>${r.year_ago?B(r.year_ago,1):"n/a"}</td><td>${r.year_ago?(r.value/r.year_ago).toFixed(1)+"×":""}</td><td><a href="${esc(r.url)}" title="${esc(r.evidence)}">${esc(r.form)}</a></td></tr>`).join("") +
+    `<tr><td><b>Total</b></td><td></td><td><b>${B(total,1)}</b></td><td><b>${B(ago,1)}</b></td><td><b>${(total/ago).toFixed(1)}×</b></td><td></td></tr></tbody>`;
+})();
+
+/* ---------- Present value ---------- */
+(function(){
+  const rows = DATA.pv.rows.slice().sort((a,b)=>b.base-a.base), c = DATA.pv.check;
+  $("#pv-check").textContent = `across ${c.n} existing lease portfolios it lands within ${c.mean_abs.toFixed(1)}% of the recorded figure on average (worst ${c.max_abs.toFixed(1)}%).`;
+  Charts.presentValue($("#pv-chart"), rows, NAME);
+  $("#pv-table").innerHTML = `<thead><tr><th>Company</th><th>Worth today</th><th>Range</th><th>Borrowings today</th><th>Signed leases ÷ borrowings</th><th>Rent per year, once started</th><th>Rent ÷ operating profit</th></tr></thead><tbody>` +
+    rows.map(r=>`<tr><td>${dot(r.ticker)}${NAME[r.ticker]}</td><td>${B(r.base,1)}</td><td>${B(r.low)} – ${B(r.high)}</td><td>${B(r.debt,1)}</td><td>${(r.base/r.debt).toFixed(1)}×</td><td>${B(r.annual_rent,1)}</td><td>${r.ttm_operating_income>0?pct(r.annual_rent/r.ttm_operating_income):"operating loss"}</td></tr>`).join("") +
+    `<tr><td><b>Total</b></td><td><b>${B(sum(rows,r=>r.base),1)}</b></td><td><b>${B(sum(rows,r=>r.low))} – ${B(sum(rows,r=>r.high))}</b></td><td><b>${B(sum(rows,r=>r.debt),1)}</b></td><td><b>${(sum(rows,r=>r.base)/sum(rows,r=>r.debt)).toFixed(1)}×</b></td><td><b>${B(sum(rows,r=>r.annual_rent),1)}</b></td><td></td></tr></tbody>`;
+})();
+
+/* ---------- 3. Leverage ---------- */
+(function(){
+  const L = DATA.leverage.slice().sort((a,b)=>b.pro_forma-a.pro_forma), x = v => v==null ? "n/a" : v.toFixed(1)+"×";
+  Charts.leverage($("#lev-chart"), L, NAME);
+  $("#lev-table").innerHTML = `<thead><tr><th>Company</th><th>Borrowings</th><th>Leases on the books</th><th>Signed leases, worth today</th><th>Cash earnings</th><th>Owed today ÷ earnings</th><th>With signed leases</th><th>Range</th><th>After cash, today</th><th>After cash, with leases</th><th>Signed customer contracts</th></tr></thead><tbody>` +
+    L.map(r=>`<tr${r.pro_forma>=4?' style="background:var(--accent-soft)"':""}><td>${dot(r.ticker)}${NAME[r.ticker]}</td><td>${B(r.debt,1)}</td><td>${B(r.leases,1)}</td><td>${B(r.signed,1)}</td><td>${B(r.ebitda,1)}</td><td>${x(r.today)}</td><td><b>${x(r.pro_forma)}</b></td><td>${x(r.pro_forma_low)} – ${x(r.pro_forma_high)}</td><td>${x(r.net_today)}</td><td>${x(r.net_pro_forma)}</td><td>${(b=>b==null?"not reported":B(b,1))((DATA.funding.rows.find(f=>f.ticker===r.ticker)||{}).backlog)}</td></tr>`).join("") + "</tbody>";
+})();
+
+/* ---------- What a year of spending has to earn ---------- */
+(function(){
+  const Q = DATA.required, A = Q.assumptions, sel = $("#earn-life");
+  const at = l => Q.rows.filter(r=>r.life===l), base = at(Math.max(...Q.lives)).slice().sort((a,b)=>b.share_of_revenue-a.share_of_revenue);
+  const hard = base.filter(r=>r.times_growth>1.5), easy = base.filter(r=>r.times_growth<=1.5);
+  $("#earn-text").textContent = `Equipment wears out and whoever paid for it expects a return, so each year's spending needs new revenue to justify it. On middle assumptions, the last twelve months of spending needs new yearly revenue equal to ${hard.map(r=>`${pct(r.share_of_revenue)} of everything ${NAME[r.ticker]} sells today`).join(" and ")}. For ${easy.map(r=>NAME[r.ticker]).join(", ")} it is ${pct(Math.min(...easy.map(r=>r.share_of_revenue)))} to ${pct(Math.max(...easy.map(r=>r.share_of_revenue)))}, about what their sales already grew by last year.`;
+  sel.innerHTML = Q.lives.map(l=>`<option value="${l}"${l===Math.max(...Q.lives)?" selected":""}>${l} years</option>`).join("");
+  const draw = () => {
+    const rows = at(+sel.value).slice().sort((a,b)=>b.share_of_revenue-a.share_of_revenue);
+    $("#earn-table").innerHTML = `<thead><tr><th>Company</th><th>Spent in twelve months</th><th>New yearly revenue needed</th><th>As a share of its revenue today</th><th>Against last year's revenue growth</th></tr></thead><tbody>` +
+      rows.map(r=>`<tr${r.times_growth>1.5?' style="background:var(--accent-soft)"':""}><td>${dot(r.ticker)}${NAME[r.ticker]}</td><td>${B(r.capex,1)}</td><td>${B(r.needed,1)}</td><td><b>${pct(r.share_of_revenue)}</b></td><td>${r.times_growth==null?"n/a":r.times_growth.toFixed(1)+"×"}</td></tr>`).join("") + "</tbody>";
+  };
+  sel.addEventListener("change", draw); draw();
+  $("#earn-note").textContent = `Assumes ${pct(A.equipment_share)} of spending is equipment and the rest buildings lasting ${A.buildings_life} years, a ${pct(A.required_return)} yearly return on the money spent, and ${pct(A.margin)} of each new revenue dollar left after running costs. It leaves out taxes, land and leased data centers, and some spending replaces equipment that already earns revenue, so read it as a comparison between companies, not a forecast.`;
+})();
+
+/* ---------- Counterparties ---------- */
+(function(){
+  const CP = DATA.counterparties;
+  const group = r => ({META:"META",MSFT:"MSFT",ORCL:"ORCL",AMZN:"AMZN",GOOG:"GOOGL",CRWV:"CRWV",UNK:"Unnamed",XDEAL:"MSFT"}[r.id.split("-")[0]]);
+  const primary = CP.filter(r=>r.confidence==="primary_read");
+  $("#cp-summary").textContent = `${CP.length} deals and exposures so far, ${primary.length} confirmed in a filing or company release.`;
+  const groups = [["all","All"],...TICKERS.map(t=>[t,NAME[t]]),["Unnamed","Tenant not named"]];
+  let active = "all";
+  function render(){
+    $("#cp-chips").innerHTML = groups.map(([k,l])=>`<button type="button" aria-pressed="${k===active}" data-k="${k}"${k===active?' style="border-color:var(--text);color:var(--text)"':""}>${l}</button>`).join("");
+    const rows = CP.filter(r=>active==="all"||group(r)===active);
+    $("#cp-table").innerHTML = `<thead><tr><th>Tenant</th><th style="text-align:left">Landlord or provider</th><th>Value</th><th>Term</th><th>Capacity</th><th style="text-align:left">Guarantee or backstop</th><th>Source</th></tr></thead><tbody>` +
+      rows.map(r=>`<tr><td>${esc(r.tenant||"Not named")}${r.end_user?`<div class="small">for ${esc(r.end_user)}</div>`:""}</td><td class="wrap"><b>${esc(r.landlord||"Not named")}</b>${r.site?`<div class="small">${esc(r.site)}</div>`:""}${r.cross?'<span class="tag" style="margin-left:0">between tracked companies</span>':""}</td><td>${r.value==null?"":"$"+r.value.toLocaleString("en-US",{maximumFractionDigits:1})+"bn"}</td><td>${r.term==null?"":r.term+" yrs"}</td><td>${r.mw==null?"":r.mw.toLocaleString("en-US")+" MW"}</td><td class="wrap">${r.guarantee_bn!=null?`<b>$${r.guarantee_bn}bn</b> `:""}${esc(r.guarantee.slice(0,140))}${r.guarantee.length>140?"…":""}</td><td>${r.url?`<a href="${esc(r.url)}">link</a>`:""}<span class="tag">${r.confidence==="primary_read"?"filing":r.confidence==="press_only"?"press":"unverified"}</span></td></tr>`).join("") + "</tbody>";
+    $("#cp-chips").querySelectorAll("button").forEach(b=>b.onclick=()=>{active=b.dataset.k;render();});
+  }
+  render();
+})();
+
+/* ---------- Appendix B: everyone else ---------- */
+(function(){
+  const M = DATA.market;
+  if(!M || !M.rows.length){ $("#market").remove(); return; }
+  const tracked = new Set(["MSFT","META","ORCL","AMZN","GOOGL","GOOG","CRWV"]);
+  const isT = r => tracked.has(r.ticker) || /microsoft|meta platforms|oracle|amazon|alphabet|coreweave/i.test(r.company);
+  const all = sum(M.rows,r=>r.value), six = sum(M.rows.filter(isT),r=>r.value), rest = M.rows.filter(r=>!isT(r));
+  $("#market-text").textContent = `To check that these six are the right six, the same footnote was searched for in every company's latest quarterly or annual report. Among the ${M.rows.length} disclosures of $1bn or more found in filings since July 2026, the six hold ${pct(six/all)} of the total. The largest outside them is ${rest.length?nice(rest[0].company)+" at "+B(rest[0].value,1):"none found"}. Companies that disclose this only once a year are not fully covered; the largest of those would lower the share by about one point.`;
+  $("#market-table").innerHTML = `<thead><tr><th>Company</th><th>Signed, not started</th><th>As of</th><th style="text-align:left">Mostly for</th></tr></thead><tbody>` +
+    M.rows.map(r=>`<tr><td>${r.url?`<a href="${esc(r.url)}">${esc(nice(r.company))}</a>`:esc(nice(r.company))}${isT(r)?'<span class="tag">one of the six</span>':""}</td><td>${B(r.value,1)}</td><td>${fmtDate(r.period_end)}</td><td class="wrap">${esc(r.what_for)}</td></tr>`).join("") + "</tbody>";
+})();
+
+/* ---------- Appendix A: server life (drawn when opened) ---------- */
+onOpen("ev-life", function(){
+  const lives = DATA.lives, slider = $("#life-slider"), chart = $("#life-chart"); tipOf(chart);
+  slider.max = lives.length-1; slider.value = lives.indexOf(3);
+  $("#tick-min").textContent = lives[0]+" yrs"; $("#tick-max").textContent = lives[lives.length-1]+" yrs";
+  const shown = DATA.companies.filter(c=>c.operating_income>0 && c.net_income>0);
+  const at = (c,l) => c.by_life.find(b=>b.life===l);
+  const p = (c,v) => -v/c.operating_income*100;
+  const lo = Math.floor(Math.min(...shown.flatMap(c=>lives.map(l=>p(c,at(c,l).high))))/10)*10, hi = 10;
+  const W=720,row=44,m={t:22,r:16,b:6,l:92}, H=m.t+row*shown.length+m.b;
+  const x = v => m.l + (W-m.l-m.r)*(v-lo)/(hi-lo);
+  const svg = svgEl("svg",{viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Change in operating profit at a different server life"});
+  for(let v=lo; v<=hi; v+=10){
+    svg.append(svgEl("line",{class:"grid",x1:x(v),x2:x(v),y1:m.t-4,y2:H-m.b,style:v===0?"stroke:var(--muted)":""}));
+    svg.append(svgEl("text",{x:x(v),y:12,"text-anchor":"middle"},(v>0?"+":"")+v+"%"));
+  }
+  const bars = shown.map((c,i)=>{
+    const cy = m.t + row*i + row/2;
+    svg.append(svgEl("text",{x:m.l-10,y:cy+4,"text-anchor":"end",class:"val",style:"font-family:var(--sans)"},c.name));
+    const bar = svgEl("rect",{y:cy-9,height:18}), lab = svgEl("text",{y:cy+4,class:"val"});
+    const whisk = svgEl("line",{y1:cy,y2:cy,stroke:"var(--text)","stroke-width":1.5});
+    const hit = svgEl("rect",{x:m.l,y:cy-row/2,width:W-m.l-m.r,height:row,fill:"transparent",tabindex:0});
+    svg.append(bar,whisk,lab,hit);
+    return {c,bar,lab,whisk,hit,cy};
+  });
+  chart.append(svg);
+  function render(){
+    const l = lives[+slider.value];
+    $("#life-out").textContent = l + " years";
+    $("#life-title").textContent = `Change in latest-year operating profit if servers had always been depreciated over ${l} years`;
+    bars.forEach(({c,bar,lab,whisk,hit,cy})=>{
+      const r = at(c,l), v = p(c,r.extra_dep), x0=x(0), x1=x(v);
+      bar.setAttribute("x",Math.min(x0,x1)); bar.setAttribute("width",Math.max(1,Math.abs(x1-x0)));
+      bar.setAttribute("fill", v<0 ? "var(--accent)" : "var(--muted)");
+      whisk.setAttribute("x1",x(p(c,r.high))); whisk.setAttribute("x2",x(p(c,r.low)));
+      lab.textContent = (v>0?"+":"")+v.toFixed(1)+"%";
+      const edge = Math.min(x1, x(p(c,r.high)));
+      lab.setAttribute("x", v<0 ? edge-6 : Math.max(x1,x(p(c,r.low)))+6); lab.setAttribute("text-anchor", v<0?"end":"start");
+      const html = `<b>${c.name} · FY${c.fiscal_year}</b><div><span>Extra depreciation</span><span>${B(r.extra_dep,1)}</span></div><div><span>Range</span><span>${B(r.low,1)} – ${B(r.high,1)}</span></div><div><span>Earnings per share</span><span>${usd(c.eps)} → ${usd(r.eps_restated)}</span></div><div><span>If switched now</span><span>${B(r.switch_now,1)}</span></div>`;
+      const show = () => showTip(chart, html, Math.min(x0,x1)/W*chart.clientWidth, (cy-row/2)/H*chart.clientHeight);
+      hit.onpointermove = show; hit.onfocus = show; hit.onpointerleave = hit.onblur = () => hideTip(chart);
+      hit.setAttribute("aria-label", `${c.name}: operating profit ${v.toFixed(1)} percent`);
+    });
+    const C = DATA.companies;
+    $("#life-table").innerHTML = `<thead><tr><th>Company</th><th>Fiscal year</th><th>Life in use</th><th>Extra depreciation, run-rate</th><th>Range</th><th>Share of operating profit</th><th>Reported EPS</th><th>EPS at ${l} yrs</th><th>Extra if switched now</th></tr></thead><tbody>` +
+      C.map(c=>{const r=at(c,l); return `<tr><td>${c.name}${c.asset_estimated?'<span class="tag">est.</span>':''}</td><td>${c.fiscal_year}</td><td>${c.policy_life} yrs</td><td>${B(r.extra_dep,1)}</td><td>${B(r.low,1)} – ${B(r.high,1)}</td><td>${c.operating_income>0?(r.extra_dep/c.operating_income*100).toFixed(1)+"%":"operating loss"}</td><td>${usd(c.eps)}</td><td>${usd(r.eps_restated)}</td><td>${B(r.switch_now,1)}</td></tr>`;}).join("") +
+      `<tr><td><b>Total</b></td><td></td><td></td><td><b>${B(sum(C,c=>at(c,l).extra_dep),1)}</b></td><td><b>${B(sum(C,c=>at(c,l).low),1)} – ${B(sum(C,c=>at(c,l).high),1)}</b></td><td></td><td></td><td></td><td><b>${B(sum(C,c=>at(c,l).switch_now),1)}</b></td></tr></tbody>`;
+  }
+  slider.addEventListener("input",render); render();
+  const years = []; for(let yy=2019;yy<=Math.max(...DATA.companies.map(c=>c.fiscal_year));yy++) years.push(yy);
+  const pol = (c,yy) => c.policy.filter(q=>q.from<=yy).slice(-1)[0];
+  $("#policy-table").innerHTML = `<thead><tr><th>Company</th>${years.map(yy=>`<th>FY${String(yy).slice(2)}</th>`).join("")}</tr></thead><tbody>` +
+    DATA.companies.map(c=>`<tr><td>${c.name}</td>${years.map(yy=>{ if(yy>c.fiscal_year) return "<td></td>"; const q=pol(c,yy); const mark=q.basis==="CALIBRATED"?'<span class="tag">c</span>':q.basis==="ASSUMPTION"?'<span class="tag">a</span>':""; return `<td title="${esc(q.evidence)}">${q.life}${mark}</td>`;}).join("")}</tr>`).join("") + "</tbody>";
+  const V = DATA.validation, f = V.fit;
+  $("#check-text").textContent = `When a company changes a useful life it must disclose the dollar effect, which gives a direct test. On ${f.n} such disclosures the model lands within ${f.mean_abs_error.toFixed(1)}% on average; the worst miss is ${f.max_abs_error.toFixed(0)}%. One setting (how long retired assets stay on the books) was tuned to these same disclosures, so this is a fit and not an independent test; with retirements ignored entirely the average miss is ${f.no_retirement_error.toFixed(1)}%.`;
+  const basis = {existing:"assets already owned",existing_and_new:"all assets"};
+  $("#check-table").innerHTML = `<thead><tr><th>Company</th><th>Fiscal year</th><th>Change</th><th style="text-align:left">Measured on</th><th>Company disclosed</th><th>Model</th><th>Difference</th><th></th></tr></thead><tbody>` +
+    V.rows.map(r=>`<tr><td>${NAME[r.ticker]}</td><td>${r.fiscal_year}</td><td>${r.change}</td><td style="text-align:left;font-family:var(--sans)">${basis[r.basis]||r.basis}</td><td>$${r.disclosed.toFixed(2)}bn</td><td>$${r.modeled.toFixed(2)}bn</td><td>${(r.error>0?"+":"")+r.error.toFixed(0)}%</td><td class="small" style="text-align:left;font-family:var(--sans)">${r.used?"":"used to set an input, not a test"}</td></tr>`).join("") + "</tbody>";
+});
+</script>

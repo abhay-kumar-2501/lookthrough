@@ -1,0 +1,39 @@
+ticker,fund_key,match,fund_name,note
+VOO,sp500,same_fund,Vanguard S&P 500 ETF,
+VFIAX,sp500,same_fund,Vanguard 500 Index Fund Admiral Shares,
+VFINX,sp500,same_fund,Vanguard 500 Index Fund Investor Shares,
+SPY,sp500,same_index,SPDR S&P 500 ETF Trust,
+IVV,sp500,same_index,iShares Core S&P 500 ETF,
+FXAIX,sp500,same_index,Fidelity 500 Index Fund,
+SWPPX,sp500,same_index,Schwab S&P 500 Index Fund,
+VTI,total_us,same_fund,Vanguard Total Stock Market ETF,
+VTSAX,total_us,same_fund,Vanguard Total Stock Market Index Fund Admiral Shares,
+ITOT,total_us,similar,iShares Core S&P Total U.S. Stock Market ETF,It follows a different index of nearly the whole US stock market so its mix is very close.
+SCHB,total_us,similar,Schwab U.S. Broad Market ETF,It follows a different index of nearly the whole US stock market so its mix is very close.
+FSKAX,total_us,similar,Fidelity Total Market Index Fund,It follows a different index of nearly the whole US stock market so its mix is very close.
+SWTSX,total_us,similar,Schwab Total Stock Market Index Fund,It follows a different index of nearly the whole US stock market so its mix is very close.
+FZROX,total_us,similar,Fidelity ZERO Total Market Index Fund,It follows a different index of nearly the whole US stock market so its mix is very close.
+QQQ,nasdaq100,same_fund,Invesco QQQ Trust,
+QQQM,nasdaq100,same_index,Invesco NASDAQ 100 ETF,
+VT,total_world,same_fund,Vanguard Total World Stock ETF,
+VTWAX,total_world,same_fund,Vanguard Total World Stock Index Fund Admiral Shares,
+ACWI,total_world,similar,iShares MSCI ACWI ETF,It follows a different world index that leaves out smaller companies so its share in the largest names is a little higher.
+RSP,equal_weight_500,same_fund,Invesco S&P 500 Equal Weight ETF,
+VGT,tech_sector,same_fund,Vanguard Information Technology ETF,
+VITAX,tech_sector,same_fund,Vanguard Information Technology Index Fund Admiral Shares,
+FTEC,tech_sector,similar,Fidelity MSCI Information Technology Index ETF,It follows a closely related technology index.
+XLK,tech_sector,similar,Technology Select Sector SPDR Fund,It holds only the technology companies in the S&P 500 so it is more concentrated in the largest names.
+SMH,semiconductors,same_fund,VanEck Semiconductor ETF,
+SOXX,semiconductors,similar,iShares Semiconductor ETF,It follows a different index of chip companies with different weights.
+SOXQ,semiconductors,similar,Invesco PHLX Semiconductor ETF,It follows a different index of chip companies with different weights.
+VTTSX,target_2060,same_fund,Vanguard Target Retirement 2060 Fund,
+VSVNX,target_2060,similar,Vanguard Target Retirement 2070 Fund,It holds nearly the same mix of stocks and bonds.
+VLXVX,target_2060,similar,Vanguard Target Retirement 2065 Fund,It holds nearly the same mix of stocks and bonds.
+VFFVX,target_2060,similar,Vanguard Target Retirement 2055 Fund,It holds nearly the same mix of stocks and bonds.
+VFIFX,target_2060,similar,Vanguard Target Retirement 2050 Fund,It holds nearly the same mix of stocks and bonds.
+VTIVX,target_2060,similar,Vanguard Target Retirement 2045 Fund,It holds somewhat more in bonds so its true figure is a little lower.
+VFORX,target_2030,similar,Vanguard Target Retirement 2040 Fund,It holds more in stocks than the 2030 fund so its true figure is higher: between this and the 2060 fund.
+VTTHX,target_2030,similar,Vanguard Target Retirement 2035 Fund,It holds somewhat more in stocks so its true figure is a little higher.
+VTHRX,target_2030,same_fund,Vanguard Target Retirement 2030 Fund,
+VTTVX,target_2030,similar,Vanguard Target Retirement 2025 Fund,It holds less in stocks so its true figure is lower.
+VTWNX,target_2030,similar,Vanguard Target Retirement 2020 Fund,It holds less in stocks so its true figure is lower.

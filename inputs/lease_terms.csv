@@ -1,0 +1,6 @@
+ticker,as_of,commence_from,commence_to,term_low,term_base,term_high,evidence
+MSFT,2026-09-30,2026.75,2034.5,10,15,20,"These leases will commence between fiscal year 2027 and fiscal year 2034 with lease terms of 1 year to 20 years. (Fiscal 2027 began 1 July 2026. Base term of 15 years is an assumption inside the disclosed range.)"
+GOOGL,2026-09-30,2026.75,2031.99,10,15,20,"These leases will commence between 2026 and 2031 with non-cancelable lease terms between one and 26 years. (Base term of 15 years is an assumption inside the disclosed range.)"
+META,2026-09-30,2026.75,2036.99,10,15,20,"which will commence during the remainder of 2026 through 2036 with lease terms ranging from greater than one year to 30 years. (Base term of 15 years is an assumption inside the disclosed range.)"
+ORCL,2026-08-31,2026.67,2029.42,15,17,19,"generally expected to commence between the second quarter of fiscal 2027 and fiscal 2029 and for terms of fifteen to nineteen years"
+CRWV,2026-09-30,2026.75,2029.99,7,12,17,"These leases will commence between 2026 and 2029 with estimated lease terms of seven to seventeen years"

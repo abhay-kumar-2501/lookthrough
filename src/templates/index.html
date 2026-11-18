@@ -1,0 +1,357 @@
+  <p class="kicker" style="margin-top:34px">A research note built from SEC filings</p>
+  <h1>AI spending now takes all the cash its biggest builders generate. Nearly a third of an ordinary index fund sits on one side of it or the other.</h1>
+  <p class="lede">Six companies now put <span id="lede-share"></span> of every dollar of cash their operations generate into capital spending. What comes on top is paid for with borrowed money, new shares and leases that are not on any balance sheet yet; and for the newest builders, with guarantees from the company that sells the chips. This note follows that money through the filings. Start with your own fund.</p>
+  <noscript><p><b>This page needs JavaScript to show its figures.</b> The same numbers are in README.md and in the CSV files under data/processed in the repository.</p></noscript>
+
+  <div class="tool" id="tool">
+    <div id="lines"></div>
+    <div class="quick" style="margin-top:10px"><button type="button" id="add-line">+ Add another fund</button><span id="quick"></span></div>
+    <p class="answer" id="answer"></p>
+    <p class="what" id="what"></p>
+    <div class="split">
+      <div><div class="waffle" id="waffle" role="img"></div><p class="small" style="margin-top:8px">Each square is one cent of every dollar.</p></div>
+      <div class="rows" id="rows"></div>
+    </div>
+    <p class="small" id="asof" style="margin:14px 0 0"></p>
+    <details class="ev" id="ev-funds"><summary>Compare nine common funds</summary><div class="ev-body">
+      <p id="compare-text"></p>
+      <div class="legend" id="legend"></div>
+      <div class="chart" id="compare"></div>
+      <p class="small" id="compare-hint"></p>
+      <div class="scroll"><table id="conc"></table></div>
+      <p class="small">"Counts like" is how many equal-sized holdings would give the same concentration.</p>
+    </div></details>
+    <details class="ev" id="ev-top"><summary id="top-title">The ten largest holdings</summary><div class="ev-body"><div class="scroll"><table id="top"></table></div>
+      <p class="small" id="top-note"></p>
+      <p class="small"><button type="button" class="chip" id="csv">Download this breakdown (CSV)</button></p></div></details>
+    <details class="ev"><summary>What counts, and where this comes from</summary><div class="ev-body">
+      <ul>
+        <li><b>Source.</b> Funds must report every holding to the US securities regulator. The tool reads those reports. They are published a few months late, so the date is shown and today's mix will differ, especially after large price moves.</li>
+        <li><b>Tickers.</b> The tool reads the holdings of nine funds. Typing a ticker matches it to one of them: the same fund, another fund tracking the same index, or the nearest kind where the note says how yours differs. The list of tickers is mine and covers common US funds, not all of them.</li>
+        <li><b>The six paying for it</b> are Microsoft, Alphabet, Amazon, Meta, Oracle and CoreWeave, among the largest buyers of AI chips and data center space. NVIDIA does not name its customers, so this is my list. Each company is counted whole, although each also has large businesses unrelated to AI.</li>
+        <li><b>The companies selling the equipment</b> are NVIDIA plus my own list of AI hardware makers: <span id="others"></span>. It leaves out the makers of chip-manufacturing equipment.</li>
+        <li><b>Sellers and buyers are shown apart on purpose.</b> If spending slowed, the sellers would lose sales while the buyers would keep more of their cash, so the two groups do not carry the same risk.</li>
+        <li><b>Not advice.</b> The tool shows what is in a fund. It does not say what anyone should hold.</li>
+      </ul>
+    </div></details>
+  </div>
+
+  <section id="argument">
+    <p class="kicker">Where that money goes</p>
+    <h2>The argument in four findings</h2>
+
+    <ol class="chain">
+      <li class="step" id="f-cash">
+        <p class="kicker">The gap</p>
+        <h2>The six biggest AI spenders now put <b id="n-cash"></b> of every dollar of cash their operations generate into buildings and equipment.</h2>
+        <p id="cash-text"></p>
+        <ul class="facts" id="facts-cash"></ul>
+        <p class="so" id="cash-so"></p>
+        <details class="ev" id="ev-cash"><summary>Show the chart and where the cash came from</summary><div class="ev-body">
+          <div class="legend" id="cash-legend"></div>
+          <div class="chart" id="cash-chart"></div>
+          <p class="small">Spending on buildings and equipment as a share of cash from operations: fiscal years, then the latest twelve months. Above the dashed line a company spends more than its operations bring in. CoreWeave is off the scale and not drawn.</p>
+          <h3>Twelve months of cash: where it came from and where it went</h3>
+          <div class="scroll"><table id="su-table"></table></div>
+          <p class="small">From each company's cash-flow statement, latest twelve months. A blank means the company does not report the item, so the totals of those columns are minimums. "New shares sold" includes shares bought by employees through company plans. Some of the money raised went to other uses, such as acquisitions, or was kept as cash. <a href="spenders.html#cash">Each company's history →</a></p>
+        </div></details>
+      </li>
+
+      <li class="step" id="f-leases">
+        <p class="kicker">The promises</p>
+        <h2>On top of that, they have signed <b id="n-leases"></b> of leases, mostly for data centers, that are not on their books yet.</h2>
+        <p>A lease reaches the balance sheet only on the day the landlord hands over the building. Until then it is a single sentence in a footnote. This project collects that sentence from every quarterly report since 2022.</p>
+        <ul class="facts" id="facts-leases"></ul>
+        <p class="so">So a sum larger than everything the six have borrowed is already committed, and none of it counts as debt yet.</p>
+        <details class="ev" id="ev-leases"><summary>Show the chart and the sources</summary><div class="ev-body">
+          <div class="legend" id="lease-legend"></div>
+          <div class="chart" id="lease-chart"></div>
+          <p class="small">Total future payments on leases signed but not yet started, by calendar quarter. These are payments over terms of up to 30 years, not one year's spending. Amazon's figure also covers warehouses and aircraft; Meta's and CoreWeave's include some energy, network and office leases.</p>
+          <div class="scroll"><table id="lease-table"></table></div>
+          <p class="small">"Worth today" discounts the payments at each company's own lease rate. Those rates were set when borrowing was cheaper, so the true figure is more likely below the middle estimate than above it. <a href="spenders.html#value">Method, range and test →</a></p>
+        </div></details>
+      </li>
+
+      <li class="step" id="f-leverage">
+        <p class="kicker">Who can carry it</p>
+        <h2 id="lev-head"></h2>
+        <p id="lev-text"></p>
+        <div class="scroll"><table id="lev-table"></table></div>
+        <p class="so">So the load is not spread evenly. It is heaviest on the two builders with the least cash earnings behind them.</p>
+        <details class="ev" id="ev-lev"><summary>Show the chart and the workings</summary><div class="ev-body">
+          <div class="legend"><span><i style="background:transparent;border:2px solid var(--text-2);border-radius:50%"></i>Today</span><span><i style="background:var(--text-2);border-radius:50%"></i>With signed leases counted</span><span><i style="background:var(--accent);border-radius:50%"></i>Above 4×</span></div>
+          <div class="chart" id="lev-chart"></div>
+          <p class="small">Borrowings plus leases, divided by cash earnings over the last twelve months (operating profit plus depreciation). The thin line is the range from the low and high lease values. Earnings are held at today's level, so this is a stress reading: the load if the new data centers earned nothing. For a company growing as fast as CoreWeave, the last twelve months understate what it earns now, which makes its ratio look worse. Cash is not deducted here; the evidence page shows both. <a href="spenders.html#leverage">Workings →</a></p>
+        </div></details>
+      </li>
+
+      <li class="step" id="f-nvidia">
+        <p class="kicker">The supplier</p>
+        <h2>Where a builder's own credit is not enough, the seller has started to stand behind it: NVIDIA has promised <b id="n-nvidia"></b> in guarantees and investments.</h2>
+        <p id="nvidia-text"></p>
+        <div class="scroll"><table id="hist-table"></table></div>
+        <p class="so" id="nvidia-so"></p>
+        <details class="ev" id="ev-fin"><summary>Show what NVIDIA has promised, and to whom</summary><div class="ev-body">
+          <div class="scroll"><table id="items-table"></table></div>
+          <div class="legend" id="fin-legend"></div>
+          <div class="chart" id="fin-chart"></div>
+          <p class="small">Share of NVIDIA's annual rate of sales (the latest quarter's sales times four). The label above each bar is guarantees plus investment promises only. Guarantees are counted at their maximum; the one drawn in grey is not yet in effect. <a href="nvidia.html#financing">Every amount and its sentence →</a></p>
+        </div></details>
+        <details class="ev" id="ev-hist"><summary>Show the chart: then and now</summary><div class="ev-body">
+          <div class="legend"><span><i style="background:var(--text-2);opacity:.32"></i>Promised to customers</span><span><i style="background:var(--text-2)"></i>Actually lent, or guarantees in force</span><span><i style="background:var(--accent)"></i>NVIDIA today</span></div>
+          <div class="chart" id="hist-chart"></div>
+          <p class="small" id="hist-note"></p>
+        </div></details>
+        <details class="ev" id="ev-path"><summary>Show the chart: what happened at the telecom makers</summary><div class="ev-body">
+          <div class="legend" id="path-legend"></div>
+          <div class="chart" id="path-chart"></div>
+          <p class="small">Loans drawn plus guarantees, as a share of sales. The share rose after 2000 partly because customers drew on what they had been promised and partly because the suppliers' own sales fell. Cisco is shown at its fiscal year-ends only. <a href="nvidia.html#history">Data and sources →</a></p>
+        </div></details>
+        <details class="ev" id="ev-paid"><summary>Show how long NVIDIA waits to be paid</summary><div class="ev-body">
+          <div class="scroll"><table id="dso-table"></table></div>
+          <div id="terms"></div>
+          <p class="small"><a href="nvidia.html#paid">More on collection times →</a></p>
+        </div></details>
+      </li>
+    </ol>
+  </section>
+
+  <section id="verdict" style="border-top:0;padding-top:0;margin-top:20px">
+    <div class="verdict">
+      <p class="kicker">My read</p>
+      <h2 id="verdict-head"></h2>
+      <p id="verdict-text"></p>
+      <p id="verdict-fund"></p>
+      <h3>Four numbers I would check every quarter</h3>
+      <div class="watch" id="watch"></div>
+      <p class="small" style="margin:14px 0 0" id="wrong"></p>
+    </div>
+  </section>
+
+<script>
+const DATA = /*__DATA__*/null;
+const GROUPS = [
+  {key:"nvidia", color:"var(--s1)", label:"NVIDIA", note:"sells most of the AI chips"},
+  {key:"other_ai", color:"var(--s3)", label:"Other AI hardware makers", note:"other chips, memory, networking, servers"},
+  {key:"customers", color:"var(--s2)", label:"The six paying for it", note:"Microsoft, Alphabet, Amazon, Meta, Oracle, CoreWeave"},
+];
+const F = DATA.funds, A = DATA.argument, NAME = A.names;
+const byKey = k => F.find(f=>f.key===k);
+const roundish = v => { if(v<=0) return 0; const p = Math.pow(10, Math.max(0, Math.floor(Math.log10(v)) - 2)); return Math.round(v/p)*p; };
+const fact = (n,c) => `<li><span class="n">${n}</span><span class="c">${c}</span></li>`;
+const fundName = f => f.name.toLowerCase().replace("s&p","S&P").replace("us ","US ").replace("nasdaq","Nasdaq");
+const words = ["None","One","Two","Three","Four","Five","All six"];
+const list = a => a.length>1 ? a.slice(0,-1).join(", ")+" and "+a[a.length-1] : a[0];
+// "$50,000", "50k" and "1.5m" all work.
+const parse = s => { const t = String(s).trim().toLowerCase(), n = parseFloat(t.replace(/[^0-9.]/g,"")) * (/\d\s*m/.test(t) ? 1e6 : /\d\s*k/.test(t) ? 1e3 : 1); return isFinite(n) && n>0 ? Math.min(n,1e10) : 0; };
+
+/* ---------- The tool: one or more funds ---------- */
+// What to tell someone who typed a ticker: is the figure shown their fund's own, or a guide to it?
+function tickerNote(hit){
+  const shown = byKey(hit.key).name.replace(/ \(.*\)/,"").toLowerCase().replace("s&p","S&P").replace("us ","US ").replace("nasdaq","Nasdaq");
+  if(hit.match==="same_fund") return `${hit.t} is the ${hit.name}, the fund whose holdings are shown here.`;
+  if(hit.match==="same_index") return `${hit.t} is the ${hit.name}. It tracks the same index as the fund shown, so its mix is essentially the same.`;
+  return `${hit.t} is the ${hit.name}. The nearest fund here is the ${shown}. ${hit.note} Treat the figures as a rough guide.`;
+}
+let LINES = [{key:"sp500", amount:50000}];
+const options = sel => F.map(f=>`<option value="${f.key}"${f.key===sel?" selected":""}>${esc(f.name)} (${esc(f.tickers.split(" / ")[0])})</option>`).join("");
+function drawLines(){
+  $("#lines").innerHTML = LINES.map((l,i)=>`<div class="fields" style="margin-top:${i?10:0}px">
+    <div><label for="fund${i}">${i?"Fund "+(i+1):LINES.length>1?"Fund 1":"Your fund"}</label><select id="fund${i}" data-i="${i}">${options(l.key)}</select>
+      <input class="tick" id="tick${i}" data-i="${i}" type="text" placeholder="or type its ticker, for example FXAIX" aria-label="Find fund ${i+1} by ticker" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="8" value="${esc(l.ticker||"")}">
+      <p class="small tickmsg" id="tickmsg${i}" aria-live="polite">${esc(l.msg||"")}</p></div>
+    <div><label for="bal${i}">${LINES.length>1?"Amount":"Your balance"}</label><div style="display:flex;gap:6px"><input id="bal${i}" data-i="${i}" type="text" inputmode="decimal" value="${l.amount?money(l.amount):""}" autocomplete="off">${LINES.length>1?`<button type="button" class="chip" data-rm="${i}" aria-label="Remove fund ${i+1}">×</button>`:""}</div></div></div>`).join("");
+  // Choosing from the menu by hand clears any ticker typed for that row.
+  $("#lines").querySelectorAll("select").forEach(s=>s.addEventListener("change",()=>{ const l = LINES[+s.dataset.i]; l.key = s.value; l.ticker = ""; l.msg = ""; $("#tick"+s.dataset.i).value = ""; $("#tickmsg"+s.dataset.i).textContent = ""; render(); }));
+  $("#lines").querySelectorAll("input.tick").forEach(inp=>inp.addEventListener("input",()=>{
+    const i = +inp.dataset.i, l = LINES[i], typed = inp.value.trim().toUpperCase(), hit = DATA.tickers.find(x=>x.t===typed);
+    l.ticker = typed;
+    if(hit){ l.key = hit.key; $("#fund"+i).value = hit.key; l.msg = tickerNote(hit); }
+    else l.msg = typed.length>=3 ? `${typed} is not in my list yet. Choose the closest kind of fund from the menu above.` : "";
+    $("#tickmsg"+i).textContent = l.msg;
+    render();
+  }));
+  $("#lines").querySelectorAll("input:not(.tick)").forEach(inp=>{
+    inp.addEventListener("input",()=>{ LINES[+inp.dataset.i].amount = parse(inp.value); render(); });
+    inp.addEventListener("blur",()=>{ const b = parse(inp.value); inp.value = b ? money(b) : ""; });
+  });
+  $("#lines").querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{ LINES.splice(+b.dataset.rm,1); drawLines(); render(); });
+  $("#add-line").style.display = LINES.length>=5 ? "none" : "";
+  $("#quick").style.display = LINES.length>1 ? "none" : "";
+}
+$("#add-line").onclick = () => { const used = new Set(LINES.map(l=>l.key)); const next = F.find(f=>!used.has(f.key)) || F[0]; LINES.push({key:next.key, amount:LINES[0].amount||10000}); drawLines(); render(); };
+$("#quick").innerHTML = [10000,50000,250000,1000000].map(v=>`<button type="button" data-v="${v}">${money(v)}</button>`).join(" ");
+$("#quick").querySelectorAll("button").forEach(b=>b.onclick=()=>{ LINES[0].amount = +b.dataset.v; drawLines(); render(); });
+
+function mix(){
+  // Blend the chosen funds by dollars. With no amounts typed, show the first fund's percentages.
+  const bal = LINES.reduce((s,l)=>s+l.amount,0), parts = bal ? LINES.filter(l=>l.amount) : [{key:LINES[0].key, amount:1}], w = parts.reduce((s,l)=>s+l.amount,0);
+  const out = {bal, single: parts.length===1 ? byKey(parts[0].key) : null, n: parts.length, skipped: bal ? LINES.length - parts.length : 0};
+  GROUPS.forEach(g => out[g.key] = parts.reduce((s,l)=>s+byKey(l.key)[g.key]*l.amount/w,0));
+  out.share = GROUPS.reduce((s,g)=>s+out[g.key],0);
+  out.sell = out.nvidia + out.other_ai; out.buy = out.customers;
+  out.byCustomer = {}; parts.forEach(l=>Object.entries(byKey(l.key).by_customer).forEach(([n,v])=>out.byCustomer[n] = (out.byCustomer[n]||0) + v*l.amount/w));
+  // Holdings are matched on a company key, so "NVIDIA Corp" in one fund and "NVIDIA Corp." in another are one line.
+  const top = {}; parts.forEach(l=>byKey(l.key).top.forEach(h=>{ const t = top[h.k] || (top[h.k] = {name:h.name, tier:h.tier, pct:0}); t.pct += h.pct*l.amount/w; }));
+  out.top = Object.values(top).sort((a,b)=>b.pct-a.pct).slice(0,10);
+  out.dates = [...new Set(parts.map(l=>byKey(l.key).as_of))].sort();
+  return out;
+}
+function render(){
+  const m = mix(), bal = m.bal, sell = roundish(bal*m.sell/100), buy = roundish(bal*m.buy/100);
+  $("#answer").innerHTML = bal
+    ? `Of your <b>${money(bal)}</b>, about <b>${money(sell+buy)}</b> sits on one side or the other of AI spending: <b>${money(sell)}</b> in the companies selling the equipment and <b>${money(buy)}</b> in the six paying for it.`
+    : `About <b>${Math.round(m.sell)+Math.round(m.buy)} cents</b> of every dollar in this fund sits on one side or the other of AI spending: <b>${Math.round(m.sell)}</b> in the companies selling the equipment and <b>${Math.round(m.buy)}</b> in the six paying for it.`;
+  const f = m.single;
+  $("#what").textContent = f ? f.what + (f.stocks!=null && f.stocks<95 ? ` About ${Math.round(f.stocks)}% of it is in stocks; the rest is mostly bonds.` : "") : `${m.n} funds blended by the amounts above.` + (m.skipped ? ` ${m.skipped} left out because no amount is typed.` : "");
+  const raw = GROUPS.map(g=>m[g.key]), floors = raw.map(Math.floor);
+  let left = Math.round(m.share) - floors.reduce((a,b)=>a+b,0);
+  raw.map((v,i)=>[v-floors[i],i]).sort((a,b)=>b[0]-a[0]).forEach(([,i])=>{ if(left>0){floors[i]++;left--;} });
+  const cells = []; GROUPS.forEach((g,i)=>{ for(let k=0;k<floors[i];k++) cells.push(g.color); });
+  $("#waffle").innerHTML = Array.from({length:100},(_,i)=>`<i style="${cells[i]?`background:${cells[i]}`:""}"></i>`).join("");
+  $("#waffle").setAttribute("aria-label", `${Math.round(m.share)} of 100 squares are companies selling or paying for AI equipment`);
+  const rest = f ? (f.fund_of_funds ? "the rest of the fund, including its bonds" : "every other company in the fund") : "everything else in these funds";
+  $("#rows").innerHTML = GROUPS.map(g=>`<div class="row"><span class="sw" style="background:${g.color}"></span><span class="lab">${g.label}<small>${g.note}</small></span><span class="amt">${bal?money(bal*m[g.key]/100):m[g.key].toFixed(1)+"%"}<small>${m[g.key].toFixed(1)}¢ per dollar</small></span></div>`).join("") +
+    `<div class="row"><span class="sw" style="background:var(--rest)"></span><span class="lab">Everything else<small>${rest}</small></span><span class="amt">${bal?money(bal*(100-m.share)/100):(100-m.share).toFixed(1)+"%"}<small>${(100-m.share).toFixed(1)}¢ per dollar</small></span></div>`;
+  $("#asof").textContent = `Holdings as reported for ${m.dates.map(full).join(" and ")}, the latest filing${m.dates.length>1?"s":""} available${f && !f.fund_of_funds ? ` (${f.n_holdings.toLocaleString("en-US")} holdings)` : ""}. Prices have moved since, so today's mix will differ.`;
+  $("#top-title").textContent = f ? `The ten largest holdings in the ${fundName(f)}` : "The largest holdings across these funds";
+  $("#top-note").textContent = f ? "A company's share classes are added together." : "Built from each fund's twelve largest holdings, so a company that is small in one fund can be slightly understated.";
+  const tag = t => t===1?'<span class="tag">NVIDIA</span>':t===2?'<span class="tag">pays for it</span>':t===3?'<span class="tag">AI hardware</span>':"";
+  $("#top").innerHTML = `<thead><tr><th scope="col">Holding</th><th scope="col">Share</th><th scope="col">${bal?"Of your "+money(bal):""}</th></tr></thead><tbody>` +
+    m.top.map(h=>`<tr><td>${esc(h.name)}${tag(h.tier)}</td><td>${h.pct.toFixed(1)}%</td><td>${bal?money(bal*h.pct/100):""}</td></tr>`).join("") + "</tbody>";
+  if($("#ev-funds").open) drawFunds();
+  renderFundLine(m);
+  return m;
+}
+// With one fund chosen, clicking a bar loads that fund. With several, the bars only compare.
+function drawFunds(){
+  const one = LINES.length===1, bal = LINES.reduce((s,l)=>s+l.amount,0);
+  Charts.funds($("#compare"), F, GROUPS, one?LINES[0].key:null, bal, one ? key => { LINES = [{key, amount:bal}]; drawLines(); render(); } : null);
+  $("#compare-hint").textContent = (bal ? "Each bar shows the same total balance held entirely in that fund. " : "") + (one ? "Click a bar, or focus it and press Enter, to load that fund above." : "");
+}
+$("#ev-funds").addEventListener("toggle", () => { if($("#ev-funds").open) drawFunds(); });
+$("#csv").onclick = () => {
+  const m = mix(), q = s => `"${String(s).replace(/"/g,'""')}"`;
+  const rows = [["item","percent_of_portfolio","dollars"], ...GROUPS.map(g=>[g.label, m[g.key].toFixed(2), m.bal?(m.bal*m[g.key]/100).toFixed(0):""]), ["Everything else",(100-m.share).toFixed(2), m.bal?(m.bal*(100-m.share)/100).toFixed(0):""],
+    [], ["largest holdings","percent_of_portfolio","dollars"], ...m.top.map(h=>[h.name,h.pct.toFixed(2),m.bal?(m.bal*h.pct/100).toFixed(0):""]), [], ["holdings as of", m.dates.join(" / "), ""], ["funds", LINES.map(l=>byKey(l.key).name+(l.amount?" "+money(l.amount):"")).join(" + "), ""]];
+  const a = document.createElement("a"), url = URL.createObjectURL(new Blob([rows.map(r=>r.map(q).join(",")).join("\n")],{type:"text/csv"}));
+  a.href = url; a.download = "ai-exposure.csv"; document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url), 1500);
+};
+(function(){
+  $("#legend").innerHTML = legend(GROUPS.map(g=>[g.color,g.label]));
+  const tot = f => f.nvidia + f.customers + f.other_ai, sp = byKey("sp500"), ew = byKey("equal_weight_500");
+  $("#compare-text").textContent = `An S&P 500 index fund and an equal-weight fund own the same 500 companies. The first has ${Math.round(tot(sp))} cents of each dollar in these companies; the second has ${Math.round(tot(ew))}. The whole difference is how much weight goes to the biggest names.`;
+  $("#conc").innerHTML = `<thead><tr><th scope="col">Fund</th><th scope="col">Selling the equipment</th><th scope="col">Paying for it</th><th scope="col">Ten largest holdings</th><th scope="col">Counts like</th><th scope="col">As of</th></tr></thead><tbody>` +
+    F.map(f=>`<tr><td>${esc(f.name)}</td><td>${(f.nvidia+f.other_ai).toFixed(1)}%</td><td>${f.customers.toFixed(1)}%</td><td>${f.top10==null?"":f.top10.toFixed(0)+"%"}</td><td>${f.effective_n==null?"":Math.round(f.effective_n).toLocaleString("en-US")+" holdings"}</td><td>${mon(f.as_of)}</td></tr>`).join("") + "</tbody>";
+  $("#others").textContent = DATA.other_ai_names.map(n=>n.company).join(", ");
+})();
+
+/* ---------- Finding 1: the gap ---------- */
+const SU = A.sources_uses, R = A.funding.rows;
+const cfo = sum(SU,r=>r.cfo), capex = sum(SU,r=>r.capex), payouts = sum(SU,r=>r.payouts), raised = sum(SU,r=>r.raised), repaid = sum(SU,r=>r.repaid), shares = sum(SU,r=>r.shares);
+const capexShare = capex/cfo, noRepaid = SU.filter(r=>r.repaid==null).map(r=>NAME[r.ticker]);
+(function(){
+  const over = R.filter(r=>r.capex_share>1);
+  $("#lede-share").textContent = Math.round(capexShare*100)+" cents";
+  $("#n-cash").textContent = Math.round(capexShare*100)+" cents";
+  $("#cash-text").textContent = `${words[over.length]} of them (${list(over.map(r=>NAME[r.ticker]))}) spend more than their operations generate. For the six together, the ${B(cfo-capex)} left after that spending is less than the ${B(payouts)} they paid out to shareholders.`;
+  $("#facts-cash").innerHTML =
+    fact(B(cfo), "cash the six businesses generated in the last twelve months") +
+    fact(B(capex), "spent on buildings and equipment") +
+    fact(B(raised), `of new debt raised in the same twelve months (at least ${B(repaid)} repaid)`) +
+    fact(B(shares), "raised by selling new shares");
+  $("#cash-so").textContent = `So the group has no cash left over. What it pays shareholders, and anything it builds beyond this, comes from outside: ${B(raised)} of new debt and ${B(shares)} of new shares in one year.`;
+  onOpen("ev-cash", () => {
+    const shown = Charts.capexShare($("#cash-chart"), A.funding, NAME);
+    $("#cash-legend").innerHTML = legend(shown.map(t=>[COLOR[t],NAME[t]]));
+    const c = v => v==null ? "" : B(v,1);
+    $("#su-table").innerHTML = `<thead><tr><th scope="col">Company</th><th scope="col">Cash from operations</th><th scope="col">Buildings and equipment</th><th scope="col">Left over</th><th scope="col">Paid to shareholders</th><th scope="col">Debt raised</th><th scope="col">Debt repaid</th><th scope="col">New shares sold</th></tr></thead><tbody>` +
+      SU.map(r=>`<tr><td>${dot(r.ticker)}${NAME[r.ticker]}</td><td>${c(r.cfo)}</td><td>${c(r.capex)}</td><td>${c(r.fcf)}</td><td>${c(r.payouts)}</td><td>${c(r.raised)}</td><td>${c(r.repaid)}</td><td>${c(r.shares)}</td></tr>`).join("") +
+      `<tr><td><b>Six together</b></td><td><b>${B(cfo,1)}</b></td><td><b>${B(capex,1)}</b></td><td><b>${B(cfo-capex,1)}</b></td><td><b>${B(payouts,1)}</b></td><td><b>${B(raised,1)}</b></td><td><b>${B(repaid,1)}</b></td><td><b>${B(shares,1)}</b></td></tr></tbody>`;
+  });
+})();
+
+/* ---------- Finding 2: the promises ---------- */
+(function(){
+  const L = A.leases.latest, pv = A.pv.rows;
+  const tot = sum(L,r=>r.value), ago = sum(L,r=>r.year_ago), base = sum(pv,r=>r.base), low = sum(pv,r=>r.low), high = sum(pv,r=>r.high), debt = sum(pv,r=>r.debt);
+  $("#n-leases").textContent = "$"+(tot/1e12).toFixed(2)+" trillion";
+  $("#facts-leases").innerHTML =
+    fact(B(base), `what those payments are worth in today's money (range ${B(low)} to ${B(high)})`) +
+    fact((base/debt).toFixed(1)+"×", `that value against everything the six have borrowed (${B(debt)})`) +
+    fact((tot/ago).toFixed(1)+"×", `the total twelve months earlier (${B(ago)})`);
+  onOpen("ev-leases", () => {
+    $("#lease-legend").innerHTML = legend(TICKERS.map(t=>[COLOR[t],NAME[t]]));
+    Charts.leases($("#lease-chart"), A.leases.series, NAME);
+    $("#lease-table").innerHTML = `<thead><tr><th scope="col">Company</th><th scope="col">As of</th><th scope="col">Signed, not started</th><th scope="col">A year earlier</th><th scope="col">Worth today</th><th scope="col">Source</th></tr></thead><tbody>` +
+      L.map(r=>{ const p = pv.find(x=>x.ticker===r.ticker); return `<tr><td>${dot(r.ticker)}${r.name}</td><td>${mon(r.period_end)}</td><td>${B(r.value,1)}</td><td>${r.year_ago?B(r.year_ago,1):"n/a"}</td><td>${p?B(p.base):""}</td><td><a href="${esc(r.url)}" title="${esc(r.evidence)}">${esc(r.form)}</a></td></tr>`; }).join("") +
+      `<tr><td><b>Total</b></td><td></td><td><b>${B(tot,1)}</b></td><td><b>${B(ago,1)}</b></td><td><b>${B(base)}</b></td><td></td></tr></tbody>`;
+  });
+})();
+
+/* ---------- Finding 3: who can carry it ---------- */
+const LEV = A.leverage.slice().sort((a,b)=>b.pro_forma-a.pro_forma), HOT = LEV.filter(r=>r.pro_forma>=4).sort((a,b)=>b.ebitda-a.ebitda), COOL = LEV.filter(r=>r.pro_forma<4);
+const HOTNAMES = HOT.map(r=>NAME[r.ticker]), CEIL = Math.ceil(Math.max(...COOL.map(r=>r.pro_forma))*10)/10;
+(function(){
+  const x = v => v.toFixed(1), row = t => R.find(r=>r.ticker===t);
+  $("#lev-head").innerHTML = `Counted as debt against today's earnings, those leases would take ${HOT.map(r=>`${NAME[r.ticker]} from <b>${x(r.today)}</b> to <b>${x(r.pro_forma)}</b>`).join(" and ")} times ${HOT.length>1?"their":"its"} yearly cash earnings. ${list(COOL.map(r=>NAME[r.ticker]))} would stay under ${x(CEIL)}.`;
+  $("#lev-text").textContent = `The usual test of a debt load is how many years of cash earnings it would take to repay. The table gives it twice: on what each company owes today, and again with its signed leases counted as if they had already started and earnings had not moved. That second reading is deliberately harsh. ${(h=>h.length ? `${list(h.map(r=>`${NAME[r.ticker]} counts ${B(row(r.ticker).backlog)}`))} of signed customer contracts still to be delivered; the ratios show how much has to arrive on time.` : "")(HOT.filter(r=>row(r.ticker).backlog!=null))}`;
+  $("#lev-table").innerHTML = `<thead><tr><th scope="col">Company</th><th scope="col">Owed today ÷ cash earnings</th><th scope="col">With signed leases counted</th><th scope="col">Range</th><th scope="col">Signed customer contracts</th></tr></thead><tbody>` +
+    LEV.map(r=>`<tr${r.pro_forma>=4?' style="background:var(--accent-soft)"':""}><td>${dot(r.ticker)}${NAME[r.ticker]}</td><td>${x(r.today)}×</td><td><b>${x(r.pro_forma)}×</b></td><td>${x(r.pro_forma_low)}× to ${x(r.pro_forma_high)}×</td><td>${row(r.ticker).backlog==null?"not reported":B(row(r.ticker).backlog)}</td></tr>`).join("") + "</tbody>";
+  onOpen("ev-lev", () => Charts.leverage($("#lev-chart"), LEV, NAME));
+})();
+
+/* ---------- Finding 4: the supplier ---------- */
+const S = A.nvidia.summary, H = A.nvidia.history, FIN = A.nvidia.financing, LAST = FIN[FIN.length-1], REV = LAST.revenue_annualized;
+const months = (a,b) => Math.round((new Date(b) - new Date(a))/2629800000);
+(function(){
+  const p1 = v => pct(v,1), short = c => c.company.split(" ")[0];
+  const hiP = H.map(c=>c.high_promised), hiF = H.map(c=>c.peak_in_force_ratio), above = H.filter(c=>S.narrow_share>c.high_promised).length;
+  $("#n-nvidia").textContent = "$"+bn(S.narrow,0)+" billion";
+  $("#nvidia-text").textContent = `Most of it is a single guarantee of up to ${B(LAST.guarantee_2029)} on a data center campus in Ohio that will be leased to OpenAI. It has not started; the first building is expected in NVIDIA's 2029 fiscal year, which begins in early 2028. Another ${B(S.guarantees_in_effect)} of guarantees is in force, some of it for smaller AI cloud companies, and ${B(LAST.unfunded_equity)} is investments promised but not yet paid. A year earlier the total was $${bn(S.narrow_year_ago,0)} billion. NVIDIA is also waiting longer to be paid: ${Math.round(S.dso)} days, against ${Math.round(S.dso_year_ago)} a year earlier. The usual comparison is with the telecom equipment makers of the late 1990s, who lent to their own customers, so the table takes the same measures from their filings.`;
+  const rows = [{name:"NVIDIA", when:mon(LAST.period_end), p:S.narrow_share, f:S.in_effect_share, now:true},
+    ...H.map(c=>({name:c.company, when:`${c.high_promised_date.slice(0,4)} and ${c.peak_in_force_date.slice(0,4)}`.replace(/^(\d{4}) and \1$/,"$1"), p:c.high_promised, f:c.peak_in_force_ratio, min:!c.high_promised_complete, url:c.url}))].sort((a,b)=>b.p-a.p);
+  $("#hist-table").innerHTML = `<thead><tr><th scope="col">Supplier</th><th scope="col">When</th><th scope="col">Promised to customers ÷ sales, at its highest</th><th scope="col">Actually lent or in force ÷ sales, at its highest</th></tr></thead><tbody>` +
+    rows.map(r=>`<tr${r.now?' style="background:var(--accent-soft)"':""}><td>${r.now?"<b>NVIDIA</b>":(r.url?`<a href="${esc(r.url)}">${esc(r.name)}</a>`:esc(r.name))}</td><td>${r.when}${r.now?" (latest)":""}</td><td>${r.min?"≥ ":""}${r.now?"<b>":""}${p1(r.p)}${r.now?"</b>":""}</td><td>${r.now?"<b>":""}${p1(r.f)}${r.now?"</b>":""}</td></tr>`).join("") + "</tbody>";
+  // The clearest case of exposure growing after the promises: the supplier whose in-force dollars rose most.
+  const g = H.filter(c=>c.peak_in_force_usd && c.peak_drawn && c.peak_in_force_usd > c.peak_drawn*1.2).sort((a,b)=>b.peak_in_force_usd/b.peak_drawn - a.peak_in_force_usd/a.peak_drawn)[0];
+  $("#nvidia-so").textContent = `So on promises NVIDIA is in the range the telecom makers reached (${pct(Math.min(...hiP))} to ${pct(Math.max(...hiP))}, above ${words[above].toLowerCase()} of the four), and on money actually at risk it is below all of them (${pct(Math.min(...hiF))} to ${pct(Math.max(...hiF))}).` +
+    (g ? ` At ${short(g)} the second number kept growing after the first had peaked: what it had lent or guaranteed went from ${B(g.peak_drawn,1)} to ${B(g.peak_in_force_usd,1)} over ${months(g.peak_date,g.peak_in_force_date)} months, while its sales fell.` : "");
+  onOpen("ev-fin", () => {
+    const label = {guarantees_sb_energy_cap:"Guarantee for the Ohio campus leased to OpenAI (not yet in effect)",guarantees_power_and_systems:"Power and systems guarantees",guarantees_land_power_shell:"Land, power and building guarantees for smaller AI clouds",equity_investment_commitments:"Investments promised, not yet paid"};
+    $("#items-table").innerHTML = `<thead><tr><th scope="col">At ${full(LAST.period_end)}</th><th scope="col">Amount</th><th scope="col" style="text-align:left">Sentence in the filing</th></tr></thead><tbody>` +
+      A.nvidia.items.filter(r=>label[r.item]).map(r=>`<tr><td>${label[r.item]}</td><td>${B(r.amount,1)}</td><td class="wrap"><a href="${esc(r.url)}">${esc(r.evidence.slice(0,180))}${r.evidence.length>180?"…":""}</a></td></tr>`).join("") + "</tbody>";
+    $("#fin-legend").innerHTML = legend(Charts.FINANCING_GROUPS.map(g=>[g.c,g.l])); Charts.financing($("#fin-chart"), FIN);
+  });
+  onOpen("ev-hist", () => {
+    Charts.thenAndNow($("#hist-chart"), H, LAST);
+    $("#hist-note").innerHTML = `Share of sales at the highest point each company reached between 1997 and 2003; the two bars can be from different dates. Nortel and Cisco did not report every component, so their "promised" bars are minimums. NVIDIA, Lucent and Motorola are measured against the latest quarter's sales times four; Nortel and Cisco against the fiscal year. NVIDIA's figure includes ${B(LAST.unfunded_equity)} of promised investments, which the telecom figures have no equivalent of. <a href="nvidia.html#history">Year-by-year figures →</a>`;
+  });
+  onOpen("ev-path", () => { $("#path-legend").innerHTML = legend(Charts.paths($("#path-chart"), H, S.in_effect_share, S.narrow_share)); });
+  onOpen("ev-paid", () => {
+    const rows = FIN.filter(p=>p.dso!=null).slice(-6);
+    $("#dso-table").innerHTML = `<thead><tr><th scope="col">Quarter to</th><th scope="col">Sales in the quarter</th><th scope="col">Owed by customers</th><th scope="col">Days to be paid</th></tr></thead><tbody>` +
+      rows.map((p,i)=>`<tr${i===rows.length-1?' style="background:var(--accent-soft)"':""}><td>${mon(p.period_end)}</td><td>${B(p.revenue_quarter,1)}</td><td>${B(p.receivables,1)}</td><td>${Math.round(p.dso)}</td></tr>`).join("") + "</tbody>";
+    $("#terms").innerHTML = A.nvidia.payment_terms.map(t=>`<p class="quote">“${esc(t.evidence)}” <a class="small" href="${esc(t.url)}">${mon(t.period_end)} filing</a></p>`).join("");
+  });
+})();
+
+/* ---------- My read ---------- */
+function renderFundLine(m){
+  const hot = HOTNAMES.reduce((s,n)=>s+(m.byCustomer[n]||0),0), c = v => v<0.05 ? "under a tenth of a cent" : v.toFixed(1)+" cents";
+  $("#verdict-fund").textContent = `Back to the fund above: ${list(HOTNAMES)} together are ${c(hot)} of each dollar in it, and NVIDIA is ${c(m.nvidia)}. The stretched builders are a small part of an index fund. The company that sells to them, and now stands behind some of them, is not.`;
+}
+(function(){
+  const f = H.map(c=>c.peak_in_force_ratio), tel = H.filter(c=>/Lucent|Nortel/.test(c.company)).map(c=>Math.round(c.peak_dso));
+  $("#verdict-head").textContent = `The load is heaviest at ${HOTNAMES.join(" and ")}. On the supplier's side, the number to watch is how long NVIDIA waits to be paid, not the headline guarantee.`;
+  $("#verdict-text").textContent = `Four of the six could count every signed lease as debt today and still owe under ${Math.ceil(CEIL)} years of cash earnings. ${HOTNAMES.join(" and ")} could not${HOT.every(r=>(SU.find(x=>x.ticker===r.ticker)||{}).shares>0) ? `, and ${HOT.length===2?"both":"all"} sold new shares in the last twelve months` : ""}. The ${B(S.narrow)} that NVIDIA has promised gets the attention, but only ${pct(S.in_effect_share,1)} of its sales is in force and most of the rest does not start until 2028. Its collection time moves sooner: ${Math.round(S.dso)} days, with ${Math.round(S.receivables_top_share)}% of what it is owed due from ${S.receivables_top_count===2?"two":S.receivables_top_count} customers. NVIDIA puts the rise down to the timing of shipments and longer terms for investment-grade customers. It is a number to watch, not yet a problem.`;
+  $("#watch").innerHTML = [
+    [`${HOTNAMES.join(" and ")}: debt with signed leases ÷ cash earnings`, HOT.map(r=>r.pro_forma.toFixed(1)+"×").join(" and "), "Falls if the new data centers start earning before their leases start, or if more shares are sold."],
+    ["Six spenders: capital spending ÷ operating cash", pct(capexShare), "Above 100%, the group cannot pay for its building from operations at all."],
+    ["Days NVIDIA waits to be paid", Math.round(S.dso)+" days", `${Math.round(S.dso_year_ago)} a year earlier. Lucent and Nortel reached ${Math.min(...tel)} to ${Math.max(...tel)}.`],
+    ["NVIDIA guarantees in force ÷ sales", pct(S.in_effect_share,1), `The telecom makers' highest readings were ${pct(Math.min(...f))} to ${pct(Math.max(...f))}.`],
+  ].map(([t,n,p])=>`<div><div class="t">${t}</div><div class="n">${n}</div><p>${p}</p></div>`).join("");
+  $("#wrong").textContent = `This read is wrong if, a year from now, ${HOTNAMES.join(" and ")} have kept signing leases and their debt against cash earnings, leases included, is lower than the ${HOT.map(r=>r.pro_forma.toFixed(1)).join(" and ")} shown here without new shares having been sold to get there. That would mean the earnings arrived.`;
+})();
+drawLines(); render();
+</script>

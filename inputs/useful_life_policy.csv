@@ -1,0 +1,23 @@
+ticker,from_fiscal_year,life_years,applies_to,source_10k_fiscal_year,basis,evidence
+MSFT,2012,3,all,2018,stated,"computer equipment, two to three years"
+MSFT,2021,4,all,2020,stated,increase the estimated useful life of server equipment from three years to four years and ... network equipment from two years to four years ... effective beginning fiscal year 2021
+MSFT,2023,6,all,2022,stated,increase the estimated useful lives of both server and network equipment from four years to six years
+GOOGL,2012,3,all,2020,stated,adjust the estimated useful life of our servers from three years to four years
+GOOGL,2021,4,all,2020,stated,servers from three years to four years and ... certain network equipment from three years to five years ... effective beginning fiscal year 2021
+GOOGL,2023,6,all,2022,stated,servers from four years to six years and ... certain network equipment from five years to six years ... effective beginning in fiscal year 2023
+AMZN,2012,3,all,2018,stated,"three years for our servers, five years for networking equipment"
+AMZN,2020,4,all,2020,stated,"effective January 1, 2020 we changed our estimate of the useful life for our servers from three years to four years"
+AMZN,2022,5,all,2022,stated,"effective January 1, 2022 ... servers from four years to five years and ... networking equipment from five years to six years"
+AMZN,2024,6,all,2023,stated,increasing the useful life from five years to six years in January 2024
+AMZN,2025,5.82,all,2025,CALIBRATED,"Effective January 1, 2025 a subset of servers and networking equipment moved from six years to five. Subset size is not disclosed. This is the blended life of assets already owned at the end of 2024 at which the model reproduces the $0.7 billion effect Amazon anticipated for those assets (see src/calibrate.py)."
+AMZN,2025,5.27,new_assets,2025,CALIBRATED,"Assets bought from 2025 on. Amazon disclosed a $1.4 billion effect including assets acquired during 2025, twice the $0.7 billion anticipated for existing assets alone, so the shortened subset is concentrated in new equipment. This is the blended life of new assets at which the model reproduces the difference (see src/calibrate.py)."
+META,2012,3,all,2021,stated,selected cohorts of servers and network assets from three years to four years in prior years as well as in 2021
+META,2020,3.5,all,2021,ASSUMPTION,"Cohorts moved from three to four years 'in prior years as well as in 2021'; timing by cohort is not disclosed, so 2020 is set halfway."
+META,2021,4,all,2021,stated,from three years to four years in prior years as well as in 2021
+META,2022,4.5,all,2022,CALIBRATED,"Stated range is four to five years for 2022-2024 (majority moved from four to 4.5 years in Q2 2022 and to five years in Q4 2022; the mix by cohort is not disclosed). 4.5 is the midpoint, and is also the blended life at which the model reproduces the disclosed $2.92 billion effect of the 2025 change (see src/calibrate.py)."
+META,2025,5.5,all,2025,stated,"increase in the estimated useful lives of most servers and network assets to 5.5 years, effective January 1, 2025"
+ORCL,2012,4,all,2023,stated,increased the estimate of the useful lives from four years to five years effective at the beginning of fiscal 2023
+ORCL,2023,5,all,2023,stated,useful lives of our servers ... from four years to five years effective at the beginning of fiscal 2023
+ORCL,2025,6,all,2025,stated,"servers and networking equipment ... from five years to six years, effective at the beginning of fiscal 2025"
+CRWV,2012,5,all,2025,stated,XBRL: data center equipment useful life range 5-6 years as of 2023-01-01 (change from five to six years)
+CRWV,2023,6,all,2025,stated,Technology equipment 6 years

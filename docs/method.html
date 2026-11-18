@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Method and checks</title>
+<meta name="description" content="Who did what, where every figure comes from, how to check it, which calls were judgment, and what changed after review.">
+<meta name="author" content="Abhay Kumar">
+<link rel="canonical" href="https://abhay-kumar-2501.github.io/ai-promise-ledger/method.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2315181e'/%3E%3Crect x='7' y='18' width='4' height='7' fill='%23f6f2e9'/%3E%3Crect x='14' y='12' width='4' height='13' fill='%23f6f2e9'/%3E%3Crect x='21' y='7' width='4' height='18' fill='%23a8321f'/%3E%3C/svg%3E">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="The AI Promise Ledger">
+<meta property="og:title" content="Method and checks · The AI Promise Ledger">
+<meta property="og:description" content="Who did what, where every figure comes from, how to check it, which calls were judgment, and what changed after review.">
+<meta property="og:url" content="https://abhay-kumar-2501.github.io/ai-promise-ledger/method.html">
+<meta property="og:image" content="https://abhay-kumar-2501.github.io/ai-promise-ledger/assets/card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<main>
+  <header class="mast"><a class="brand" href="index.html">The AI Promise Ledger</a><nav aria-label="Pages"><a href="index.html">The argument</a><a href="spenders.html">Evidence: the spenders</a><a href="nvidia.html">Evidence: NVIDIA</a><a href="method.html" aria-current="page">Method and checks</a></nav></header>
+  <div class="dateline"><span>By Abhay Kumar</span><span>Latest filing read: 17 November 2026</span></div>
+<script src="assets/charts.js"></script>
+  <p class="kicker" style="margin-top:34px">Method and checks</p>
+  <h1>How this was built, and how far to trust it</h1>
+  <p class="lede">Almost every figure on this site comes from a filing with the US securities regulator and can be traced to the sentence it came from. This page says who did what, how to check any number yourself, which calls were judgment, and what changed after the work was reviewed.</p>
+
+  <section>
+    <h2>Who did what</h2>
+    <p>I built this with Claude Code, an AI coding tool. I chose the subject and the questions, directed the work, and decided what stayed and what was cut. The tool wrote the code, did the first reading of the filings and proposed several of the measures. I then opened the filing behind each of the 24 headline figures and confirmed the number myself (latest check 2026-11-18).</p>
+    <p>Because a tool did the first reading, each number is set up to be checked without relying on it:</p>
+    <ul>
+      <li><b>A source for every number.</b> Each figure is saved with the sentence it came from and a link to the filing, so it can be checked against the source directly.</li>
+      <li><b>A second pass that shares no code with the first.</b> A separate program downloads a fresh copy of each cited filing and confirms the sentence and the figure are there. Result: 24 of 24 headline figures confirmed.</li>
+      <li><b>Tests against known answers.</b> Where a company has disclosed the answer itself, the calculation is run on the same question and compared.</li>
+      <li><b>Two hostile reviews.</b> I had the project critiqued twice by separate AI sessions instructed to find what was wrong, not to approve it. What changed as a result is listed below.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Part by part</h2>
+    <div class="scroll"><table><thead><tr><th>Part</th><th style="text-align:left">Where it comes from and how it was checked</th></tr></thead><tbody><tr><td style='min-width:170px'><b>Leases signed but not started</b></td><td class='wrap'>114 figures, each stored with its sentence and link. Every one was read against its sentence in a separate pass, and the five-company total for the end of 2025 matches the figure Moody's published.</td></tr><tr><td style='min-width:170px'><b>What the leases are worth today</b></td><td class='wrap'>The method was run first on 12 lease portfolios whose recorded value is known: average miss 2.8%. That confirms the discounting, not the assumed start dates and terms, so the result is shown as a range and the middle estimate is probably high.</td></tr><tr><td style='min-width:170px'><b>Cash, borrowing and debt ratios</b></td><td class='wrap'>Taken from the machine-readable financial statements each company files. Twelve-month figures are the latest fiscal year plus the year to date, less the same period a year earlier. A missing item is left blank, never set to zero. New shares sold uses the year-to-date figure where a company had sold none in earlier years.</td></tr><tr><td style='min-width:170px'><b>NVIDIA's support for customers</b></td><td class='wrap'>389 disclosed amounts across 31 quarters. Most were also matched to the machine-readable version of the same filing.</td></tr><tr><td style='min-width:170px'><b>The telecom makers, 1997 to 2003</b></td><td class='wrap'>396 amounts from 54 filings by Lucent, Nortel, Cisco and Motorola. Each recorded sentence was matched by program against the text of the filing it cites. Where a company did not disclose an item the cell is empty.</td></tr><tr><td style='min-width:170px'><b>Fund holdings</b></td><td class='wrap'>Read from each fund's latest holdings report to the regulator. Funds that hold other funds are looked through to the underlying shares.</td></tr><tr><td style='min-width:170px'><b>Landlords and lenders table</b></td><td class='wrap'>25 of 59 rows rest on a filing or company release. The rest are press reports and are labelled.</td></tr><tr><td style='min-width:170px'><b>Server-life model (appendix)</b></td><td class='wrap'>Tested against 12 effects the companies themselves disclosed: average miss 7.5%, worst 22%. One setting was tuned to those same disclosures, so this is a fit, not an independent test.</td></tr></tbody></table></div>
+  </section>
+
+  <section>
+    <h2>Judgment calls</h2>
+    <p>These are choices, not facts. Each could reasonably have been made differently.</p>
+    <ul>
+      <li><b>Which six companies.</b> Microsoft, Alphabet, Amazon, Meta, Oracle and CoreWeave. A scan of every other filer found they hold nearly all of the signed-but-not-started leases, which is why the list stops there.</li>
+      <li><b>Which companies count as AI hardware</b> in the fund tool. The list is mine and is printed in full beside the tool.</li>
+      <li><b>Counting each company whole.</b> The tool counts all of Microsoft or Amazon, although most of their business is not AI. It measures who is on each side of the spending, not how much of each company depends on it.</li>
+      <li><b>The discount rate for leases.</b> Each company's own reported lease rate. Those were set when borrowing was cheaper, so the value shown is more likely too high than too low.</li>
+      <li><b>Lease terms and start dates.</b> Taken from each filing; where a filing gives a wide range, 15 years.</li>
+      <li><b>Debt ratios hold earnings still.</b> The "with signed leases" ratio assumes today's earnings, as if the new data centers earned nothing, and ignores signed customer contracts. It is a stress reading.</li>
+      <li><b>NVIDIA measured against the latest quarter's sales times four,</b> not the last twelve months, because it is growing fast and the older figure would make every ratio look larger (38% promised instead of 30%). The six spenders' earnings are the last twelve months, which is harsher on the fastest grower, CoreWeave. The two choices are not the same and that is a weakness.</li>
+      <li><b>The telecom comparison uses each company's highest reading,</b> whenever it came, against NVIDIA's latest. Sales are measured on the latest quarter times four for Lucent and Motorola and on the fiscal year for Nortel and Cisco, as their filings allow.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>What changed after review</h2>
+    <ul>
+      <li><b>The conclusion moved from the supplier to the buyers.</b> Earlier versions had no view on which companies were stretched. Adding the debt ratios showed the load is heaviest at two of the six.</li>
+      <li><b>"The difference is being borrowed" was too simple.</b> The six also sold $93bn of new shares in the same twelve months. The page now shows both.</li>
+      <li><b>A claim about 2000 was wrong.</b> An earlier draft said NVIDIA had promised its customers more than any telecom maker did. Lucent reached 32% of sales against NVIDIA's 30%. The comparison now uses each company's highest reading and says NVIDIA is inside their range on promises and below all of them on what is in force.</li>
+      <li><b>Part of the telecom story was sales falling, not lending rising.</b> Lucent's lending kept growing after its promises peaked; Nortel's did not, and its ratio rose only because its sales fell. The page now says which is which.</li>
+      <li><b>NVIDIA's support goes to newer builders, not to the six.</b> Its largest guarantee is for a campus leased to OpenAI. An earlier draft implied it was helping its large customers pay.</li>
+      <li><b>NVIDIA's orders from its own suppliers were restated</b> at the current pace of production (3.3 years, not 4.3) and moved to an appendix, since they are not part of the argument.</li>
+      <li><b>The fund tool separates sellers from buyers.</b> Adding them into one number hid that the two groups carry different risks.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Where to be careful</h2>
+    <ul>
+      <li>The latest NVIDIA quarter comes from its results release. The full quarterly report had not been filed when this was built.</li>
+      <li>Fund holdings are reported a few months late. The tool shows the date.</li>
+      <li>Commitments run for up to 30 years. A large total is not one year's bill.</li>
+      <li>If a number looks wrong, the sentence it came from is one click away. Tell me and I will correct it.</li>
+    </ul>
+    <details class="ev"><summary>Earlier work by others on the same questions</summary><div class="ev-body">
+      <p>The lease total and the server-life question have both been reported widely. What this project adds is the source sentence for every figure, the value in today's money, the debt ratios, and the telecom makers' figures set beside NVIDIA's on matched definitions.</p>
+      <div class="scroll"><table><thead><tr><th>Date</th><th>Who</th><th style="text-align:left">What they reported</th><th style="text-align:left">How far it could be checked</th></tr></thead><tbody><tr><td>2025-09-18</td><td><a href='https://climateerinvest.blogspot.com/2025/09/the-4trn-accounting-puzzle-at-heart-of.html'>The Economist</a></td><td class='wrap'>A 3-year server life would cut the big five&#x27;s combined pre-tax profit by about $26bn (8%)</td><td class='wrap'>excerpt read</td></tr><tr><td>2025-11-10</td><td><a href='https://www.streetinsider.com/General+News/Michael+Burry+warns+of+%24176+billion+depreciation+understatement+by+tech+giants/25584209.html'>Michael Burry</a></td><td class='wrap'>$176bn of understated depreciation over 2026-28; method not published</td><td class='wrap'>press reports only</td></tr><tr><td>2026-02-25</td><td><a href='https://fortune.com/2026/02/25/hyperscaler-risk-off-balance-sheet-662-billion-data-center-commitments-meta-amazon-microsoft-oracle-alphabet/'>Moody&#x27;s (via Fortune and Bisnow)</a></td><td class='wrap'>$662bn of leases not yet commenced at year-end 2025</td><td class='wrap'>article read</td></tr><tr><td>2026-06-24</td><td><a href='https://news.bloomberglaw.com/artificial-intelligence/meta-microsoft-lead-850-billion-boom-in-data-center-leases'>Bloomberg</a></td><td class='wrap'>More than $850bn of data center leases not yet commenced</td><td class='wrap'>headline and snippet only</td></tr><tr><td>2026-08-04</td><td><a href='https://www.itnews.com.au/news/ai-data-centre-race-builds-us1-trillion-lease-burden-for-big-tech-627942'>Reuters</a></td><td class='wrap'>$1.09 trillion of leases not yet commenced</td><td class='wrap'>syndicated summary read</td></tr><tr><td>2026-08-27</td><td><a href='https://axios.com/2026/08/27/ai-spending-spending-balance-sheet'>Morgan Stanley (via Axios)</a></td><td class='wrap'>About $1.1 trillion of leases plus $1.7 trillion of purchase commitments</td><td class='wrap'>snippet only</td></tr><tr><td>2026-09-20</td><td><a href='https://finance.yahoo.com/technology/ai/articles/michael-burry-warns-hyperscalers-hiding-024617848.html'>Michael Burry</a></td><td class='wrap'>Nearly $1.2 trillion of leases; more than $3 trillion of all commitments</td><td class='wrap'>press report read</td></tr><tr><td>2026-11-01</td><td><a href='https://capexcat.substack.com/p/michael-burry-depreciation-math'>CapexCat</a></td><td class='wrap'>Extra depreciation of about $44bn (4-year life) or $89bn (3-year life), rebuilt from 10-K property notes</td><td class='wrap'>article read</td></tr><tr><td>2026-11-12</td><td><a href='https://dev.to/eqvero/why-sec-companyfacts-drops-off-balance-sheet-data-center-leases-parsing-dimensional-xbrl-in-python-22gm'>Eqvero</a></td><td class='wrap'>About $1.30 trillion from third-quarter 2026 filings, with per-company figures matching this project&#x27;s</td><td class='wrap'>article read</td></tr></tbody></table></div>
+    </div></details>
+  </section>
+
+  <footer>
+    <nav aria-label="Pages"><a href="index.html">The argument</a><a href="spenders.html">Evidence: the spenders</a><a href="nvidia.html">Evidence: NVIDIA</a><a href="method.html" aria-current="page">Method and checks</a></nav>
+    <p>By Abhay Kumar. Built with Claude Code. Every figure comes from a filing with the US securities regulator unless the page says otherwise, and links to the sentence it came from.</p>
+    <p>I am a finance student and this is a research project. It is not investment advice, and nothing here is a claim that any company has acted improperly.</p>
+  </footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,24 @@
+tier,company,ticker,cusip,isin,filing_name,reason
+1,NVIDIA,NVDA,67066G104,US67066G1040,NVIDIA Corp,Designs the AI accelerators (GPUs) that the data center spending buys.
+2,Microsoft,MSFT,594918104,US5949181045,Microsoft Corp,One of the six large buyers of AI chips and data center space tracked in this project (NVIDIA does not name its customers).
+2,Meta Platforms,META,30303M102,US30303M1027,Meta Platforms Inc,One of the six large buyers of AI chips and data center space tracked in this project (NVIDIA does not name its customers).
+2,Amazon,AMZN,023135106,US0231351067,Amazon.com Inc,One of the six large buyers of AI chips and data center space tracked in this project (NVIDIA does not name its customers).
+2,Alphabet,GOOGL,02079K305,US02079K3059,Alphabet Inc,One of the six large buyers of AI chips and data center space tracked in this project (NVIDIA does not name its customers) (Class A shares; summed with Class C).
+2,Alphabet,GOOG,02079K107,US02079K1079,Alphabet Inc,One of the six large buyers of AI chips and data center space tracked in this project (NVIDIA does not name its customers) (Class C shares; summed with Class A).
+2,Oracle,ORCL,68389X105,US68389X1054,Oracle Corp,One of the six large buyers of AI chips and data center space tracked in this project (NVIDIA does not name its customers).
+2,CoreWeave,CRWV,21873S108,US21873S1087,CoreWeave Inc,One of the six large buyers of AI chips and data center space tracked in this project (NVIDIA does not name its customers).
+3,Broadcom,AVGO,11135F101,US11135F1012,Broadcom Inc,Designs custom AI chips and the networking chips that link AI servers.
+3,Taiwan Semiconductor Manufacturing (US ADR),TSM,874039100,US8740391003,Taiwan Semiconductor Manufacturing Co Ltd,Manufactures most leading AI chips including NVIDIA's.
+3,Taiwan Semiconductor Manufacturing (Taiwan shares),2330.TW,,TW0002330008,Taiwan Semiconductor Manufacturing Co Ltd,Same company as the ADR line: shares listed in Taiwan.
+3,Advanced Micro Devices,AMD,007903107,US0079031078,Advanced Micro Devices Inc,Sells data center GPUs and server processors.
+3,Micron Technology,MU,595112103,US5951121038,Micron Technology Inc,Makes the high-bandwidth memory that sits next to AI accelerators.
+3,SK hynix (US ADR),n/a,78392B206,US78392B2060,SK hynix Inc,Leading supplier of high-bandwidth memory for AI accelerators.
+3,SK hynix (Korea shares),000660.KS,,KR7000660001,SK hynix Inc,Same company as the ADR line: shares listed in South Korea.
+3,Marvell Technology,MRVL,573874104,US5738741041,Marvell Technology Inc,Custom AI chips and data center networking silicon.
+3,Arista Networks,ANET,040413205,US0404132054,Arista Networks Inc,Sells the Ethernet switches that connect AI data center servers.
+3,Dell Technologies,DELL,24703L202,US24703L2025,Dell Technologies Inc,Large seller of AI-optimised servers.
+3,Super Micro Computer,SMCI,86800U302,US86800U3023,Super Micro Computer Inc,Builds servers around NVIDIA accelerators.
+3,Vertiv Holdings,VRT,92537N108,US92537N1081,Vertiv Holdings Co,Power and cooling equipment for data centers.
+3,Celestica,CLS,15101Q207,CA15101Q2071,Celestica Inc,Builds networking and server hardware for hyperscale data centers.
+3,Credo Technology,CRDO,G25457105,KYG254571055,Credo Technology Group Holding Ltd,Cables and chips that move data between AI servers.
+3,Astera Labs,ALAB,04626A103,US04626A1034,Astera Labs Inc,Connectivity chips inside AI servers.
