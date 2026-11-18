@@ -1,13 +1,14 @@
-"""Build docs/index.html: the argument on one page.
+"""Build docs/index.html: Lookthrough's front page.
 
-The page opens with a tool (pick a fund, type a balance, see how much of it sits in the
-companies selling AI equipment and the companies paying for it), then makes one argument
-in four findings. Each finding shows its number and one sentence; its chart and sources
-stay folded away until the reader asks for them.
+One topic: what a retirement fund has riding on AI's data centers. The page opens with the tool
+(pick a fund, type a balance, see how much of it is in the six companies building the data centers
+and in the companies selling them equipment), then shows what those six have promised to pay: a
+ledger with one bill per company. Each bill opens to show its lines and the filing behind them.
+After that come why the bill keeps growing and the author's read. Charts stay folded away until
+the reader asks for them. NVIDIA's guarantees are a separate companion page, not part of this one.
 
-The figures are not recomputed here. They are taken from the two evidence pages'
-payloads (make_spenders.py and make_nvidia.py), so the front page cannot disagree with
-the evidence behind it.
+The figures are not recomputed here. They are taken from the evidence pages' payloads
+(make_spenders.py and make_nvidia.py), so the front page cannot disagree with the evidence behind it.
 """
 from __future__ import annotations
 
@@ -17,6 +18,7 @@ from datetime import date
 import pandas as pd
 
 import edgar
+import fund_holdings
 import make_nvidia
 import make_spenders
 import site_shell
@@ -26,27 +28,12 @@ INPUTS = edgar.ROOT / "inputs"
 ORDER = ["sp500", "total_us", "target_2060", "target_2030", "nasdaq100", "total_world", "equal_weight_500", "tech_sector", "semiconductors"]
 TIER2 = {"pct_microsoft": "Microsoft", "pct_alphabet": "Alphabet", "pct_amazon": "Amazon", "pct_meta_platforms": "Meta", "pct_oracle": "Oracle", "pct_coreweave": "CoreWeave"}
 NOT_A_HOLDING = {"STIV"}  # cash a fund holds as collateral for shares it has lent out; not an investment choice
-SUFFIXES = {"inc", "incorporated", "corp", "corporation", "co", "company", "ltd", "limited", "plc", "holdings", "nv", "sa", "ag", "the", "com"}
 
 
-def holding_key(name: str) -> str:
-    """One key per company, however a fund spells it: "NVIDIA Corp" and "NVIDIA Corp." are the same
-    holding, and a company's share classes ("Alphabet Inc Class A", "Class C") are one company."""
-    words = re.sub(r"[^a-z0-9 ]", " ", str(name).lower().replace("&", " and ")).split()
-    out, skip = [], False
-    for i, w in enumerate(words):
-        if skip:
-            skip = False
-            continue
-        if w in ("class", "cl") and i + 1 < len(words) and len(words[i + 1]) == 1:
-            skip = True  # drop "class a"
-            continue
-        if w not in SUFFIXES:
-            out.append(w)
-    return " ".join(out) or str(name).lower()
+holding_key = fund_holdings.issuer_key  # one key per company, however a fund spells it
 
 
-def top_holdings(rows: pd.DataFrame, n: int = 12) -> list[dict]:
+def top_holdings(rows: pd.DataFrame, n: int = 25) -> list[dict]:
     """A fund's largest holdings, with each company's lines added together."""
     merged: dict[str, dict] = {}
     for h in rows.itertuples():
@@ -86,6 +73,7 @@ def funds_payload() -> list[dict]:
                 "by_customer": {name: float(e[col]) for col, name in TIER2.items()},
                 "stocks": _num(e.pct_stocks),
                 "n_holdings": int(e.n_holdings),
+                "n_companies": int(e.n_companies),
                 "fund_of_funds": bool(isinstance(e.as_of_underlying, str) and e.as_of_underlying.strip()),
                 "top10": _num(e.pct_top10),
                 "effective_n": _num(e.effective_number_of_holdings),
@@ -112,8 +100,7 @@ def ai_names() -> list[dict]:
 
 
 def argument_payload(site: dict, nvda: dict) -> dict:
-    """The slices of the evidence pages' data that the four findings quote or draw."""
-    history = [{k: v for k, v in c.items() if k != "annual"} for c in nvda["history"]["companies"]]
+    """The slices of the evidence pages' data that the front page quotes or draws."""
     return {
         "names": site["names"],
         "latest_filing": max(site["latest_filing"], nvda["summary"]["filed"]),  # the newest filing any figure rests on
@@ -122,14 +109,34 @@ def argument_payload(site: dict, nvda: dict) -> dict:
         "funding": {"rows": site["funding"]["rows"], "history": site["funding"]["history"]},
         "sources_uses": site["sources_uses"],
         "leverage": site["leverage"],
-        "nvidia": {
-            "summary": nvda["summary"],
-            "financing": nvda["financing"]["series"],
-            "payment_terms": nvda["financing"]["payment_terms"],
-            "items": nvda["financing"]["latest_items"],
-            "history": history,
-        },
+        # the companion page's headline only: the front page links to it and does not tell its story
+        "nvidia": {"narrow": nvda["summary"]["narrow"], "filed": nvda["summary"]["filed"]},
     }
+
+
+def ledger_totals(argument: dict) -> dict:
+    """The six bills added together: what the front page's headline quotes."""
+    lev = argument["leverage"]
+    t = {k: sum(r[k] for r in lev) for k in ("debt", "leases", "signed", "ebitda")}
+    t["total"] = t["debt"] + t["leases"] + t["signed"]
+    return t
+
+
+def description(argument: dict) -> str:
+    """The sentence shown under the title when the address is pasted somewhere."""
+    t = ledger_totals(argument)
+    return (f"Pick the fund in your 401(k) or IRA and see how much of it is in the six companies building AI's data centers, "
+            f"and what those six have promised to pay: ${t['total'] / 1e12:.1f} trillion. Every figure comes from an SEC filing.")
+
+
+def rent_share_in_words(t: dict) -> str:
+    """How much of the total is rent, for sentences: only a phrase the figure supports."""
+    share = (t["leases"] + t["signed"]) / t["total"]
+    if 0.655 <= share <= 0.70:
+        return "two thirds"
+    if 0.60 <= share < 0.655:
+        return "nearly two thirds"
+    return f"{share * 100:.0f}%"
 
 
 def build_payload() -> dict:
@@ -149,10 +156,10 @@ def main() -> None:
     html = site_shell.render(
         "index.html",
         site_shell.SITE_NAME,
-        "How much of an ordinary index fund depends on AI spending, and how that spending is being paid for: four findings from SEC filings, with a tool to see your own number.",
+        description(payload["argument"]),
         f"Built from SEC filings · latest read {asof}",
         payload,
-        card_title="AI spending now takes all the cash its biggest builders generate",
+        card_title="How much of your retirement fund is riding on AI's data centers?",
     )
     site_shell.write("index.html", html)
     sp = next(f for f in payload["funds"] if f["key"] == "sp500")

@@ -22,10 +22,10 @@ RSP,equal_weight_500,same_fund,Invesco S&P 500 Equal Weight ETF,
 VGT,tech_sector,same_fund,Vanguard Information Technology ETF,
 VITAX,tech_sector,same_fund,Vanguard Information Technology Index Fund Admiral Shares,
 FTEC,tech_sector,similar,Fidelity MSCI Information Technology Index ETF,It follows a closely related technology index.
-XLK,tech_sector,similar,Technology Select Sector SPDR Fund,It holds only the technology companies in the S&P 500 so it is more concentrated in the largest names.
+XLK,tech_sector,similar,Technology Select Sector SPDR Fund,It holds only the technology companies in the S&P 500 and limits the weight of its largest holdings so it has less in NVIDIA and Microsoft than the fund shown and more in other chip makers.
 SMH,semiconductors,same_fund,VanEck Semiconductor ETF,
-SOXX,semiconductors,similar,iShares Semiconductor ETF,It follows a different index of chip companies with different weights.
-SOXQ,semiconductors,similar,Invesco PHLX Semiconductor ETF,It follows a different index of chip companies with different weights.
+SOXX,semiconductors,similar,iShares Semiconductor ETF,It follows a different index that caps its largest holdings. At 30 June 2026 it held about 7 cents per dollar in NVIDIA against 19 in the fund shown three months later and about 44 cents in the companies counted here against 54.
+SOXQ,semiconductors,similar,Invesco PHLX Semiconductor ETF,It follows a different index that limits the weight of its largest holdings so its share in NVIDIA can be much lower than in the fund shown.
 VTTSX,target_2060,same_fund,Vanguard Target Retirement 2060 Fund,
 VSVNX,target_2060,similar,Vanguard Target Retirement 2070 Fund,It holds nearly the same mix of stocks and bonds.
 VLXVX,target_2060,similar,Vanguard Target Retirement 2065 Fund,It holds nearly the same mix of stocks and bonds.

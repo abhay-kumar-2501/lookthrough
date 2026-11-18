@@ -1,4 +1,4 @@
-"""Build docs/spenders.html: the evidence behind the first three findings.
+"""Build docs/spenders.html: the evidence behind the ledger and the cash figures.
 
 The six big AI spenders: what they have promised (leases signed but not started), what
 that is worth today, whether their own cash covers it, how the gap is being funded, how
@@ -147,7 +147,8 @@ def present_value_payload() -> dict:
     ]
     return {
         "rows": rows,
-        "check": {"n": int(len(check)), "mean_abs": float(check.error_pct.abs().mean()), "max_abs": float(check.error_pct.abs().max())},
+        "check": {"n": int(len(check)), "mean_abs": float(check.error_pct.abs().mean()), "max_abs": float(check.error_pct.abs().max()),
+                  "n_high": int((check.error_pct > 0).sum()), "mean_signed": float(check.error_pct.mean())},
     }
 
 
@@ -272,6 +273,7 @@ def validation_payload() -> dict:
 
 def leverage_payload() -> list[dict]:
     lev = pd.read_csv(OUT / "lease_adjusted_leverage.csv")
+    notes = ledger_notes_payload()
     return [
         {
             "ticker": r.ticker,
@@ -286,9 +288,59 @@ def leverage_payload() -> list[dict]:
             "pro_forma_high": _num(r.leverage_pro_forma_high),
             "net_today": _num(r.net_leverage_today),
             "net_pro_forma": _num(r.net_leverage_pro_forma),
+            "cash_locked": _num(r.cash_it_cannot_sell_yet) or 0.0,
+            "signed_at_book_rate": _num(r.signed_leases_pv_at_book_rate),
+            "rate": _num(r.discount_rate_base),
+            "rate_book": _num(r.discount_rate_book),
+            "rate_source": _text(r.discount_rate_source),
+            "as_of": r.as_of,
+            "leases_as_of": r.lease_figures_as_of,
+            "notes": notes.get(r.ticker, []),
         }
         for r in lev.itertuples()
     ]
+
+
+def _date(iso: str) -> str:
+    return pd.Timestamp(iso).strftime("%-d %B %Y")
+
+
+def ledger_notes_payload() -> dict[str, list[dict]]:
+    """What each bill should say beyond its lines: hand-read facts, each with the filing it came from."""
+    n = pd.read_csv(edgar.ROOT / "inputs" / "ledger_notes.csv", keep_default_na=False)
+    out: dict[str, list[dict]] = {}
+
+    def money(r) -> str:
+        if r.currency == "EUR":
+            return f"€{float(r.original_amount) / 1e9:.1f}bn"
+        return f"${float(r.amount_usd) / 1e9:.1f}bn"
+
+    def add(r, kind, text, amount=None):
+        out.setdefault(r.ticker, []).append({"kind": kind, "text": text, "amount": amount, "url": r.url})
+
+    for r in n.itertuples():
+        item = r.item
+        if item == "debt_issued_after_quarter_end":
+            add(r, "since", f"Borrowed since the quarter ended: {money(r)} of new notes ({_date(r.as_of)}). Not in the figures above.")
+        elif item == "equity_issued_after_quarter_end":
+            add(r, "since", f"New shares sold since the quarter ended: {money(r)} ({_date(r.as_of)}).")
+        elif item == "equity_forward_sale_after_quarter_end" and r.currency == "USD":
+            add(r, "since", f"Agreed since the quarter ended to sell {money(r)} of shares for later delivery; no cash received yet ({_date(r.as_of)}).")
+        elif item == "leases_excluded_from_disclosed_total":
+            add(r, "left_out", f"Not in its signed-lease figure: one more lease with a contractual maximum of {money(r)}, and others priced on construction cost. The figure above is a floor.")
+        elif item == "short_term_lease_commitment":
+            add(r, "left_out", f"Also committed: about {money(r)} on a short-term lease, which is in no column.")
+        elif item == "one_off_charge_in_operating_income":
+            add(r, "one_off", f"Its cash profit is after a one-off legal charge of {money(r)} in the latest quarter.", float(r.amount_usd))
+        elif item == "restricted_equity_in_cash":
+            add(r, "locked", f"Its cash and investments include {money(r)} of SpaceX shares it may not sell yet, so they are left out when cash is subtracted.")
+    for t, f in (("AMZN", "financing_obligations"), ("AMZN", "other_short_term_borrowings")):
+        rows = n[(n.ticker == t) & (n["item"] == f)]
+        if len(rows):
+            total = rows.amount_usd.astype(float).sum()
+            label = "obligations for buildings it is treated as owning" if f == "financing_obligations" else "other short-term borrowings"
+            out.setdefault(t, []).append({"kind": "in_debt", "text": f"Borrowed includes ${total / 1e9:.1f}bn of {label}.", "amount": total, "url": rows.url.iloc[0]})
+    return out
 
 
 def sources_uses_payload() -> list[dict]:
@@ -303,6 +355,8 @@ def sources_uses_payload() -> list[dict]:
             "raised": _num(r.debt_raised),
             "repaid": _num(r.debt_repaid),
             "shares": _num(r.shares_sold),
+            "leased": _num(r.assets_added_under_finance_leases),
+            "prepaid": _num(r.customer_prepayments_in_operating_cash),
         }
         for r in su.itertuples()
     ]
@@ -311,13 +365,18 @@ def sources_uses_payload() -> list[dict]:
 def required_revenue_payload() -> dict:
     """What one year of capital spending has to earn back, for three server lives.
 
-    The middle of the sensitivity grid in funding_gap.py: 60% of spending on equipment,
-    an 8% return, and half of each new revenue dollar left after running costs.
+    The middle of the sensitivity grid in funding_gap.py (its MIDDLE): 60% of spending on equipment,
+    a 10% return, and 40 cents of each new revenue dollar left after running costs. The page lets the
+    reader change the equipment life; it opens on the middle one.
     """
+    import funding_gap
+
+    m = funding_gap.MIDDLE
     r = pd.read_csv(OUT / "required_revenue.csv")
-    r = r[(r.equipment_share == 0.6) & (r.required_return == 0.08) & (r.margin_before_depreciation == 0.5)]
+    r = r[(r.equipment_share == m["equipment_share"]) & (r.required_return == m["required_return"]) & (r.margin_before_depreciation == m["margin_before_depreciation"])]
     return {
-        "assumptions": {"equipment_share": 0.6, "required_return": 0.08, "margin": 0.5, "buildings_life": int(r.buildings_life_years.iloc[0])},
+        "assumptions": {"equipment_share": m["equipment_share"], "required_return": m["required_return"], "margin": m["margin_before_depreciation"],
+                        "buildings_life": int(r.buildings_life_years.iloc[0]), "middle_life": m["equipment_life_years"]},
         "lives": sorted(int(x) for x in r.equipment_life_years.unique()),
         "rows": [
             {"ticker": x.ticker, "life": int(x.equipment_life_years), "capex": _num(x.ttm_capex), "needed": _num(x.required_revenue), "revenue": _num(x.ttm_revenue),
@@ -355,8 +414,8 @@ def main() -> None:
     asof = pd.Timestamp(payload["latest_filing"]).strftime("%-d %B %Y")
     html = site_shell.render(
         "spenders.html",
-        "Evidence: the six big AI spenders",
-        "What six companies have promised to spend on AI data centers, what it is worth today, how it is being funded and who can carry it. Every figure links to its filing.",
+        "Evidence: the six builders",
+        "What six companies have promised to spend on AI data centers, what it is worth today, how it is being funded and who can carry it. Figures read from a sentence link to it; the rest show their workings.",
         f"Latest filing read: {asof}",
         payload,
     )

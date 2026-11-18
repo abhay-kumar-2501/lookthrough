@@ -416,3 +416,12 @@ def test_ai_names_table_is_clean(root):
     assert not names["isin"][names["isin"] != ""].duplicated().any()
     assert set(names[names.tier == "2"].company) == set(fh.TIER2)
     assert (names.reason.str.len() > 10).all()
+
+
+def test_top_holdings_rank_a_company_on_all_its_share_classes(processed):
+    """Berkshire Hathaway's class A line is tiny; added to class B it is one of the world fund's ten largest companies."""
+    top = pd.read_csv(processed / "fund_top_holdings.csv")
+    world = top[top.fund_key == "total_world"].sort_values("rank")
+    stocks = world[world.asset_category.isin(["EC", "EP"])].head(10)
+    assert stocks.name.str.contains("Berkshire").any()
+    assert not world.name.map(fh.issuer_key).duplicated().any(), "one line per company"

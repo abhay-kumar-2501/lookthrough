@@ -72,10 +72,16 @@ def test_ttm_may_fiscal_year_company_across_a_leap_day():
     assert fu.ttm(companyfacts(Revenues=rows), ["Revenues"], "2025-02-28") == 530 + 420 - 390
 
 
-def test_ttm_uses_the_latest_filed_value_for_a_period():
-    # The 9M-2025 comparative was restated (700 -> 650) in the Q3 2026 10-Q.
+def test_ttm_reads_the_prior_year_to_date_as_it_stood_when_the_annual_report_was_filed():
+    """(year - prior nine months) is last year's fourth quarter, so both must be on the annual report's basis.
+    Here the nine-month comparative was re-presented (700 -> 650) in the Q3 2026 report, after the annual report."""
     restated = CALENDAR + [fact("2025-01-01", "2025-09-30", 650, "2026-10-30")]
-    assert fu.ttm(companyfacts(Revenues=restated), ["Revenues"], "2026-09-30") == 1000 + 900 - 650
+    assert fu.ttm(companyfacts(Revenues=restated), ["Revenues"], "2026-09-30") == 1000 + 900 - 700
+
+
+def test_ttm_uses_a_restatement_made_before_the_annual_report():
+    early = CALENDAR + [fact("2025-01-01", "2025-09-30", 690, "2026-01-15")]  # corrected before the 10-K of 1 Feb 2026
+    assert fu.ttm(companyfacts(Revenues=early), ["Revenues"], "2026-09-30") == 1000 + 900 - 690
 
 
 def test_ttm_missing_tag_returns_none():
@@ -180,3 +186,93 @@ def test_instance_value_missing_returns_none():
 def test_instance_value_takes_the_total_when_parts_carry_the_same_concept():
     # Microsoft tags the current and non-current parts with the same concept as the total.
     assert fu.instance_value(INSTANCE, "OperatingLeaseLiability", "2026-09-30") == 27_477_000_000
+
+
+# --------------------------------------------------------------------------- depreciation and amortization
+
+
+def _year_and_quarters(annual, new_q, old_q):
+    """A May year-end company: the last full year, the first quarter of the new year, and the same quarter a year before."""
+    return [fact("2025-06-01", "2026-05-31", annual, "2026-06-22", "10-K"), fact("2026-06-01", "2026-08-31", new_q, "2026-09-11"),
+            fact("2025-06-01", "2025-08-31", old_q, "2025-09-10")]
+
+
+def test_depreciation_and_amortization_adds_the_two_lines_when_the_company_gives_no_total():
+    """Oracle's shape: depreciation and amortization of intangible assets on separate lines of the cash-flow statement."""
+    facts = companyfacts(Depreciation=_year_and_quarters(7623, 3156, 1351), AmortizationOfIntangibleAssets=_year_and_quarters(1671, 202, 420))
+    assert fu.depreciation_and_amortization(facts, "2026-08-31")[0] == (7623 + 3156 - 1351) + (1671 + 202 - 420)
+
+
+def test_depreciation_and_amortization_uses_the_companys_total_line_and_does_not_add_to_it():
+    facts = companyfacts(DepreciationDepletionAndAmortization=_year_and_quarters(1000, 300, 200), Depreciation=_year_and_quarters(900, 280, 190),
+                         AmortizationOfIntangibleAssets=_year_and_quarters(100, 20, 10))
+    assert fu.depreciation_and_amortization(facts, "2026-08-31")[0] == 1100
+
+
+def test_depreciation_alone_when_there_is_nothing_to_amortize():
+    assert fu.depreciation_and_amortization(companyfacts(Depreciation=_year_and_quarters(500, 150, 100)), "2026-08-31")[0] == 550
+
+
+def test_no_depreciation_at_all_is_a_gap_not_zero():
+    assert fu.depreciation_and_amortization(companyfacts(AmortizationOfIntangibleAssets=_year_and_quarters(100, 20, 10)), "2026-08-31")[0] is None
+
+
+def test_a_listed_company_adds_exactly_its_own_lines_even_when_a_broader_total_exists():
+    """Amazon's cash-flow total also covers leased assets and video content; only its property-and-equipment line is added back."""
+    facts = companyfacts(DepreciationDepletionAndAmortization=_year_and_quarters(1000, 300, 200), Depreciation=_year_and_quarters(600, 200, 150))
+    value, how = fu.depreciation_and_amortization(facts, "2026-08-31", "AMZN")
+    assert value == 650 and how.startswith("Depreciation + AmortizationOfIntangibleAssets") and "not reported" in how
+
+
+def test_a_line_given_only_for_the_year_to_date_is_estimated_and_says_so():
+    """Alphabet's shape: depreciation has a full year, amortization of intangibles only nine-month figures."""
+    nine_now, nine_before = fact("2026-01-01", "2026-09-30", 920, "2026-10-30"), fact("2025-01-01", "2025-09-30", 375, "2025-10-30")
+    dep = [fact("2025-01-01", "2025-12-31", 21136, "2026-02-01", "10-K"), fact("2026-01-01", "2026-09-30", 21955, "2026-10-30"), fact("2025-01-01", "2025-09-30", 15096, "2025-10-30")]
+    value, how = fu.depreciation_and_amortization(companyfacts(Depreciation=dep, AmortizationOfIntangibleAssets=[nine_now, nine_before]), "2026-09-30", "GOOGL")
+    assert value == pytest.approx((21136 + 21955 - 15096) + 920 + 375 * 3 / 9) and "estimated" in how
+
+
+# --------------------------------------------------------------------------- a re-presented prior-year figure
+
+
+def _re_presented(scale=1):
+    """FY 1,000 in the annual report; nine months first filed as 700, later re-presented as 650."""
+    rows = [dict(f, val=f["val"] * scale) for f in CALENDAR] + [fact("2025-01-01", "2025-09-30", 650 * scale, "2026-10-30")]
+    return companyfacts(Revenues=rows)
+
+
+def test_a_re_presented_line_can_be_read_either_way_when_told():
+    facts = _re_presented()
+    assert fu.ttm(facts, ["Revenues"], "2026-09-30") == 1000 + 900 - 700
+    assert fu.ttm(facts, ["Revenues"], "2026-09-30", restated={"Revenues"}) == 1000 + 900 - 650
+    assert fu.prior_versions(facts, "Revenues", "2026-09-30") == (700, 650)
+
+
+def test_a_re_presentation_nobody_has_looked_at_stops_the_build():
+    with pytest.raises(ValueError, match="PRIOR_BASIS"):
+        fu.restated_tags("XYZ", _re_presented(1e9), ["Revenues"], "2026-09-30")       # $700bn against $650bn: far beyond rounding
+    assert fu.restated_tags("XYZ", _re_presented(), ["Revenues"], "2026-09-30") == set()  # a $50 difference is rounding
+    assert fu.restated_tags("XYZ", companyfacts(Revenues=CALENDAR), ["Revenues"], "2026-09-30") == set()   # nothing re-presented
+
+
+def test_proxy_statements_are_not_read_as_financial_statements():
+    proxy = fact("2025-01-01", "2025-12-31", 950, "2026-04-01", "DEF 14A")   # filed after the 10-K, on another basis
+    assert fu.ttm(companyfacts(Revenues=CALENDAR + [proxy]), ["Revenues"], "2025-12-31") == 1000
+
+
+def test_a_line_given_once_a_year_uses_the_last_fiscal_year():
+    """Amazon's shape: amortization of intangibles appears only in the annual report."""
+    dep = [fact("2025-01-01", "2025-12-31", 41860, "2026-02-06", "10-K"), fact("2026-01-01", "2026-09-30", 41845, "2026-10-30"), fact("2025-01-01", "2025-09-30", 29747, "2025-10-31")]
+    amort = [fact("2025-01-01", "2025-12-31", 817, "2026-02-06", "10-K")]
+    value, how = fu.depreciation_and_amortization(companyfacts(Depreciation=dep, AmortizationOfIntangibleAssets=amort), "2026-09-30", "AMZN")
+    assert value == (41860 + 41845 - 29747) + 817 and "last fiscal year" in how
+
+
+def test_share_sales_ignore_a_stale_interim_figure_for_a_line_that_was_folded_into_another():
+    """CoreWeave's shape: 67.7 on its own line in the third-quarter report, zero in the annual report (it is inside the offering line there)."""
+    folded = [fact("2025-01-01", "2025-09-30", 67.7, "2025-11-13"), fact("2025-01-01", "2025-12-31", 0.0, "2026-03-02", "10-K")]
+    offering = [fact("2025-01-01", "2025-09-30", 1422.6, "2025-11-13"), fact("2025-01-01", "2025-09-30", 1491.0, "2026-11-12"),
+                fact("2025-01-01", "2025-12-31", 1491.0, "2026-03-02", "10-K"), fact("2026-01-01", "2026-09-30", 0.0, "2026-11-12")]
+    placement = [fact("2026-01-01", "2026-09-30", 2982.0, "2026-11-12")]
+    facts = companyfacts(ProceedsFromIssuanceOfCommonStock=folded, ProceedsFromIssuanceInitialPublicOffering=offering, ProceedsFromIssuanceOfPrivatePlacement=placement)
+    assert fu.shares_sold(facts, "2026-09-30", {"ProceedsFromIssuanceInitialPublicOffering"}) == 2982.0

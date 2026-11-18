@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 
 import edgar
 import make_front
+import make_nvidia
 
 OUT = edgar.ROOT / "charts"
 TICKERS = ["MSFT", "GOOGL", "AMZN", "META", "ORCL", "CRWV"]
@@ -21,7 +22,7 @@ COLORS = dict(zip(TICKERS, ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4
 INK, INK2, MUTED, GRID, BG, ACCENT, REST = "#15181e", "#454953", "#767983", "#d8d1c0", "#f6f2e9", "#a8321f", "#d5cebd"
 SERIF = ["Newsreader", "Georgia", "Iowan Old Style", "DejaVu Serif"]
 SANS = ["IBM Plex Sans", "Helvetica Neue", "Helvetica", "Arial", "DejaVu Sans"]
-SOURCE = "Source: company filings with the SEC. Abhay Kumar, The AI Promise Ledger."
+SOURCE = "Source: company filings with the SEC. Abhay Kumar, Lookthrough."
 
 plt.rcParams.update({
     "font.family": SANS, "font.size": 11, "axes.edgecolor": GRID, "axes.labelcolor": INK2, "xtick.color": INK2, "ytick.color": INK2,
@@ -75,8 +76,8 @@ def cash_gap(a: dict) -> None:
 def leverage(a: dict) -> None:
     rows = sorted(a["leverage"], key=lambda r: r["pro_forma"])
     hot = sorted((r for r in rows if r["pro_forma"] >= 4), key=lambda r: -r["ebitda"])
-    fig, ax = _frame(f"Count the signed leases as debt and {' and '.join(a['names'][r['ticker']] for r in hot)} stand apart",
-                     "Borrowings plus leases, in years of cash earnings. Hollow: today. Solid: with leases signed but not yet started. Earnings held at today's level.", 5.0, 0.15)
+    fig, ax = _frame(f"The ledger in one picture: count the signed leases and {' and '.join(a['names'][r['ticker']] for r in hot)} stand apart",
+                     "Borrowings plus leases, in years of cash profit. Hollow: today. Solid: with leases signed but not yet started. Profit held at today's level.", 5.0, 0.15)
     for i, r in enumerate(rows):
         c = ACCENT if r["pro_forma"] >= 4 else INK2
         ax.plot([r["today"], r["pro_forma"]], [i, i], color=c, linewidth=3, alpha=0.35, solid_capstyle="round")
@@ -94,16 +95,16 @@ def leverage(a: dict) -> None:
     plt.close(fig)
 
 
-def then_and_now(a: dict) -> None:
-    n = a["nvidia"]
-    last = n["financing"][-1]
+def then_and_now(n: dict) -> None:
+    """For the companion page on NVIDIA. `n` is that page's own payload."""
+    last = n["financing"]["series"][-1]
     rev = last["revenue_annualized"]
     rows = [("NVIDIA, 2026", last["narrow"] / rev, last["guarantees_other"] / rev, True, False)]
-    rows += [(c["company"].split(" ")[0], c["high_promised"], c["peak_in_force_ratio"], False, not c["high_promised_complete"]) for c in n["history"]]
+    rows += [(c["company"].split(" ")[0], c["high_promised"], c["peak_in_force_ratio"], False, not c["high_promised_complete"]) for c in n["history"]["companies"]]
     rows.sort(key=lambda r: r[1])
-    fig, ax = _frame("NVIDIA has promised its customers about as much as the telecom makers once did. Far less is in force.",
-                     "Share of annual sales. Pale: financing promised to customers. Solid: actually lent, or guarantees in force. "
-                     "Telecom makers: the highest each reached, 1997 to 2003.", 5.2, 0.16)
+    fig, ax = _frame("NVIDIA's promises are inside the range the telecom makers reached. Far less is in force.",
+                     "Share of the latest quarter's sales times four. Pale: financing promised to customers. Solid: actually lent, or guarantees "
+                     "in force (for NVIDIA, at most). Telecom makers: the highest each disclosed, 1997 to 2003.", 5.2, 0.16)
     for i, (name, promised, force, now, minimum) in enumerate(rows):
         c = ACCENT if now else INK2
         ax.barh(i + 0.19, promised * 100, height=0.34, color=c, alpha=0.32)
@@ -121,7 +122,7 @@ def then_and_now(a: dict) -> None:
 
 def your_fund(funds: list) -> None:
     f = next(x for x in funds if x["key"] == "sp500")
-    parts = [("NVIDIA", f["nvidia"], COLORS["MSFT"]), ("Other AI hardware makers", f["other_ai"], COLORS["AMZN"]), ("The six paying for it", f["customers"], COLORS["GOOGL"])]
+    parts = [("NVIDIA", f["nvidia"], COLORS["MSFT"]), ("Other AI hardware makers", f["other_ai"], COLORS["AMZN"]), ("The six building the data centers", f["customers"], COLORS["GOOGL"])]
     total = sum(p[1] for p in parts)
     counts = [int(p[1]) for p in parts]
     for i in sorted(range(3), key=lambda i: -(parts[i][1] - counts[i]))[: round(total) - sum(counts)]:
@@ -151,29 +152,29 @@ def your_fund(funds: list) -> None:
     plt.close(fig)
 
 
-def social_card(a: dict) -> None:
+def social_card(a: dict, funds: list) -> None:
     """The picture drawn when the site's address is pasted into LinkedIn or a chat: 1200 x 627 pixels."""
     import site_shell
 
-    su, lev = a["sources_uses"], {r["ticker"]: r for r in a["leverage"]}
-    share = sum(r["capex"] for r in su) / sum(r["cfo"] for r in su)
-    leases = sum(r["value"] for r in a["leases"]["latest"])
+    t = make_front.ledger_totals(a)
     hot = sorted((r for r in a["leverage"] if r["pro_forma"] >= 4), key=lambda r: -r["ebitda"])
     w, h = site_shell.CARD_SIZE
     fig = plt.figure(figsize=(w / 100, h / 100), dpi=100)
     fig.patches.append(plt.Rectangle((0, 0.965), 1, 0.035, transform=fig.transFigure, color=INK))
-    fig.text(0.06, 0.865, "A RESEARCH NOTE BUILT FROM SEC FILINGS", fontsize=13, color=ACCENT, family="monospace")
-    fig.text(0.06, 0.80, "AI spending now takes all the cash\nits biggest builders generate.", fontfamily=SERIF, fontsize=40, color=INK, va="top", linespacing=1.12)
+    sp = next(f for f in funds if f["key"] == "sp500")
+    fig.text(0.06, 0.865, "LOOK THROUGH YOUR FUND", fontsize=13, color=ACCENT, family="monospace")
+    fig.text(0.06, 0.80, "How much of your retirement fund\nis riding on AI's data centers?", fontfamily=SERIF, fontsize=40, color=INK, va="top", linespacing=1.12)
     facts = [
-        (f"{share * 100:.0f}¢", "of every dollar of operating\ncash goes on buildings\nand equipment"),
-        (f"${leases / 1e12:.2f}tn", "of leases signed but not\nyet on the books"),
-        (" · ".join(f"{r['pro_forma']:.1f}×" for r in hot), " and ".join(a["names"][r["ticker"]] for r in hot) + ":\ndebt against earnings with\nthose leases counted"),
+        (f"${sp['nvidia'] + sp['customers'] + sp['other_ai']:.0f} of $100", "in an S&P 500 index fund is\nin the builders and the\ncompanies supplying them"),
+        (f"${t['total'] / 1e12:.1f}tn", f"promised by the six builders,\n{make_front.rent_share_in_words(t)} of it rent"),
+        (" · ".join(f"{r['pro_forma']:.1f}" for r in hot), " and ".join(a["names"][r["ticker"]] for r in hot) + ":\nthe bill, in years of\ncash profit"),
     ]
     fig.patches.append(plt.Rectangle((0.06, 0.435), 0.88, 0.003, transform=fig.transFigure, color=INK))
     for i, (num, cap) in enumerate(facts):
         x = 0.06 + i * 0.30
         fig.text(x, 0.375, num, fontsize=30, color=ACCENT if i == 2 else INK, weight="bold", family="monospace", va="top")
         fig.text(x, 0.255, cap, fontsize=14.5, color=INK2, va="top", linespacing=1.3)
+    fig.text(0.06, 0.485, "The six: Microsoft · Alphabet · Amazon · Meta · Oracle · CoreWeave", fontsize=13, color=INK2, family="monospace")
     fig.text(0.06, 0.055, f"{site_shell.SITE_NAME}  ·  {site_shell.AUTHOR}", fontsize=14, color=INK, family="monospace")
     fig.savefig(site_shell.DOCS / site_shell.CARD, dpi=100)
     plt.close(fig)
@@ -188,8 +189,8 @@ def main() -> None:
     your_fund(payload["funds"])
     cash_gap(a)
     leverage(a)
-    then_and_now(a)
-    social_card(a)
+    then_and_now(make_nvidia.build_payload())
+    social_card(a, payload["funds"])
     print("charts written:", ", ".join(sorted(p.name for p in OUT.glob("*.png"))))
 
 

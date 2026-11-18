@@ -382,9 +382,34 @@ def test_ratios_equal_their_numerators_over_denominators(history):
 
 
 def test_annualized_revenue_follows_the_period_type(history):
-    ok = history.revenue.notna()
-    factor = history.period_type.map({"annual": 1, "quarter": 4})
-    assert (history.revenue * factor)[ok].tolist() == pytest.approx(history.revenue_annualized[ok].tolist())
+    """Every company on one yardstick: the latest quarter's sales times four, the same as NVIDIA."""
+    for r in history.itertuples():
+        if r.period_type == "quarter" and pd.notna(r.revenue):
+            assert r.revenue_annualized == pytest.approx(r.revenue * 4) and r.sales_basis == "latest quarter x 4"
+        elif r.period_type == "annual" and pd.notna(r.revenue_q4):
+            assert r.revenue_annualized == pytest.approx(r.revenue_q4 * 4) and r.sales_basis == "latest quarter x 4"
+        elif r.period_type == "annual" and pd.notna(r.revenue):
+            assert r.revenue_annualized == pytest.approx(r.revenue) and r.sales_basis.startswith("fiscal year")
+    assert (history.sales_basis == "latest quarter x 4").mean() > 0.9, "almost every period should have a quarterly figure"
+
+
+def test_the_highest_readings_on_both_yardsticks(history):
+    """Rebuilt independently from the filings during the November 2026 audit."""
+    want = {"Lucent Technologies": (0.321, 0.1455, 0.2776, 0.1409), "Nortel Networks": (0.2697, 0.1283, 0.2331, 0.1056),
+            "Cisco Systems": (0.2009, 0.0953, 0.1549, 0.0800), "Motorola": (0.1308, 0.1230, 0.1172, 0.1109)}
+    for company, (promised, in_force, promised_ttm, in_force_ttm) in want.items():
+        g = history[history.company == company]
+        assert g.available_to_revenue.max() == pytest.approx(promised, abs=6e-4), company
+        assert g.drawn_plus_guarantees_to_revenue.max() == pytest.approx(in_force, abs=6e-4), company
+        assert g.available_to_revenue_trailing.max() == pytest.approx(promised_ttm, abs=6e-4), company
+        assert g.drawn_plus_guarantees_to_revenue_trailing.max() == pytest.approx(in_force_ttm, abs=6e-4), company
+
+
+def test_trailing_sales_need_four_quarters_or_a_fiscal_year(history):
+    r = history[(history.company == "Nortel Networks") & (history.fiscal_period_end == "2002-06-30")].iloc[0]
+    assert r.revenue_trailing == pytest.approx(3694 + 3456 + 2912 + 2773)
+    annual = history[(history.period_type == "annual") & history.revenue.notna()]
+    assert annual.revenue_trailing.notna().all()
 
 
 def test_ratios_are_plausible_fractions_of_revenue(history):
@@ -398,3 +423,11 @@ def test_ratios_are_plausible_fractions_of_revenue(history):
 def test_narrow_charges_are_never_more_than_all_charges(history):
     both = history[history.narrow_charges_from_peak.notna() & history.charges_from_peak.notna()]
     assert (both.narrow_charges_from_peak <= both.charges_from_peak + 1e-9).all()
+
+
+def test_lucents_trailing_year_never_mixes_quarters_with_and_without_a_separated_business(history):
+    """June 2000 is the first quarter reported without Avaya; March 2001 the first without Agere."""
+    g = history[history.company == "Lucent Technologies"].set_index("fiscal_period_end")
+    assert g.loc["2000-06-30", "revenue_trailing"] == pytest.approx(8713 + 8355 + 8065 + 8347)   # the three earlier quarters as restated without Avaya
+    assert g.loc["2001-03-31", "revenue_trailing"] == pytest.approx(5915 + 4354 + 7172 + 7412)   # ... and without Agere
+    assert g.loc["1999-12-31", "revenue_trailing"] == pytest.approx(8672 + 9315 + 10575 + 9905)  # before either separation: as first reported

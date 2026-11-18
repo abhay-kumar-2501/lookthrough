@@ -1,4 +1,4 @@
-"""Build docs/nvidia.html: the evidence behind the fourth finding, the supplier's side.
+"""Build docs/nvidia.html: the evidence behind the chip seller's promise.
 
   1. Support: guarantees, investment promises, stakes and capacity NVIDIA rents back from
      customers and partners (nvidia_financing.py), split into promised and in force.
@@ -116,7 +116,7 @@ def financing_payload() -> dict:
                 "revenue_quarter": _num(r.revenue_quarter),
                 "revenue_annualized": _num(r.revenue_quarter) * 4,
                 "guarantees_other": guarantees - sb,
-                "guarantee_2029": sb,  # the Ohio campus guarantee: not yet in effect, first phase expected in 2028
+                "guarantee_2029": sb,  # the Ohio campus guarantee: not yet in effect, first building expected in NVIDIA's fiscal 2029
                 "unfunded_equity": _num(r.equity_investment_commitments) or 0.0,
                 "equity_stakes": _num(r.equity_stakes_carrying_value) or 0.0,
                 "capacity": (_num(r.capacity_buyback_commitments) or 0.0) + (_num(r.leases_not_commenced_for_third_parties) or 0.0),
@@ -189,6 +189,10 @@ def history_payload() -> dict:
                 "peak_in_force_ratio": _num(grp.drawn_plus_guarantees_to_revenue.max()),
                 "peak_in_force_date": grp.loc[grp.drawn_plus_guarantees_to_revenue.idxmax()].fiscal_period_end if grp.drawn_plus_guarantees_to_revenue.notna().any() else None,
                 "peak_reserve_share": _num(grp.reserve_share_of_drawn.max()),
+                # the same two highs measured against sales over the trailing twelve months, to show how much the yardstick matters
+                "high_promised_trailing": _num(grp.available_to_revenue_trailing.max()),
+                "peak_in_force_trailing": _num(grp.drawn_plus_guarantees_to_revenue_trailing.max()),
+                "first_promise_date": grp[grp.financing_made_available.notna()].fiscal_period_end.min(),  # a high can only be "the highest disclosed"
                 "annual": [
                     {"year": int(r.fiscal_year), "available": _num(r.available_to_revenue), "drawn": _num(r.drawn_plus_guarantees_to_revenue), "dso": _num(r.dso_days)}
                     for r in a.itertuples()
@@ -243,6 +247,10 @@ def summary(supply: dict, fin: dict) -> dict:
         "guarantees_in_effect": f_last["guarantees_other"],
         "narrow_share": f_last["narrow"] / rev,
         "in_effect_share": f_last["guarantees_other"] / rev,
+        # the same shares on two other defensible yardsticks
+        "narrow_share_trailing": f_last["narrow"] / f_last["revenue_ttm"],
+        "in_effect_share_trailing": f_last["guarantees_other"] / f_last["revenue_ttm"],
+        "narrow_share_without_investments": (f_last["narrow"] - f_last["unfunded_equity"]) / rev,
         "broad": f_last["broad"],
         "broad_share": f_last["broad"] / rev,
         "dso": f_last["dso"],
@@ -278,7 +286,7 @@ def main() -> None:
     asof = pd.Timestamp(sm["as_of"]).strftime("%-d %B %Y")
     html = site_shell.render(
         "nvidia.html",
-        "Evidence: NVIDIA and its customers",
+        "Companion note: NVIDIA and its customers",
         "What NVIDIA has promised its customers and partners, what is actually in force, how long it waits to be paid, and the same measures for the telecom equipment makers of 1997-2003.",
         f"Figures to {asof}",
         payload,

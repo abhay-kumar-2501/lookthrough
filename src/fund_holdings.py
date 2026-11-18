@@ -179,6 +179,45 @@ def expand(fund: dict, cache: dict, used: list) -> list:
     return lines
 
 
+SUFFIXES = {"inc", "incorporated", "corp", "corporation", "co", "company", "ltd", "limited", "plc", "holdings", "nv", "sa", "ag", "the", "com"}
+
+
+def issuer_key(name: str) -> str:
+    """One key per company, however a fund spells it: "NVIDIA Corp" and "NVIDIA Corp." are the same
+    holding, and a company's share classes ("Alphabet Inc Class A", "Class C") are one company."""
+    words = re.sub(r"[^a-z0-9 ]", " ", str(name).lower().replace("&", " and ")).split()
+    out, skip = [], False
+    for i, w in enumerate(words):
+        if skip:
+            skip = False
+            continue
+        if w in ("class", "cl") and i + 1 < len(words) and len(words[i + 1]) == 1:
+            skip = True  # drop "class a"
+            continue
+        if w not in SUFFIXES:
+            out.append(w)
+    return " ".join(out) or str(name).lower()
+
+
+def concentration(merged: list) -> dict:
+    """How concentrated a fund's STOCKS are, by company.
+
+    Cash, collateral for lent shares, futures and unopened bond funds are left out, and a company's
+    share classes are added together. Otherwise an equal-weight fund's two collateral lines look like
+    its largest holdings, and a retirement fund's bond funds look like single giant positions.
+    """
+    companies: dict[str, float] = {}
+    for h in merged:
+        if h["asset_cat"] in STOCK_CATS:
+            k = issuer_key(h["name"])
+            companies[k] = companies.get(k, 0.0) + h["pct"]
+    weights = sorted(companies.values(), reverse=True)
+    total = sum(weights)
+    if not total:
+        return dict(n_companies=0, pct_top10=0.0, effective_number_of_holdings=float("nan"))
+    return dict(n_companies=len(weights), pct_top10=sum(weights[:10]), effective_number_of_holdings=1 / sum((w / total) ** 2 for w in weights))
+
+
 def merge_lines(lines: list) -> list:
     """Add up lines that are the same security (same ISIN, CUSIP or name)."""
     merged = {}
@@ -237,18 +276,18 @@ def fund_row(spec: pd.Series, fund: dict, lines: list, used: list, names: pd.Dat
     """One row of fund_ai_exposure.csv plus its sorted merged lines."""
     merged = sorted(merge_lines(lines), key=lambda h: -h["pct"])
     by_company, by_tier, name_only = ai_weights(merged, match)
-    weights = [h["pct"] / 100 for h in merged]
+    conc = concentration(merged)
     stocks = sum(h["pct"] for h in merged if h["asset_cat"] in STOCK_CATS)
     total = sum(h["pct"] for h in merged)
     row = dict(
-        fund_key=spec.fund_key, display_name=spec.display_name, as_of=fund["as_of"], n_holdings=len(fund["holdings"]),
+        fund_key=spec.fund_key, display_name=spec.display_name, as_of=fund["as_of"], n_holdings=len(fund["holdings"]), n_companies=conc["n_companies"],
         pct_nvidia=by_tier["1"], pct_tier2=by_tier["2"],
     )
     for company in TIER2:
         row[_slug(company)] = by_company.get(company, 0.0)
     row.update(
-        pct_tier3=by_tier["3"], pct_ai_total=sum(by_tier.values()), pct_top10=sum(h["pct"] for h in merged[:10]),
-        effective_number_of_holdings=1 / sum(w * w for w in weights), pct_stocks=stocks,
+        pct_tier3=by_tier["3"], pct_ai_total=sum(by_tier.values()), pct_top10=conc["pct_top10"],
+        effective_number_of_holdings=conc["effective_number_of_holdings"], pct_stocks=stocks,
         pct_bonds_and_other=total - stocks, pct_sum_check=total,
         as_of_underlying="; ".join(f"{u['series_name'].title()} {u['as_of']}" for u in used),
         filed=fund["filed"], name_only_matches="; ".join(sorted(set(name_only))),
@@ -258,7 +297,25 @@ def fund_row(spec: pd.Series, fund: dict, lines: list, used: list, names: pd.Dat
     return row, merged
 
 
+def by_company(merged: list) -> list:
+    """Stock lines added up by company, largest first; other lines (cash, bond funds) unchanged.
+
+    Done before the list is cut to its largest lines, so a company whose second share class is small
+    (Berkshire Hathaway's class A) is still ranked on both classes together.
+    """
+    out: dict[str, dict] = {}
+    for h in merged:
+        k = issuer_key(h["name"]) if h["asset_cat"] in STOCK_CATS else "line:" + (h["isin"] or h["cusip"] or h["name"])
+        if k in out:
+            out[k]["pct"] += h["pct"]
+            out[k]["value_usd"] += h["value_usd"]
+        else:
+            out[k] = dict(h)  # the largest line's name and identifiers stand for the company
+    return sorted(out.values(), key=lambda h: -h["pct"])
+
+
 def top_rows(key: str, merged: list) -> list:
+    merged = by_company(merged)
     return [
         dict(fund_key=key, rank=i, name=h["name"], cusip=h["cusip"], isin=h["isin"], value_usd=round(h["value_usd"], 2),
              pct_net_assets=h["pct"], asset_category=h["asset_cat"], held_via=h["held_via"], ai_tier=h["ai_tier"],

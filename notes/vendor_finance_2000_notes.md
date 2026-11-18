@@ -2,6 +2,18 @@
 
 Written 18 Nov 2026. Data: [`inputs/vendor_finance_2000.csv`](../inputs/vendor_finance_2000.csv) (419 rows, 54 filings). Ratios: [`src/vendor_finance_history.py`](../src/vendor_finance_history.py), which writes [`data/processed/vendor_finance_history.csv`](../data/processed/vendor_finance_history.csv).
 
+## Read this first: what changed on 18 November 2026
+
+This note was written before the audit recorded in [`checks/audit_2026-11-18.md`](../checks/audit_2026-11-18.md). The audit confirmed every amount in the input file against its filing, and changed how the ratios are measured. Where the text or tables below differ from this list, this list and the site are right.
+
+- **One yardstick.** Every ratio is now measured against the latest quarter's sales times four, the same as NVIDIA. A fiscal year-end uses that year's fourth quarter. The tables below still show fiscal year-end ratios against the full year's sales.
+- **Highest disclosed readings on that yardstick.** Promised: Lucent 32.1% (Dec 2000), Nortel at least 27.0% (Jun 2002), Cisco at least 20.1% (Jul 2001), Motorola 13.1% (Mar 2002). Lent or in force: Lucent 14.5%, Nortel 12.8%, Motorola 12.3%, Cisco 9.5%.
+- **On trailing-twelve-month sales instead.** Promised 12% to 25%; lent or in force 8% to 14%. NVIDIA is 38% and 3.6% on that basis. The ranking of NVIDIA against the four changes with the yardstick, so the site claims none.
+- **Lucent's timing.** Its promises peaked in December 1999 and what it had lent or guaranteed peaked in September 2001, 21 months later (the text below says eighteen).
+- **Lucent's sales.** As first reported, its sales to December 2000 include Avaya and Agere, which it later separated. Without them its December 2000 figures would be 43% promised and 14.6% in force.
+- **Motorola.** Its guarantees at December 1999 and December 2000 were found in its proxy statements and added; its dollar peak is now December 2000.
+- **The input file** now has 482 rows from 60 filings.
+
 ## The question
 
 Commentators compare NVIDIA's support for its customers (guarantees, equity stakes, capacity buy-backs) with telecom equipment makers lending to their customers around 2000. This file records what Lucent, Cisco, Nortel and Motorola actually disclosed then, so the same ratios can be computed for both periods. It makes no claim that the two periods are alike; the last section lists the reasons they may not be.

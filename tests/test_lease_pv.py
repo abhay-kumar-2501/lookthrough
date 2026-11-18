@@ -254,8 +254,9 @@ def terms_frame(as_of="2026-09-30"):
 def test_pv_row_hand_computed_company():
     latest = pd.Series({"period_end": "2026-09-30", "uncommenced_leases": 120.0, "evidence": ""})
     r = lp.pv_row("XYZ", latest, fundamentals(), terms_frame())
-    rate = 0.05                                 # simple average of operating 4% and finance 6%
-    assert r["discount_rate_base"] == rate
+    rate = 0.048                                # 4% on 60 of operating leases and 6% on 40 of finance leases, weighted by size
+    assert r["discount_rate_base"] == pytest.approx(rate) and r["discount_rate_book"] == pytest.approx(rate)   # no bond on file: the lease book rate
+    assert r["pv_base_at_book_rate"] == r["pv_base"]
     assert r["pv_base"] == round(annuity(12, 10, rate))
     assert r["pv_base_ratio"] == round(annuity(12, 10, rate) / 120, 4)
     assert r["annual_rent_base"] == 12
@@ -319,12 +320,12 @@ def test_each_pv_recomputes_from_the_committed_inputs(table, root):
         latest = leases[(leases.ticker == r.ticker) & (leases.period_end == r.as_of)].iloc[0]
         assert latest.uncommenced_leases == pytest.approx(r.undiscounted)
         if r.ticker == "AMZN":
-            s = lp.amazon_scenarios(latest.evidence, r.as_of, r.discount_rate_base)
+            s = lp.amazon_scenarios(latest.evidence, r.as_of, r.discount_rate_base, r.discount_rate_low_case, r.discount_rate_book)
         else:
             t = terms.loc[r.ticker]
             now = lp.decimal_year(r.as_of)
-            s = lp.window_scenarios(r.undiscounted, t.commence_from - now, t.commence_to - now, t.to_dict(), r.discount_rate_base)
-        for key in ("pv_low", "pv_base", "pv_high"):
+            s = lp.window_scenarios(r.undiscounted, t.commence_from - now, t.commence_to - now, t.to_dict(), r.discount_rate_base, r.discount_rate_low_case, r.discount_rate_book)
+        for key in ("pv_low", "pv_base", "pv_high", "pv_base_at_book_rate"):
             assert getattr(r, key) == pytest.approx(s[key], rel=2e-3), (r.ticker, key)
 
 
@@ -350,7 +351,8 @@ def test_history_is_unique_and_ratios_are_fractions(processed):
 def test_history_last_point_agrees_with_the_headline_table(processed, table):
     h = pd.read_csv(processed / "lease_pv_history.csv").sort_values("period_end").groupby("ticker").tail(1).set_index("ticker")
     for r in table.itertuples():
-        assert h.loc[r.ticker, "pv_base"] == pytest.approx(r.pv_base, rel=0.05), r.ticker
+        # the history is valued at the lease-book rate disclosed each quarter, so it is compared with the headline table's value at that rate
+        assert h.loc[r.ticker, "pv_base"] == pytest.approx(r.pv_base_at_book_rate, rel=0.05), r.ticker
 
 
 def test_method_check_errors_are_small_and_rates_plausible(processed):
@@ -360,3 +362,44 @@ def test_method_check_errors_are_small_and_rates_plausible(processed):
     assert (m.pv_of_schedule / m.recorded_liability - 1).mul(100).round(2).tolist() == pytest.approx(m.error_pct.tolist(), abs=0.011)
     assert (m.pv_of_schedule < m.undiscounted_payments).all()
     assert m.discount_rate.between(0.01, 0.15).all() or m.discount_rate.between(1, 15).all()
+
+
+# --------------------------------------------------------------------------- which discount rate
+
+
+def bonds(*rows):
+    return pd.DataFrame([dict(ticker=t, item="current_borrowing_rate", rate_pct=r, maturity_year=m, as_of=d) for t, r, m, d in rows])
+
+
+def test_base_rate_is_the_latest_ten_year_bond_and_the_low_case_the_longest_one():
+    notes = bonds(("XYZ", 5.55, 2036, "2026-11-04"), ("XYZ", 6.15, 2046, "2026-11-04"), ("ABC", 9.0, 2036, "2026-11-04"))
+    r = lp.discount_rates("XYZ", fundamentals(), notes)
+    assert r["base"] == pytest.approx(0.0555) and r["low"] == pytest.approx(0.0615) and r["high"] == pytest.approx(0.048) == r["book"]
+    assert "5.55% notes due 2036" in r["source"] and "4 November 2026" in r["source"]
+
+
+def test_a_lease_book_rate_above_the_bond_rate_is_kept():
+    """CoreWeave's shape: its leases are recent and already carry a higher rate than its latest notes."""
+    r = lp.discount_rates("XYZ", fundamentals(operating_lease_rate=0.11, finance_lease_rate=0.10), bonds(("XYZ", 9.625, 2032, "2026-06-18")))
+    assert r["base"] == pytest.approx(0.106) and r["low"] == pytest.approx(0.106) and "lease book" in r["source"]
+
+
+def test_no_bond_on_file_falls_back_to_the_lease_book_rate():
+    r = lp.discount_rates("XYZ", fundamentals(), bonds(("ABC", 9.0, 2036, "2026-11-04")))
+    assert r["base"] == pytest.approx(0.048) and r["low"] == pytest.approx(0.068)
+
+
+def test_a_higher_rate_gives_a_lower_value_and_the_range_brackets_the_middle(table):
+    assert (table.pv_low <= table.pv_base).all() and (table.pv_base <= table.pv_high).all()
+    assert (table.discount_rate_base >= table.discount_rate_book - 1e-9).all()
+    assert (table.pv_base <= table.pv_base_at_book_rate + 1).all()
+
+
+def test_every_borrowing_rate_row_has_its_sentence_and_the_rate_is_in_it(root):
+    n = pd.read_csv(root / "inputs" / "ledger_notes.csv")
+    b = n[n["item"] == "current_borrowing_rate"]
+    assert set(b.ticker) == {"MSFT", "GOOGL", "AMZN", "META", "ORCL", "CRWV"}
+    for r in b.itertuples():
+        assert r.url.startswith("https://www.sec.gov/Archives/edgar/data/") and len(r.evidence) >= 80
+        assert f"{r.rate_pct:.3f}".rstrip("0").rstrip(".") in r.evidence or f"{r.rate_pct:.2f}" in r.evidence, (r.ticker, r.rate_pct)
+        assert str(int(r.maturity_year)) in r.evidence

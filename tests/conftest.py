@@ -22,7 +22,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 # Must be set before `import edgar` (it resolves the id at import time).
-os.environ["SEC_CLIENT_ID"] = "ai-promise-ledger test suite (offline)"
+os.environ["SEC_CLIENT_ID"] = "lookthrough test suite (offline)"
 
 
 class NetworkBlocked(RuntimeError):

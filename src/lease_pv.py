@@ -76,7 +76,44 @@ from universe import COMPANIES
 OUT = edgar.ROOT / "data" / "processed"
 TERMS = edgar.ROOT / "inputs" / "lease_terms.csv"
 HISTORY_SINCE = "2023-01-01"
-NEW_LEASE_PREMIUM = 0.02  # low-PV scenario: new leases priced 2 points above the legacy blend
+NEW_LEASE_PREMIUM = 0.02  # fallback for a company with no recent bond on file: new leases priced 2 points above its lease book
+NOTES = edgar.ROOT / "inputs" / "ledger_notes.csv"  # hand-read figures, each with its sentence and link
+
+
+def discount_rates(ticker: str, f: pd.Series, notes: pd.DataFrame | None) -> dict:
+    """The three discount rates for a company's signed leases, and where each comes from.
+
+    A lease is recorded, on the day it starts, at what the company would pay to borrow THEN. The rate on a
+    company's existing lease book is an average over leases signed years ago, when borrowing was cheaper, so
+    it overvalues leases that have not started. The closest observable figure is what the company has just
+    paid on its own bonds:
+      base  the coupon on its most recent bond of about ten years (a fifteen-year lease paid in level
+            instalments repays, on average, about as fast as a ten-year bond), but never below its lease book;
+      low   the coupon on its recent bond of about twenty years (used with the longest lease term);
+      high  the rate on its existing lease book, weighted by the size of each kind of lease (used with the
+            shortest term). This was the base case before 18 November 2026.
+    """
+    op, fin = float(f["operating_lease_liability"] or 0), float(f["finance_lease_liability"] or 0)
+    rates = [(float(f["operating_lease_rate"]), op), (float(f["finance_lease_rate"]), fin)]
+    rates = [(r, w) for r, w in rates if r == r]  # drop a missing rate
+    weight = sum(w for _, w in rates)
+    book = sum(r * w for r, w in rates) / weight if weight else sum(r for r, _ in rates) / len(rates)
+    bonds = None if notes is None else notes[(notes.ticker == ticker) & (notes["item"] == "current_borrowing_rate")]
+    if bonds is None or bonds.empty:
+        return {"base": book, "low": book + NEW_LEASE_PREMIUM, "high": book, "book": book,
+                "source": "lease book rate (no recent bond on file); low case two points higher"}
+    issued = pd.to_datetime(bonds.as_of)
+    bonds = bonds.assign(years=bonds.maturity_year - issued.dt.year - (issued.dt.month - 1) / 12, issued=issued)
+    bonds = bonds.sort_values("issued", ascending=False)  # so that, between equally close maturities, the newer issue wins
+    ten = bonds.loc[(bonds.years - 10).abs().idxmin()]
+    longest = bonds.loc[(bonds.years - 20).abs().idxmin()]
+    if (pd.Timestamp(f["as_of"]) - bonds.issued.max()).days > 400:
+        raise ValueError(f"{ticker}: its newest bond on file was issued {bonds.issued.max().date()}, over a year before {f['as_of']}; add a recent one to inputs/ledger_notes.csv")
+    base, low = max(book, ten.rate_pct / 100), max(book, longest.rate_pct / 100)
+    issued = pd.Timestamp(ten.as_of).strftime("%-d %B %Y")
+    source = (f"the {ten.rate_pct:g}% notes due {int(ten.maturity_year)} it issued on {issued}" if ten.rate_pct / 100 >= book
+              else f"the rate on its own lease book, which is above its {ten.rate_pct:g}% notes due {int(ten.maturity_year)}")
+    return {"base": base, "low": low, "high": book, "book": book, "source": source}
 
 # XBRL names for the payment schedule of leases already on the balance sheet.
 LEASE_TYPES = {
@@ -225,15 +262,24 @@ def window_blocks(amount: float, lead_from: float, lead_to: float, term: float) 
     return [(amount / n, lead_from + (i + 0.5) * step, term) for i in range(n)]
 
 
-def window_scenarios(amount: float, lead_from: float, lead_to: float, terms: dict, rate: float) -> dict:
-    """low / base / high PV for a company that discloses only a total, a window and a term range."""
+def window_scenarios(amount: float, lead_from: float, lead_to: float, terms: dict, rate: float,
+                     low_rate: float | None = None, high_rate: float | None = None) -> dict:
+    """low / base / high PV for a company that discloses only a total, a window and a term range.
+
+    `rate` is the base-case rate. The low case pairs the longest term with `low_rate`, the high case the
+    shortest term with `high_rate`; left out, they default to two points above `rate` and to `rate`.
+    """
+    low_rate = rate + NEW_LEASE_PREMIUM if low_rate is None else low_rate
+    high_rate = rate if high_rate is None else high_rate
+
     def value(term, r):
         return pv(window_blocks(amount, lead_from, lead_to, term), r)
 
     return {
-        "pv_low": value(terms["term_high"], rate + NEW_LEASE_PREMIUM),
+        "pv_low": value(terms["term_high"], low_rate),
         "pv_base": value(terms["term_base"], rate),
-        "pv_high": value(terms["term_low"], rate),
+        "pv_high": value(terms["term_low"], high_rate),
+        "pv_base_at_book_rate": value(terms["term_base"], high_rate),
         "term_base": terms["term_base"],
         "annual_rent_base": amount / terms["term_base"],
         "method": (
@@ -257,17 +303,20 @@ def amazon_schedule(evidence: str, as_of: str) -> dict:
                 last=buckets[-1], peak=max(full_years))
 
 
-def amazon_scenarios(evidence: str, as_of: str, rate: float) -> dict:
+def amazon_scenarios(evidence: str, as_of: str, rate: float, low_rate: float | None = None, high_rate: float | None = None) -> dict:
     """low / base / high PV from Amazon's own schedule; only "thereafter" needs an assumption."""
+    low_rate = rate + NEW_LEASE_PREMIUM if low_rate is None else low_rate
+    high_rate = rate if high_rate is None else high_rate
     s = amazon_schedule(evidence, as_of)
     after, start = s["after"], s["after_start"]
     base = s["head"] + [(after, start, after / s["last"])]
     high = s["head"] + [(after, start, after / s["peak"])]
     low = s["head"] + taper_blocks(after, start, s["last"])
     return {
-        "pv_low": pv(low, rate + NEW_LEASE_PREMIUM),
+        "pv_low": pv(low, low_rate),
         "pv_base": pv(base, rate),
-        "pv_high": pv(high, rate),
+        "pv_high": pv(high, high_rate),
+        "pv_base_at_book_rate": pv(base, high_rate),
         # No term is disclosed: this is the total expressed in years of the largest annual amount.
         "term_base": round(s["total"] / s["peak"], 1),
         "annual_rent_base": s["peak"],
@@ -286,20 +335,21 @@ def load_inputs() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     return leases.sort_values(["ticker", "period_end"]), fund, terms
 
 
-def pv_row(ticker: str, latest: pd.Series, f: pd.Series, terms: pd.DataFrame) -> dict:
+def pv_row(ticker: str, latest: pd.Series, f: pd.Series, terms: pd.DataFrame, notes: pd.DataFrame | None = None) -> dict:
     """One company's row of lease_pv.csv."""
     as_of, amount = latest["period_end"], float(latest["uncommenced_leases"])
     if as_of != f["as_of"]:
         raise ValueError(f"{ticker}: lease figure is for {as_of} but fundamentals are for {f['as_of']}")
-    rate = (f["operating_lease_rate"] + f["finance_lease_rate"]) / 2
+    rates = discount_rates(ticker, f, notes)
+    rate = rates["base"]
     if ticker == "AMZN":
-        s = amazon_scenarios(latest["evidence"], as_of, rate)
+        s = amazon_scenarios(latest["evidence"], as_of, rate, rates["low"], rates["high"])
     else:
         t = terms.loc[ticker]
         if t["as_of"] != as_of:
             raise ValueError(f"{ticker}: inputs/lease_terms.csv is for {t['as_of']}, lease figure for {as_of}")
         now = decimal_year(as_of)
-        s = window_scenarios(amount, t["commence_from"] - now, t["commence_to"] - now, t.to_dict(), rate)
+        s = window_scenarios(amount, t["commence_from"] - now, t["commence_to"] - now, t.to_dict(), rate, rates["low"], rates["high"])
     leases_on_books = f["operating_lease_liability"] + f["finance_lease_liability"]
     today = f["debt"] + leases_on_books
     op_income = f["ttm_operating_income"]
@@ -312,6 +362,10 @@ def pv_row(ticker: str, latest: pd.Series, f: pd.Series, terms: pd.DataFrame) ->
         "pv_high": round(s["pv_high"]),
         "pv_base_ratio": round(s["pv_base"] / amount, 4),
         "discount_rate_base": round(rate, 5),
+        "discount_rate_low_case": round(rates["low"], 5),
+        "discount_rate_book": round(rates["book"], 5),
+        "discount_rate_source": rates["source"],
+        "pv_base_at_book_rate": round(s["pv_base_at_book_rate"]),
         "term_base": s["term_base"],
         "annual_rent_base": round(s["annual_rent_base"]),
         "debt": f["debt"],
@@ -377,12 +431,13 @@ def history_rows(ticker: str, cik: int, leases: pd.DataFrame, latest_as_of: str,
 
 def main() -> None:
     leases, fund, terms = load_inputs()
+    notes = pd.read_csv(NOTES)
     check, rows, history = [], [], []
     for c in COMPANIES:
         t = c["ticker"]
         latest = leases[leases.ticker == t].iloc[-1]
         check += method_check_rows(c)
-        rows.append(pv_row(t, latest, fund.loc[t], terms))
+        rows.append(pv_row(t, latest, fund.loc[t], terms, notes))
         history += history_rows(t, c["cik"], leases, latest["period_end"], terms)
     check, out, hist = pd.DataFrame(check), pd.DataFrame(rows), pd.DataFrame(history)
     OUT.mkdir(parents=True, exist_ok=True)

@@ -83,6 +83,7 @@ from __future__ import annotations
 
 import csv
 from collections import defaultdict
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -106,7 +107,15 @@ ITEMS = (
     "charges_customer_financing",
     "receivables",
     "revenue",
+    "revenue_q4",  # the final quarter of a fiscal year, from the quarterly table in the annual report
+    "revenue_first_reported",  # a fiscal year's sales as first reported, where the figure on file was later restated
     "net_income",
+)
+# Recorded with their source for reference and for the notes; not used in any ratio on the site.
+MEMO_ITEMS = (
+    "revenue_restated", "revenue_q4_restated", "revenue_restated_ex_avaya", "revenue_q4_restated_ex_avaya",
+    "revenue_restated_ex_avaya_agere", "revenue_q4_restated_ex_avaya_agere", "investment_commitments",
+    "commitments_nextel_equipment_financing", "nextel_equipment_financing_outstanding",
 )
 # Month in which each company's fiscal year ends; any other period end is a quarter.
 FISCAL_YEAR_END_MONTH = {"Lucent Technologies": 9, "Cisco Systems": 7, "Nortel Networks": 12, "Motorola": 12}
@@ -127,8 +136,12 @@ OUT_COLUMNS = (
         "drawn_plus_guarantees",
         "guarantees_basis",
         "revenue_annualized",
+        "sales_basis",
         "available_to_revenue",
         "drawn_plus_guarantees_to_revenue",
+        "revenue_trailing",
+        "available_to_revenue_trailing",
+        "drawn_plus_guarantees_to_revenue_trailing",
         "dso_days",
         "reserve_share_of_drawn",
         "is_peak",
@@ -149,7 +162,7 @@ def load(path: Path = INPUT) -> list[dict]:
         rows = list(csv.DictReader(fh))
     for n, r in enumerate(rows, start=2):
         where = f"{path.name} line {n}"
-        if r["item"] not in ITEMS:
+        if r["item"] not in ITEMS + MEMO_ITEMS:
             raise ValueError(f"{where}: unknown item {r['item']!r}")
         if r["company"] not in FISCAL_YEAR_END_MONTH:
             raise ValueError(f"{where}: unknown company {r['company']!r}")
@@ -239,12 +252,28 @@ def derive(rec: dict) -> dict:
         abasis += " + finance leases"
     rec["financing_made_available"], rec["made_available_basis"] = avail, abasis
 
+    # Sales. Every ratio is measured against the latest quarter's sales times four, the same yardstick used for
+    # NVIDIA, so a fiscal year-end row uses that year's fourth quarter. Where no quarterly figure exists the
+    # fiscal year's sales are used and the row says so. A second set of ratios, on the trailing twelve months,
+    # is added in add_trailing() so the site can show how much the yardstick matters.
     revenue = g("revenue")
-    rec["revenue_annualized"] = None if revenue is None else (revenue if annual else revenue * 4)
+    quarter = g("revenue_q4") if annual else revenue
+    rec["_quarter_revenue"] = quarter
+    if quarter is not None:
+        rec["revenue_annualized"], rec["sales_basis"] = quarter * 4, "latest quarter x 4"
+    elif annual and revenue is not None:
+        rec["revenue_annualized"], rec["sales_basis"] = revenue, "fiscal year (no quarterly figure)"
+    else:
+        rec["revenue_annualized"], rec["sales_basis"] = None, ""
     rec["available_to_revenue"] = _ratio(avail, rec["revenue_annualized"])
     rec["drawn_plus_guarantees_to_revenue"] = _ratio(rec["drawn_plus_guarantees"], rec["revenue_annualized"])
-    days = 365 if annual else 91
-    rec["dso_days"] = None if _ratio(g("receivables"), revenue) is None else g("receivables") / revenue * days
+    # Days to be paid: what customers owe over one day of the latest quarter's sales (a quarter counted as 91 days).
+    if quarter is not None and _ratio(g("receivables"), quarter) is not None:
+        rec["dso_days"] = g("receivables") / quarter * 91
+    elif annual and _ratio(g("receivables"), revenue) is not None:
+        rec["dso_days"] = g("receivables") / revenue * 365
+    else:
+        rec["dso_days"] = None
 
     # Reserves against the balance they protect.
     top = bottom = 0.0
@@ -258,6 +287,51 @@ def derive(rec: dict) -> dict:
     rec["_reserve_balance"] = (g("reserves") or 0.0) + (g("lease_reserves") or 0.0) if (g("reserves") is not None or g("lease_reserves") is not None) else None
     rec["not_disclosed"] = ", ".join(sorted(set(rec.pop("_missing"))))
     return rec
+
+
+# From these dates a company's quarterly sales as first reported leave out a business it separated, which earlier
+# quarters still include. A twelve-month sum that crosses the date must use the earlier quarters as the company
+# later restated them for the same set of businesses (the memo rows with this suffix), or it mixes two companies.
+PERIMETER_CHANGES = {"Lucent Technologies": [("2000-06-30", "ex_avaya"), ("2001-03-31", "ex_avaya_agere")]}
+
+
+def _quarter_on_perimeter(rec: dict, suffix: str) -> float | None:
+    """A period's quarterly sales restated to a later perimeter, from the memo rows."""
+    return rec.get(f"revenue_q4_restated_{suffix}" if rec["period_type"] == "annual" else f"revenue_restated_{suffix}")
+
+
+def add_trailing(records: list[dict]) -> None:
+    """Sales over the twelve months to each date, and the two ratios on that basis.
+
+    A fiscal year-end uses the year's sales as first reported. Any other date needs its own quarter and
+    the three before it, all covering the same set of businesses (see PERIMETER_CHANGES); if one is
+    missing the trailing figure is left empty rather than estimated.
+    """
+    by_company: dict[str, list[dict]] = defaultdict(list)
+    for rec in records:
+        by_company[rec["company"]].append(rec)
+    for company, recs in by_company.items():
+        by_date = {date.fromisoformat(r["fiscal_period_end"]): r for r in recs}
+        changes = PERIMETER_CHANGES.get(company, [])
+        for rec in recs:
+            if rec["period_type"] == "annual":
+                trailing = rec.get("revenue_first_reported") if rec.get("revenue_first_reported") is not None else rec.get("revenue")
+            else:
+                end, parts = date.fromisoformat(rec["fiscal_period_end"]), []
+                current = [c for c in changes if c[0] <= rec["fiscal_period_end"]]  # the perimeter this quarter is reported on
+                since, suffix = current[-1] if current else (None, None)
+                for back in range(4):
+                    near = [r for d, r in by_date.items() if abs((end - d).days - 91.3 * back) <= 12]
+                    if not near:
+                        parts.append(None)
+                    elif since is None or near[0]["fiscal_period_end"] >= since:
+                        parts.append(near[0].get("_quarter_revenue"))
+                    else:  # an earlier quarter, still reported with the business since separated
+                        parts.append(_quarter_on_perimeter(near[0], suffix))
+                trailing = None if any(x is None for x in parts) else sum(parts)
+            rec["revenue_trailing"] = trailing
+            rec["available_to_revenue_trailing"] = _ratio(rec["financing_made_available"], trailing)
+            rec["drawn_plus_guarantees_to_revenue_trailing"] = _ratio(rec["drawn_plus_guarantees"], trailing)
 
 
 def add_peaks(records: list[dict]) -> None:
@@ -301,6 +375,7 @@ def build() -> list[dict]:
     records = [derive(rec) for rec in pivot(load()).values()]
     order = list(FISCAL_YEAR_END_MONTH)
     records.sort(key=lambda r: (order.index(r["company"]), r["fiscal_period_end"]))
+    add_trailing(records)
     add_peaks(records)
     return records
 

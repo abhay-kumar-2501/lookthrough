@@ -66,7 +66,7 @@ def funds():
     return make_front.funds_payload()
 
 
-FUND_KEYS = {"key", "name", "tickers", "what", "as_of", "nvidia", "customers", "other_ai", "by_customer", "stocks", "n_holdings", "top", "fund_of_funds", "top10", "effective_n"}
+FUND_KEYS = {"key", "name", "tickers", "what", "as_of", "nvidia", "customers", "other_ai", "by_customer", "stocks", "n_holdings", "n_companies", "top", "fund_of_funds", "top10", "effective_n"}
 
 
 def test_funds_payload_shape(funds):
@@ -74,7 +74,7 @@ def test_funds_payload_shape(funds):
     for f in funds:
         assert set(f) == FUND_KEYS
         assert set(f["by_customer"]) == set(make_front.TIER2.values())
-        assert 10 <= len(f["top"]) <= 12
+        assert 10 <= len(f["top"]) <= 25
         for h in f["top"]:
             assert set(h) == {"k", "name", "pct", "tier"}
             assert h["tier"] in (None, 1, 2, 3)
@@ -108,7 +108,7 @@ def test_funds_top_holdings_are_the_largest_first_and_tiers_match_the_ai_columns
 
 def test_front_template_reads_every_fund_key(root):
     t = template_text(root, TEMPLATES["front"])
-    assert_template_reads(t, ["nvidia", "customers", "other_ai", "tickers", "what", "stocks", "n_holdings", "top"])
+    assert_template_reads(t, ["nvidia", "customers", "other_ai", "tickers", "what", "stocks", "n_companies", "top"])
 
 
 def test_num_helper_turns_missing_into_none():
@@ -196,9 +196,8 @@ def test_argument_is_json_safe_and_quotes_the_evidence_pages_unchanged(argument)
     assert argument["leverage"] == site["leverage"]
     assert argument["sources_uses"] == site["sources_uses"]
     assert argument["funding"]["rows"] == site["funding"]["rows"]
-    assert argument["nvidia"]["summary"] == nvda["summary"]
-    assert argument["nvidia"]["financing"] == nvda["financing"]["series"]
-    assert [c["company"] for c in argument["nvidia"]["history"]] == [c["company"] for c in nvda["history"]["companies"]]
+    # the front page links to the companion note and quotes only its headline
+    assert argument["nvidia"] == {"narrow": nvda["summary"]["narrow"], "filed": nvda["summary"]["filed"]}
 
 
 def test_holding_key_treats_spellings_and_share_classes_as_one_company():
@@ -212,9 +211,12 @@ def test_holding_key_treats_spellings_and_share_classes_as_one_company():
 
 
 def test_share_classes_are_added_into_one_holding(funds, processed):
+    """Alphabet's class A and class C shares are one company, in the saved table and on the page."""
     top = pd.read_csv(processed / "fund_top_holdings.csv")
     sp = top[(top.fund_key == "sp500") & top.name.str.contains("Alphabet")]
-    assert len(sp) == 2, "the S&P 500 fund should list two Alphabet share classes"
+    assert len(sp) == 1, "the S&P 500 fund's two Alphabet share classes should be one line"
+    exposure = pd.read_csv(processed / "fund_ai_exposure.csv").set_index("fund_key")
+    assert sp.pct_net_assets.iloc[0] == pytest.approx(exposure.loc["sp500", "pct_alphabet"])
     built = [h for h in next(f for f in funds if f["key"] == "sp500")["top"] if h["k"] == "alphabet"]
     assert len(built) == 1 and built[0]["pct"] == pytest.approx(sp.pct_net_assets.sum())
     assert built[0]["tier"] == 2
@@ -228,7 +230,7 @@ def test_argument_dateline_is_the_newest_filing_any_figure_rests_on(argument, pr
 
 def test_front_template_reads_every_part_of_the_argument(root):
     t = template_text(root, TEMPLATES["front"])
-    assert_template_reads(t, ["sources_uses", "leverage", "payment_terms", "items", "pro_forma", "backlog", "shares", "high_promised", "peak_in_force_ratio", "peak_in_force_usd", "dso_year_ago", "receivables_top_share", "by_customer"])
+    assert_template_reads(t, ["sources_uses", "leverage", "pro_forma", "backlog", "shares", "by_customer", "year_ago", "leased", "prepaid", "notes", "rate_source", "signed_at_book_rate"])
 
 
 # --------------------------------------------------------------------------- NVIDIA page: supply
@@ -391,7 +393,8 @@ def history():
 
 HISTORY_KEYS = {"company", "peak_date", "peak_available", "peak_ratio", "peak_drawn", "peak_drawn_ratio", "commitments_complete", "charges_share", "narrow_charges_share",
                 "peak_dso", "url", "annual", "peak_in_force_ratio", "peak_in_force_date", "peak_reserve_share", "path",
-                "high_promised", "high_promised_date", "high_promised_complete", "peak_in_force_usd"}
+                "high_promised", "high_promised_date", "high_promised_complete", "peak_in_force_usd",
+                "high_promised_trailing", "peak_in_force_trailing", "first_promise_date"}
 
 
 def test_history_payload_shape_and_no_nan(history):
@@ -567,7 +570,7 @@ def test_path_carries_dollars_so_a_falling_denominator_can_be_told_from_rising_l
 
 
 def fake_fin(periods, narrow):
-    return {"series": [{"period_end": p, "narrow": n, "guarantee_2029": 0.0, "guarantees_other": n, "broad": 2 * n, "revenue_ttm": 1e11,
+    return {"series": [{"period_end": p, "narrow": n, "guarantee_2029": 0.0, "guarantees_other": n, "broad": 2 * n, "revenue_ttm": 1e11, "unfunded_equity": 0.0,
                         "revenue_quarter": 3e10, "revenue_annualized": 1.2e11, "dso": 50.0, "receivables": 2e10, "stretch": 1e9, "equity_stakes": 5e9, "top_share": 30.0, "top_count": 2.0}
                        for p, n in zip(periods, narrow)]}
 
@@ -656,7 +659,7 @@ def test_required_revenue_is_one_middle_case_per_company_and_life(processed):
     assert q["lives"] == sorted(q["lives"]) and len(q["rows"]) == 6 * len(q["lives"])
     grid = pd.read_csv(processed / "required_revenue.csv")
     for r in q["rows"]:
-        g = grid[(grid.ticker == r["ticker"]) & (grid.equipment_life_years == r["life"]) & (grid.equipment_share == 0.6) & (grid.required_return == 0.08) & (grid.margin_before_depreciation == 0.5)]
+        g = grid[(grid.ticker == r["ticker"]) & (grid.equipment_life_years == r["life"]) & (grid.equipment_share == 0.6) & (grid.required_return == 0.10) & (grid.margin_before_depreciation == 0.4)]
         assert len(g) == 1 and r["needed"] == pytest.approx(g.required_revenue.iloc[0])
         assert r["share_of_revenue"] == pytest.approx(r["needed"] / r["revenue"])
     by = {(r["ticker"], r["life"]): r["needed"] for r in q["rows"]}
@@ -716,7 +719,7 @@ def test_every_page_in_the_navigation_exists(root):
 
 
 def test_front_page_keeps_every_chart_behind_a_click(root):
-    """The front page shows findings; charts appear only when a reader opens an evidence panel."""
+    """The front page shows the ledger and its results; charts appear only when a reader opens an evidence panel."""
     html = (root / "docs" / "index.html").read_text()
     body = html[: html.index("<script>\nconst DATA")]
     depth, charts = 0, 0
@@ -729,15 +732,56 @@ def test_front_page_keeps_every_chart_behind_a_click(root):
         else:
             charts += 1
             assert depth > 0, "a chart on the front page is not inside an evidence panel"
-    assert charts >= 7 and depth == 0
+    assert charts >= 4 and depth == 0
     assert "<details class=\"ev\" open" not in body and "<details open" not in body
 
 
-def test_front_page_makes_one_argument_in_four_numbered_findings(root):
+def test_front_page_is_one_topic_fund_first_then_the_bills(root):
     html = (root / "docs" / "index.html").read_text()
-    assert len(re.findall(r'<li class="step"', html)) == 4
-    order = [html.index(f'id="{i}"') for i in ("tool", "f-cash", "f-leases", "f-leverage", "f-nvidia", "verdict")]
-    assert order == sorted(order)
+    order = [html.index(f'id="{i}"') for i in ("tool", "ledger", "h-total", "bills", "why", "verdict", "check")]
+    assert order == sorted(order), "the fund tool opens the page; the ledger of bills comes straight after"
+    assert html.count("<h1>") == 1 and "retirement fund" in html[html.index("<h1>"): html.index("</h1>")]
+    # the chip seller's guarantees are a separate question: linked as a companion note, not told on this page
+    body = html[: html.index("<script>\nconst DATA")]
+    assert 'id="seller"' not in html and 'href="nvidia.html"' in body
+    assert "telecom" not in body and "guarantee" not in body, "that story belongs to the companion note"
+    # "AI builders" reads as the companies that make the models, so the page says what the six are and who is left out
+    assert "AI builders" not in html and "Microsoft, Alphabet (Google), Amazon, Meta, Oracle and CoreWeave" in body
+    assert "OpenAI and Anthropic are not on this list" in body
+    assert '<li class="step"' not in html and "four findings" not in html
+
+
+def test_every_bill_adds_up(argument):
+    """A bill shows three kinds of promise, their total, and the total over cash profit. The lines must agree."""
+    assert len(argument["leverage"]) == 6
+    for r in argument["leverage"]:
+        assert all(r[k] is not None and r[k] >= 0 for k in ("debt", "leases", "signed")) and r["ebitda"] > 0
+        assert (r["debt"] + r["leases"] + r["signed"]) / r["ebitda"] == pytest.approx(r["pro_forma"], rel=1e-6), r["ticker"]
+        assert (r["debt"] + r["leases"]) / r["ebitda"] == pytest.approx(r["today"], rel=1e-6), r["ticker"]
+        assert r["pro_forma_low"] <= r["pro_forma"] <= r["pro_forma_high"]
+        pv = next(p for p in argument["pv"]["rows"] if p["ticker"] == r["ticker"])
+        assert pv["base"] == pytest.approx(r["signed"]) and pv["undiscounted"] > r["signed"], "the ledger counts leases at today's value, below the payments total"
+
+
+def test_ledger_totals_and_the_card_sentence(argument):
+    t = make_front.ledger_totals(argument)
+    assert t["total"] == pytest.approx(t["debt"] + t["leases"] + t["signed"])
+    assert t["signed"] == pytest.approx(sum(p["base"] for p in argument["pv"]["rows"]))
+    text = make_front.description(argument)
+    assert f"${t['total'] / 1e12:.1f} trillion" in text and "401(k)" in text and 60 <= len(text) <= 220
+    assert make_front.rent_share_in_words({"leases": 30, "signed": 34, "total": 100}) == "nearly two thirds"
+    assert make_front.rent_share_in_words({"leases": 30, "signed": 37, "total": 100}) == "two thirds"
+    assert make_front.rent_share_in_words({"leases": 20, "signed": 30, "total": 100}) == "50%"
+
+
+def test_front_template_builds_each_bill_from_the_ledger_lines(root):
+    t = (root / "src" / "templates" / "index.html").read_text()
+    for line in ("Borrowed", "Leases running", "Leases signed, not started", "Total promised", "Cash profit, last twelve months", "Total ÷ cash profit", "Cash and investments it holds", "Cash from operations", "New shares sold", "In your fund"):
+        assert f'ln("{line}"' in t, line
+    assert_template_reads(t, ["signed", "undiscounted", "pro_forma_low", "net_pro_forma", "n_figures"])
+    # limits a finance reader looks for: the profit measure is named, and what the ratio leaves out is said
+    for phrase in ("(EBITDA)", "EBITDAR", "not subtracted", "purchase orders"):
+        assert phrase in t, phrase
 
 
 def test_links_between_pages_point_at_sections_that_exist(root):
@@ -751,10 +795,10 @@ def test_method_page_reports_the_recorded_checks(root):
     html = (root / "docs" / "method.html").read_text()
     checks = pd.read_csv(root / "checks" / "author_checks.csv", dtype=str).fillna("")
     recheck = pd.read_csv(root / "checks" / "machine_recheck.csv")
-    assert f"{int((recheck.machine_result == 'pass').sum())} of {len(recheck)} headline figures confirmed" in html
+    assert f"{int((recheck.machine_result == 'pass').sum())} of {len(recheck)} source figures confirmed" in html
     done = checks[(checks.checked_by != "") & (checks.matches.str.lower() == "yes")]
     if len(done) == len(checks):
-        assert f"each of the {len(checks)} headline figures" in html
+        assert f"each of the {len(checks)} source figures" in html
     assert "automated tests" not in html and "independent review" not in html      # no counts offered as proof
     assert "share-price" not in html and "share price" not in html
 
@@ -771,3 +815,45 @@ def test_front_page_does_not_overstate(root):
     html = (root / "docs" / "index.html").read_text()
     for phrase in ("past every telecom maker", "no longer pays for itself", "The difference is being borrowed", "weak points", "short of cash", "Falls only if"):
         assert phrase not in html, phrase
+
+
+def test_the_required_revenue_table_uses_the_grids_own_middle():
+    import funding_gap
+
+    a = make_spenders.required_revenue_payload()["assumptions"]
+    m = funding_gap.MIDDLE
+    assert (a["equipment_share"], a["required_return"], a["margin"], a["middle_life"]) == (m["equipment_share"], m["required_return"], m["margin_before_depreciation"], m["equipment_life_years"])
+    for name, values in (("required_return", funding_gap.REQUIRED_RETURNS), ("margin_before_depreciation", funding_gap.MARGINS), ("equipment_life_years", funding_gap.EQUIPMENT_LIVES)):
+        assert m[name] == sorted(values)[len(values) // 2], f"{name} is not the middle of the values tested"
+
+
+def test_fund_concentration_looks_at_stocks_by_company(processed):
+    e = pd.read_csv(processed / "fund_ai_exposure.csv").set_index("fund_key")
+    # an equal-weight fund of about 500 companies cannot have 6% in its ten largest; that figure was two collateral lines
+    assert e.loc["equal_weight_500", "pct_top10"] < 3 and e.loc["equal_weight_500", "effective_number_of_holdings"] > 450
+    # a retirement fund's stocks are as spread out as the stock funds inside it, whatever its bond share
+    assert e.loc["target_2030", "effective_number_of_holdings"] == pytest.approx(e.loc["target_2060", "effective_number_of_holdings"], rel=0.02)
+    assert (e.n_companies <= e.n_holdings).all() or (e.n_companies > 1000).any()
+
+
+def test_each_bill_note_names_its_filing(root):
+    notes = make_spenders.ledger_notes_payload()
+    assert {"MSFT", "GOOGL", "AMZN", "META", "ORCL", "CRWV"} >= set(notes) and notes
+    for ticker, items in notes.items():
+        for n in items:
+            assert n["url"].startswith("https://www.sec.gov/Archives/edgar/data/") and len(n["text"]) > 30
+    assert any(n["kind"] == "locked" for n in notes["GOOGL"]) and any(n["kind"] == "left_out" for n in notes["CRWV"])
+
+
+def test_no_page_claims_every_figure_links_to_a_sentence(root):
+    for name in ALL_PAGES:
+        text = (root / "docs" / name).read_text()
+        assert "Every figure links" not in text and "and links to the sentence it came from" not in text
+
+
+def test_method_page_lists_the_assumptions_behind_each_headline(root):
+    html = (root / "docs" / "method.html").read_text()
+    assert "Assumptions and judgment calls" in html
+    for phrase in ("interest rate for signed leases", "What counts as borrowed", "Cash profit", "Profit is held still", "upper limit",
+                   "highest disclosed reading", "counted whole", "long-term lines", "claims no ranking"):
+        assert phrase in html, phrase

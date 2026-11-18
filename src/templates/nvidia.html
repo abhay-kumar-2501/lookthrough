@@ -1,6 +1,6 @@
-  <p class="kicker" style="margin-top:34px">Evidence for finding 4</p>
+  <p class="kicker" style="margin-top:34px">Companion note</p>
   <h1>NVIDIA and its customers</h1>
-  <p class="lede">Some of the companies building AI data centers cannot borrow enough on their own credit, and the company that sells the chips has begun to stand behind them. This page sets out what NVIDIA has promised and to whom, how much of it is actually in force, how long it now waits to be paid, and how the same measures looked at the telecom equipment makers of 1997 to 2003.</p>
+  <p class="lede">A separate question from Lookthrough's main page, built from the same kind of source. The company that sells the chips has begun to stand behind some of the companies building AI data centers. This page sets out what NVIDIA has promised and to whom, how much of it is actually in force, how long it now waits to be paid, and how the same measures looked at the telecom equipment makers of 1997 to 2003.</p>
   <ul class="toc">
     <li><a href="#financing">Promised and in force</a></li><li><a href="#paid">Getting paid</a></li><li><a href="#history">Then and now</a></li><li><a href="#limits">Limits</a></li><li><a href="#supply">Appendix · Its own orders</a></li>
   </ul>
@@ -12,7 +12,7 @@
     <p>A supplier can support the companies that buy from it in several ways: guaranteeing their debts or leases, promising to invest in them, holding their shares, or agreeing to rent back capacity they build. The chart adds up what NVIDIA discloses, as a share of its current annual rate of sales.</p>
     <div class="legend" id="fin-legend"></div>
     <div class="chart" id="fin-chart"></div>
-    <p class="small">The label above each bar is guarantees plus investment promises only. Guarantees are counted at their maximum. The one drawn in grey is not yet in effect: it starts building by building as each is completed, with the first expected in 2028. The July 2025 report did not break out capacity agreements, so the previous quarter's figure is carried forward for that bar and drawn paler. Sales are the quarter's sales times four.</p>
+    <p class="small">The label above each bar is guarantees plus investment promises only. Guarantees are counted at their maximum. The one drawn in grey is not yet in effect: it starts building by building as each of nine is completed, with the first expected in NVIDIA's 2029 fiscal year (late January 2028 to late January 2029), so the full amount is reached well after that. The July 2025 report did not break out capacity agreements, so the previous quarter's figure is carried forward for that bar and drawn paler. Sales are the quarter's sales times four. One group is not comparable across the last two bars: in July NVIDIA separated $20bn of data center leases it expected to pass to others, which the chart counts as capacity; in October it reported a single $74bn of leases, some of which it says it may assign, and the chart counts none of it.</p>
     <div class="scroll"><table id="fin-table"></table></div>
     <p class="small" id="fin-notes"></p>
   </section>
@@ -21,7 +21,7 @@
     <h2>Getting paid</h2>
     <p id="dso-text"></p>
     <div class="scroll"><table id="dso-table"></table></div>
-    <p class="small">Days to be paid is what customers owe divided by one day of the quarter's sales. The last column is the share of the amount owed that is due from NVIDIA's largest customers, as it reports them.</p>
+    <p class="small">Days to be paid is what customers owe divided by one day of the quarter's sales. NVIDIA names no customers; it reports only those owing 10% or more of the total, so the last column can fall simply because a customer slipped under 10%.</p>
     <h3>What NVIDIA says about payment terms</h3>
     <div id="terms"></div>
   </section>
@@ -49,7 +49,7 @@
   <section id="limits">
     <h2>Limits</h2>
     <ul>
-      <li>Every figure on this page comes from a 10-K, 10-Q or 8-K and is stored with its sentence. The telecom filings predate machine-readable data and were read as text.</li>
+      <li>Every figure on this page comes from a 10-K, 10-Q or 8-K, or for Motorola's guarantees a proxy statement, and is stored with its sentence. The telecom filings predate machine-readable data and were read as text.</li>
       <li>NVIDIA does not name its customers. Where a counterparty is named here (OpenAI, SB Energy), the filing names it.</li>
       <li>The latest NVIDIA quarter comes from its results release of 17 November 2026. Figures may be refined when the full quarterly report is filed.</li>
       <li>The telecom highs are picked with hindsight, and NVIDIA's reading is a single date. The path chart is there so the comparison does not rest on one point.</li>
@@ -78,10 +78,11 @@ const S = DATA.summary, FIN = DATA.financing.series, LAST = FIN[FIN.length-1], H
 const months = (a,b) => Math.round((new Date(b) - new Date(a))/2629800000);
 $("#tiles").innerHTML = [
   [B(S.narrow), `in guarantees and investment promises, ${pct(S.narrow_share)} of its annual rate of sales. A year earlier: ${B(S.narrow_year_ago)}.`],
-  [B(S.guarantees_in_effect), `of that is guarantees in force today, ${pct(S.in_effect_share,1)} of sales. Without the one guarantee that has not started, the promised total is ${B(S.narrow_ex_2029)}.`],
+  [B(S.guarantees_in_effect), `of that is guarantees in force today at most, ${pct(S.in_effect_share,1)} of sales. Without the one guarantee that has not started, the promised total is ${B(S.narrow_ex_2029)}.`],
   [Math.round(S.dso)+" days", `to be paid, against ${Math.round(S.dso_year_ago)} a year earlier. Customers owe ${B(S.receivables)}.`],
 ].map(([n,c])=>`<div class="tile"><div class="num">${n}</div><div class="cap">${c}</div></div>`).join("");
-$("#who-text").textContent = `Who is being backed: the largest item, up to ${B(LAST.guarantee_2029)}, is credit support for a campus in Ohio that its developer, SB Energy, will lease to OpenAI. It takes effect building by building, the first expected in NVIDIA's 2029 fiscal year (which begins in early 2028). Of the ${B(S.guarantees_in_effect)} in force, part covers the lease obligations of smaller AI cloud companies, which NVIDIA calls neoclouds, and the rest is power and systems credit support. These are newer builders, not the six large spenders.`;
+const item = k => (DATA.financing.latest_items.find(r=>r.item===k)||{}).amount;
+$("#who-text").textContent = `Who is being backed: the largest item, up to ${B(LAST.guarantee_2029)}, is credit support for a campus in Ohio that its developer, SB Energy, will lease to OpenAI. It takes effect building by building, the first expected in NVIDIA's 2029 fiscal year (which begins in early 2028). Of the other ${B(S.guarantees_in_effect)}, ${B(item('guarantees_land_power_shell'),1)} covers the lease obligations of smaller AI cloud companies, which NVIDIA calls neoclouds, and its filings confirm it as outstanding. The remaining ${B(item('guarantees_power_and_systems'),1)} is credit support for power and equipment financing; NVIDIA does not say when it takes effect. This page counts all of it as in force, so the in-force figures are upper limits. NVIDIA names SB Energy and OpenAI; it does not name the companies behind the rest. OpenAI has agreed to reimburse NVIDIA for anything it pays under the Ohio guarantee.`;
 
 /* ---------- Promised and in force ---------- */
 (function(){
@@ -95,9 +96,9 @@ $("#who-text").textContent = `Who is being backed: the largest item, up to ${B(L
 
 /* ---------- Getting paid ---------- */
 (function(){
-  const rows = FIN.filter(p=>p.dso!=null).slice(-8), low = FIN.filter(p=>p.dso).reduce((a,b)=>b.dso<a.dso?b:a);
-  $("#dso-text").textContent = `Customers owed NVIDIA ${B(LAST.receivables,1)} at ${full(LAST.period_end)}, about ${Math.round(LAST.dso)} days of sales. A year earlier it was ${Math.round(S.dso_year_ago)} days; over the last two years it has moved between ${Math.round(low.dso)} and ${Math.round(Math.max(...FIN.filter(p=>p.dso).map(p=>p.dso)))}. Letting a customer pay later is the plainest form of supplier credit, and it appears in no guarantee total. NVIDIA attributes the latest rise to the timing of shipments and to longer terms for investment-grade customers.`;
-  $("#dso-table").innerHTML = `<thead><tr><th scope="col">Quarter to</th><th scope="col">Sales in the quarter</th><th scope="col">Owed by customers</th><th scope="col">Days to be paid</th><th scope="col">Share owed by its largest customers</th></tr></thead><tbody>` +
+  const rows = FIN.filter(p=>p.dso!=null).slice(-8), two = FIN.filter(p=>p.dso).slice(-9), low = two.reduce((a,b)=>b.dso<a.dso?b:a);  // nine quarter-ends span two years
+  $("#dso-text").textContent = `Customers owed NVIDIA ${B(LAST.receivables,1)} at ${full(LAST.period_end)}, about ${Math.round(LAST.dso)} days of sales. A year earlier it was ${Math.round(S.dso_year_ago)} days; over the last two years it has moved between ${Math.round(low.dso)} and ${Math.round(Math.max(...two.map(p=>p.dso)))}. The low came in ${mon(low.period_end)}, when NVIDIA said customers had paid early and that it expected the figure to return to more normal levels. Letting a customer pay later is the plainest form of supplier credit, and it appears in no guarantee total. NVIDIA attributes the latest rise to the timing of shipments and to longer terms for investment-grade customers.`;
+  $("#dso-table").innerHTML = `<thead><tr><th scope="col">Quarter to</th><th scope="col">Sales in the quarter</th><th scope="col">Owed by customers</th><th scope="col">Days to be paid</th><th scope="col">Owed by customers that each owe 10% or more</th></tr></thead><tbody>` +
     rows.map((p,i)=>`<tr${i===rows.length-1?' style="background:var(--accent-soft)"':""}><td>${mon(p.period_end)}</td><td>${B(p.revenue_quarter,1)}</td><td>${B(p.receivables,1)}</td><td>${Math.round(p.dso)}</td><td>${p.top_share==null?"":Math.round(p.top_share)+"% ("+Math.round(p.top_count)+" customers)"}</td></tr>`).join("") + "</tbody>";
   $("#terms").innerHTML = DATA.financing.payment_terms.map(t=>`<p class="quote">“${esc(t.evidence)}” <a class="small" href="${esc(t.url)}">${mon(t.period_end)} filing</a></p>`).join("");
 })();
@@ -106,23 +107,24 @@ $("#who-text").textContent = `Who is being backed: the largest item, up to ${B(L
 (function(){
   const p1 = v => v==null ? "n/a" : pct(v,1), short = c => c.company.split(" ")[0];
   Charts.thenAndNow($("#hist-chart"), H0, LAST);
-  $("#hist-note").textContent = `Share of sales at the highest point each company reached between 1997 and 2003; the two bars can be from different dates. Telecom makers: loans, undrawn loan commitments and guarantees. NVIDIA: guarantees at their maximum plus ${B(LAST.unfunded_equity)} of investments promised but not yet paid, which the telecom figures have no equivalent of; "in force" counts only guarantees already in effect. NVIDIA, Lucent and Motorola are measured against the latest quarter's sales times four; Nortel and Cisco against the fiscal year. Nortel and Cisco did not report every component, so their "promised" bars are minimums.`;
+  $("#hist-note").textContent = `Share of sales at the highest point each company reached between 1997 and 2003; the two bars can be from different dates. Telecom makers: loans, undrawn loan commitments and guarantees. NVIDIA: guarantees at their maximum plus ${B(LAST.unfunded_equity)} of investments promised but not yet paid, which the telecom figures have no equivalent of; "in force" counts only guarantees already in effect. Every company is measured against its latest quarter's sales times four (a fiscal year-end uses that year's fourth quarter). Sales are as each company first reported them, so Lucent's December 2000 figures still include a business it later separated; without it they would be higher. Nortel and Cisco did not report every component, so their bars are minimums, and each "highest" is the highest disclosed: Cisco first gave its loan commitments in July 2001, Nortel its drawn loans in December 2000 and Motorola its guarantees in December 1999. Motorola's sales for the December 1999 quarter are as later restated for a merger. Lucent's trailing-year figures use quarters restated to the same set of businesses. Cisco's figures include its finance leases before unearned income. Days to be paid are what customers owed divided by one day of the quarter's sales, counting a quarter as 91 days.`;
   $("#hist-table").innerHTML = `<thead><tr><th scope="col">Company</th><th scope="col">Promised ÷ sales, highest</th><th scope="col">When</th><th scope="col">Lent or in force ÷ sales, highest</th><th scope="col">When</th><th scope="col">Lent or in force at its dollar peak of promises</th><th scope="col">At its later high</th><th scope="col">Later charged ÷ promised at peak</th></tr></thead><tbody>` +
     H0.map(c=>`<tr><td>${c.url?`<a href="${esc(c.url)}">${esc(c.company)}</a>`:esc(c.company)}</td><td>${c.high_promised_complete?"":"≥ "}${p1(c.high_promised)}</td><td>${mon(c.high_promised_date)}</td><td>${p1(c.peak_in_force_ratio)}</td><td>${c.peak_in_force_date?mon(c.peak_in_force_date):""}</td><td>${B(c.peak_drawn,1)} (${mon(c.peak_date)})</td><td>${c.peak_in_force_usd==null?"":B(c.peak_in_force_usd,1)}</td><td>${c.charges_share==null?"n/a":"about "+pct(c.charges_share)}</td></tr>`).join("") +
     `<tr style="background:var(--accent-soft)"><td><b>NVIDIA</b></td><td><b>${p1(S.narrow_share)}</b></td><td>${mon(LAST.period_end)} (latest)</td><td><b>${p1(S.in_effect_share)}</b></td><td>${mon(LAST.period_end)} (latest)</td><td>${B(LAST.guarantees_other,1)}</td><td>not yet known</td><td>none to date</td></tr></tbody>`;
   const up = H0.filter(c=>c.peak_in_force_usd && c.peak_in_force_usd > c.peak_drawn*1.2), down = H0.filter(c=>c.peak_in_force_usd && c.peak_in_force_usd <= c.peak_drawn && c.peak_in_force_ratio > c.peak_drawn_ratio*1.5);
   $("#path-text").textContent = up.map(c=>`At ${short(c)}, the amount actually lent or guaranteed went on growing after its promises peaked: from ${B(c.peak_drawn,1)} in ${mon(c.peak_date)} to ${B(c.peak_in_force_usd,1)} in ${mon(c.peak_in_force_date)}, ${months(c.peak_date,c.peak_in_force_date)} months later. Because its sales fell over the same period, that took it from ${p1(c.peak_drawn_ratio)} of sales to ${p1(c.peak_in_force_ratio)}.`).join(" ") +
     down.map(c=>` At ${short(c)} the dollars did not grow (${B(c.peak_drawn,1)} to ${B(c.peak_in_force_usd,1)}); the share rose from ${p1(c.peak_drawn_ratio)} to ${p1(c.peak_in_force_ratio)} only because sales fell.`).join("") +
-    " Either way, the exposure became large against the business after the promises had been made, not when they were announced.";
+    " Either way, the exposure became large against the business after the promises had been made, not when they were announced. One caution on Lucent: its 1999 sales still included two businesses it later separated, so its starting share is understated; without them it was about 6%, and its sales fell by about a quarter, not by nearly half.";
   $("#path-legend").innerHTML = legend(Charts.paths($("#path-chart"), H0, S.in_effect_share, S.narrow_share));
   const hp = H0.map(c=>c.high_promised), hf = H0.map(c=>c.peak_in_force_ratio), above = H0.filter(c=>S.narrow_share>c.high_promised).map(short), below = H0.filter(c=>S.narrow_share<=c.high_promised).map(short);
-  $("#ahead").textContent = `${p1(S.narrow_share)} of sales, inside the range the telecom makers reached (${pct(Math.min(...hp))} to ${pct(Math.max(...hp))}): above ${above.join(", ")}${below.length?" and below "+below.join(", "):""}. Most of it is one guarantee (${B(LAST.guarantee_2029)}) that has not started; without it the figure is ${p1(S.narrow_ex_2029/REV)}, below all of them.`;
-  $("#behind").textContent = `${p1(S.in_effect_share)} of sales in force, below every telecom maker's highest reading (${pct(Math.min(...hf))} to ${pct(Math.max(...hf))}). The telecom makers lent cash, often to newly formed carriers. NVIDIA has lent nothing that it reports; it has guaranteed leases and promised investments.`;
+  const hpT = H0.map(c=>c.high_promised_trailing), hfT = H0.map(c=>c.peak_in_force_trailing);
+  $("#ahead").textContent = `${p1(S.narrow_share)} of sales, inside the range the telecom makers reached (${pct(Math.min(...hp))} to ${pct(Math.max(...hp))}). Where it sits inside that range depends on the yardstick, so no ranking is claimed. Without the ${B(LAST.unfunded_equity)} of pledged investments, which the telecom figures have no match for, it is ${p1(S.narrow_share_without_investments)}. Against sales over the last twelve months instead of the latest quarter times four, NVIDIA is ${p1(S.narrow_share_trailing)} and the telecom makers ${pct(Math.min(...hpT))} to ${pct(Math.max(...hpT))}, because NVIDIA's sales are rising and theirs were falling. Most of NVIDIA's total is one guarantee (${B(LAST.guarantee_2029)}) that has not started; without it the figure is ${p1(S.narrow_ex_2029/REV)}, below all of them.`;
+  $("#behind").textContent = `At most ${p1(S.in_effect_share)} of sales in force, below every telecom maker's highest reading (${pct(Math.min(...hf))} to ${pct(Math.max(...hf))}; on trailing sales, ${p1(S.in_effect_share_trailing)} against ${pct(Math.min(...hfT))} to ${pct(Math.max(...hfT))}). The telecom makers lent cash, often to newly formed carriers. NVIDIA reports no loans to customers. It has guaranteed leases and power and equipment financing, promised investments, and given some investment-grade customers longer to pay.`;
 })();
 
 /* ---------- Its own orders ---------- */
 (function(){
-  $("#supply-text").textContent = `It has ${B(S.supply_commitments)} on order, ${S.supply_years_run_rate.toFixed(1)} years of production at its current pace, of which ${S.supply_near_years_run_rate.toFixed(1)} years' worth falls due within about twelve months.`;
+  $("#supply-text").textContent = `It has committed ${B(S.supply_commitments)} to its suppliers (some of it can still be cancelled or rescheduled before firm orders are placed), ${S.supply_years_run_rate.toFixed(1)} years of production at its current pace, of which ${S.supply_near_years_run_rate.toFixed(1)} years' worth falls due within about twelve months.`;
   let drawn = false;
   const d = $("#ev-supply"); d.addEventListener("toggle", () => { if(d.open && !drawn){ drawn = true; drawSupply(); } });
 })();

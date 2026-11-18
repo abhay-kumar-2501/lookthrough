@@ -12,20 +12,20 @@ import edgar
 
 TEMPLATES = edgar.ROOT / "src" / "templates"
 DOCS = edgar.ROOT / "docs"
-SITE_NAME = "The AI Promise Ledger"
+SITE_NAME = "Lookthrough"
 # Where the site is served from once the repository is public and GitHub Pages is switched on.
 # Link previews (the card LinkedIn and others draw when the address is pasted) need full addresses,
 # so this is the one place to change if the repository is renamed or a custom domain is used.
-SITE_URL = "https://abhay-kumar-2501.github.io/ai-promise-ledger/"
+SITE_URL = "https://abhay-kumar-2501.github.io/lookthrough/"
 CARD = "assets/card.png"  # 1200 x 627, drawn by make_charts.py
 CARD_SIZE = (1200, 627)
 ICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2315181e'/%3E"
         "%3Crect x='7' y='18' width='4' height='7' fill='%23f6f2e9'/%3E%3Crect x='14' y='12' width='4' height='13' fill='%23f6f2e9'/%3E%3Crect x='21' y='7' width='4' height='18' fill='%23a8321f'/%3E%3C/svg%3E")
 AUTHOR = "Abhay Kumar"
 PAGES = [
-    ("index.html", "The argument"),
-    ("spenders.html", "Evidence: the spenders"),
-    ("nvidia.html", "Evidence: NVIDIA"),
+    ("index.html", "Your fund"),
+    ("spenders.html", "The workings"),
+    ("nvidia.html", "Companion: NVIDIA"),
     ("method.html", "Method and checks"),
 ]
 FONTS = (
@@ -87,7 +87,7 @@ def render(page: str, title: str, description: str, dateline: str, data=None, bo
 {body}
   <footer>
     <nav aria-label="Pages">{nav}</nav>
-    <p>By {AUTHOR}. Built with Claude Code. Every figure comes from a filing with the US securities regulator unless the page says otherwise, and links to the sentence it came from.</p>
+    <p>By {AUTHOR}. Built with Claude Code. Every figure comes from a filing with the US securities regulator unless the page says otherwise. Figures read from a sentence link to it; calculated figures show their workings.</p>
     <p>I am a finance student and this is a research project. It is not investment advice, and nothing here is a claim that any company has acted improperly.</p>
   </footer>
 </main>

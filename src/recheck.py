@@ -1,11 +1,17 @@
-"""Second, independent pass over the headline figures.
+"""A second pass over the source figures, on fresh downloads.
 
-For every row in checks/author_checks.csv this script downloads the cited
-filing again, confirms that the quoted sentence really is in it, and confirms
-that the figure shown on the site appears inside that sentence. It shares no
-code with the modules that extracted the numbers in the first place, so it
-catches a wrong link, a mis-scaled unit (million versus billion) or a sentence
-that changed in an amended filing.
+For every row in checks/author_checks.csv this script downloads the cited filing again and
+confirms two things against that fresh copy:
+  1. every fragment of the quoted sentence is in the filing, in full (not just its opening words);
+  2. the figure is in that text as a number of the right size: "$364.6bn" must appear as 364.6 followed
+     by "billion", or as about 364,600 in a table of $ millions. A sentence saying 364.6 million fails.
+
+It uses the same downloader as the rest of the project but none of the code that extracted the numbers,
+so it catches a wrong link, a wrong unit, or a sentence that changed in an amended filing.
+
+What it does not do: it checks figures that are READ from a filing. Figures that are CALCULATED (totals,
+ratios, values in today's money) are covered by the tests that pin each company's inputs to the lines
+printed in its statements (tests/test_leverage.py) and by the audit recorded in checks/.
 
 Output: checks/machine_recheck.csv (one row per figure: pass / fail and why).
 This is a machine check. It does not replace the author's own reading.
@@ -34,20 +40,39 @@ def squash(s: str) -> str:
     return re.sub(r"[^a-z0-9$.%]", "", s.lower())
 
 
-def figure_tokens(figure: str) -> list[str]:
-    """Ways the figure might be written in the filing: 364.6 / 364,600 / 0.3646 trillion ..."""
+def figure_in(text: str, figure: str, in_billions: bool = False) -> bool:
+    """Is the figure in this text, as a number of the right size?
+
+    `in_billions` is for a table whose heading says "(In billions)": its cells carry no unit word of their own.
+    """
     f = figure.replace("$", "").replace(",", "").strip()
     m = re.match(r"([\d.]+)\s*(bn|m|%| days)?", f)
     if not m:
-        return [f]
+        return squash(f) in squash(text)
     num, unit = float(m.group(1)), (m.group(2) or "").strip()
-    out = {f"{num:g}", f"{num:.1f}", f"{num:.2f}"}
-    if unit == "bn":
-        # A table may give $ millions ("164,922" for $164.9bn): match on the leading digits.
-        out |= {f"{num * 1000:g}", f"{num * 1000:,.0f}", f"{round(num):d}", f"{int(num * 10)}"}
-    if unit == "m":
-        out |= {f"{num:,.0f}", f"{num / 1000:g}"}
-    return sorted(out, key=len, reverse=True)
+    decimals = len(m.group(1).split(".")[1]) if "." in m.group(1) else 0
+    tol = 0.5 * 10 ** -decimals + 1e-9
+    for hit in re.finditer(r"\d[\d,]*(?:\.\d+)?", text):
+        try:
+            value = float(hit.group().replace(",", ""))
+        except ValueError:
+            continue
+        after = text[hit.end(): hit.end() + 14].lower()
+        if unit == "bn":
+            if abs(value - num) <= tol and ("billion" in after or in_billions):
+                return True
+            if "billion" not in after and value >= 100 and abs(value / 1e3 - num) <= tol:   # a table or sentence in $ millions
+                return True
+            if "illion" not in after and value >= 1e5 and abs(value / 1e6 - num) <= tol:    # a table in $ thousands
+                return True
+        elif unit == "m":
+            if abs(value - num) <= tol and "billion" not in after:
+                return True
+            if "billion" in after and abs(value * 1e3 - num) <= tol * 1e3:
+                return True
+        elif abs(value - num) <= tol:
+            return True
+    return False
 
 
 def check(row) -> tuple[str, str]:
@@ -59,19 +84,21 @@ def check(row) -> tuple[str, str]:
     except Exception as e:  # network or missing file
         return "fail", f"could not open the link: {type(e).__name__}"
     hay = squash(text)
-    # The stored sentence may be an excerpt joined with "..." ; every fragment must be present.
+    # The stored sentence may be an excerpt joined with "..." ; every fragment must be present in full.
     fragments = [f.strip() for f in re.split(r"\.\.\.|\[\.\.\.\]|…", str(row.sentence_to_find)) if len(f.strip()) >= 6]
-    missing = [f[:50] for f in fragments if squash(f)[:70] not in hay]
+    missing = [f[:50] for f in fragments if squash(f) not in hay]
     if missing:
-        return "fail", f"sentence not found in the filing: '{missing[0]}'"
-    sentence = squash(str(row.sentence_to_find)).replace(",", "")
-    tokens = [squash(t) for t in figure_tokens(str(row.figure))]
-    if not any(t and t in sentence for t in tokens):
-        # A percentage of net assets, or a table cell, may sit next to the name instead of inside the sentence.
-        near = hay[max(0, hay.find(squash(fragments[0])[:40]) - 50): hay.find(squash(fragments[0])[:40]) + 900] if fragments else ""
-        if not any(t and t in near for t in tokens):
-            return "fail", f"sentence found, but the figure {row.figure} is not in it"
-    return "pass", "sentence found in the filing and the figure is in it"
+        return "fail", f"sentence not found in full in the filing: '{missing[0]}'"
+    in_billions = "(in billions)" in str(row.sentence_to_find).lower()   # the heading is part of the quoted text, which was just found in the filing
+    if any(figure_in(f, str(row.figure), in_billions) for f in fragments):
+        return "pass", "the whole sentence is in the filing and the figure is in it"
+    # A table cell or a percentage may sit beside the quoted words, not inside them: look in the filing itself, just after them.
+    words = [w for w in re.findall(r"[A-Za-z]{4,}", fragments[0])][:3] if fragments else []
+    pattern = r"\W+(?:\w+\W+){0,3}?".join(map(re.escape, words))
+    for hit in re.finditer(pattern, text) if words else []:
+        if figure_in(text[hit.start(): hit.start() + 900], str(row.figure)):
+            return "pass", "the whole sentence is in the filing and the figure is beside it"
+    return "fail", f"sentence found, but the figure {row.figure} is not in or beside it"
 
 
 def main() -> None:

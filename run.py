@@ -20,8 +20,8 @@ STEPS = [
     "nvidia_supply",  # NVIDIA's supply commitments since 2019
     "nvidia_financing",  # NVIDIA's support for its customers
     "vendor_finance_history",  # Lucent, Nortel, Cisco, Motorola 1997-2003
-    "make_spenders",  # docs/spenders.html: evidence for findings 1 to 3
-    "make_nvidia",  # docs/nvidia.html: evidence for finding 4
+    "make_spenders",  # docs/spenders.html: evidence behind the ledger
+    "make_nvidia",  # docs/nvidia.html: evidence for the chip seller's promise
     "make_front",  # docs/index.html: the argument, with the fund tool
     "make_checklist",  # checks/author_checks.csv: headline figures to check by hand
     "recheck",  # second pass over those figures, on freshly downloaded filings
