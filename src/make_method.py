@@ -124,8 +124,7 @@ def body(c: dict, checks: dict) -> str:
       <li><b>A source for every number.</b> Each figure is saved with the sentence it came from and a link to the filing, so it can be checked against the source directly.</li>
       <li><b>A second pass on fresh downloads.</b> A separate program downloads each cited filing again and confirms that the whole quoted sentence is there and that the figure is in it at the right size (a billion is not accepted for a million). Result: {c['recheck_pass']} of {c['recheck_total']} source figures confirmed. This covers figures read from a filing, not calculated ones.</li>
       <li><b>Tests against known answers.</b> Where a company has disclosed the answer itself, the calculation is run on the same question and compared.</li>
-      <li><b>Two hostile reviews.</b> I had the project critiqued twice by separate AI sessions instructed to find what was wrong, not to approve it.</li>
-      <li><b>A line-by-line audit.</b> Those reviews read the argument and missed an error in a calculation. So on 18 November 2026 six separate AI sessions each rebuilt one part of the project from the filings themselves, without using this project's choice of lines, and compared. Every figure read from a filing matched. Several calculations and labels did not survive, and are listed under "What changed after review". The audit's sourced corrections ({c['audit_rows']} figures, each with its sentence and link) are in the repository.</li>
+      <li><b>An audit against the filings.</b> On 18 November 2026 each part of the project was rebuilt from the filings by separate AI sessions that did not use this project's choice of lines, and the results were compared. Every figure read from a filing matched. Several calculations and labels were corrected, and are listed under "What changed after review". The corrections that needed a new source ({c['audit_rows']} figures, each with its sentence and link) are in the repository.</li>
     </ul>
   </section>
 
@@ -178,7 +177,7 @@ def body(c: dict, checks: dict) -> str:
 
   <section>
     <h2>What changed after review</h2>
-    <p>The first seven came from the two reviews of the argument. The rest came from the line-by-line audit of 18 November 2026, in which every figure read from a filing matched and the items below did not.</p>
+    <p>The first seven came from two earlier read-throughs of the argument. The rest came from the audit of 18 November 2026, in which every figure read from a filing matched and the items below did not.</p>
     <ul>
       <li><b>The conclusion moved from the supplier to the buyers.</b> Earlier versions had no view on which companies were stretched. Adding the debt ratios showed the load is heaviest at two of the six.</li>
       <li><b>"The difference is being borrowed" was too simple.</b> The six also sold ${c['shares'] / 1e9:,.0f}bn of new shares in the same twelve months. The page now shows both.</li>
