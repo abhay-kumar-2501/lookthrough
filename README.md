@@ -90,4 +90,4 @@ cp .env.example .env    # the SEC asks automated readers to identify themselves
 
 ## Credits
 
-Built with Claude Code; [`method.html`](docs/method.html) says who did what. I am a finance student. This is information, not investment advice, and nothing here is a claim that any company has acted improperly.
+Built with Claude Code; [`method.html`](docs/method.html) says who did what. Code under the [MIT license](LICENSE). I am a finance student. This is information, not investment advice, and nothing here is a claim that any company has acted improperly.
