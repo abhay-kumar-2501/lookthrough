@@ -25,7 +25,7 @@ import site_shell
 
 OUT = edgar.ROOT / "data" / "processed"
 INPUTS = edgar.ROOT / "inputs"
-ORDER = ["sp500", "total_us", "target_2060", "target_2030", "nasdaq100", "total_world", "equal_weight_500", "tech_sector", "semiconductors"]
+ORDER = ["sp500", "total_us", "target_2060", "target_2050", "target_2040", "target_2030", "nasdaq100", "total_world", "equal_weight_500", "tech_sector", "semiconductors"]
 TIER2 = {"pct_microsoft": "Microsoft", "pct_alphabet": "Alphabet", "pct_amazon": "Amazon", "pct_meta_platforms": "Meta", "pct_oracle": "Oracle", "pct_coreweave": "CoreWeave"}
 NOT_A_HOLDING = {"STIV"}  # cash a fund holds as collateral for shares it has lent out; not an investment choice
 
@@ -74,6 +74,7 @@ def funds_payload() -> list[dict]:
                 "stocks": _num(e.pct_stocks),
                 "n_holdings": int(e.n_holdings),
                 "n_companies": int(e.n_companies),
+                "n_ai": int(e.n_ai_companies),
                 "fund_of_funds": bool(isinstance(e.as_of_underlying, str) and e.as_of_underlying.strip()),
                 "top10": _num(e.pct_top10),
                 "effective_n": _num(e.effective_number_of_holdings),

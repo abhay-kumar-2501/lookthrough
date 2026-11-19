@@ -22,6 +22,13 @@ CARD_SIZE = (1200, 627)
 ICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2315181e'/%3E"
         "%3Crect x='7' y='18' width='4' height='7' fill='%23f6f2e9'/%3E%3Crect x='14' y='12' width='4' height='13' fill='%23f6f2e9'/%3E%3Crect x='21' y='7' width='4' height='18' fill='%23a8321f'/%3E%3C/svg%3E")
 AUTHOR = "Abhay Kumar"
+# Anthropic's amended registration statement of 17 November 2026: the one outside figure quoted for a company not in the ledger.
+ANTHROPIC = {
+    "url": "https://www.sec.gov/Archives/edgar/data/2130357/000162828026074338/anthropicpbc-sx1ax3.htm",
+    "committed": 900.9e9,
+    "sentence": "As of and subsequent to September 30, 2026, we have entered into purchase commitments and lease agreements, including short-term commitments, as well as leases not yet commenced, with an aggregate committed spend of approximately $900.9 billion, substantially all of which is related to compute and infrastructure.",
+}
+CONTACT = "https://www.linkedin.com/in/abhay-kumar2501"  # where a reader can reach the author
 PAGES = [
     ("index.html", "The tool"),
     ("spenders.html", "Research: the workings"),
@@ -87,8 +94,8 @@ def render(page: str, title: str, description: str, dateline: str, data=None, bo
 {body}
   <footer>
     <nav aria-label="Pages">{nav}</nav>
-    <p>By {AUTHOR}. Built with Claude Code. Every figure comes from a filing with the US securities regulator unless the page says otherwise. Figures read from a sentence link to it; calculated figures show their workings.</p>
-    <p>Lookthrough is two things. The tool reads what a fund reported holding and does arithmetic; it gives no opinion. The research is a finance student's reading of company filings. Both are information, not investment advice, and nothing here is a claim that any company has acted improperly.</p>
+    <p>By {AUTHOR} (<a href="{CONTACT}" rel="me noopener">LinkedIn</a>). Built with Claude Code. Every figure comes from a filing with the US securities regulator unless the page says otherwise. Figures read from a sentence link to it; calculated figures show their workings.</p>
+    <p>Lookthrough is two things. The tool reads what a fund reported holding and does arithmetic; it makes no forecast and no recommendation. The research is a finance student's project built from company filings. Both are information, not investment advice, and nothing here is a claim that any company has acted improperly.</p>
   </footer>
 </main>
 </body>

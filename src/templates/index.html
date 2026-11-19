@@ -1,23 +1,33 @@
   <p class="kicker" style="margin-top:34px">A free tool, with the research behind it</p>
   <h1>How much of your retirement fund is riding on AI's data centers?</h1>
-  <p class="lede">Pick the fund in your 401(k) or IRA. Lookthrough reads what it reported holding and shows how much of your money is in the six companies building AI's data centers and the companies selling them equipment, then what those six have promised to pay.</p>
+  <p class="lede">Pick the fund in your 401(k) or IRA and see. Then look through to what the six companies building those data centers have promised to pay.</p>
   <div class="parts">
-    <a href="#tool"><span class="ptag">Part 1 · The tool</span><b>What is in your fund</b><span>Pick a fund and it shows the split. It reads the fund's own report and does arithmetic. There is no opinion in it.</span></a>
-    <a href="#research"><span class="ptag">Part 2 · The research</span><b>What those companies owe</b><span>My reading of six companies' filings: what they have borrowed and promised to pay, and what I make of it.</span></a>
+    <a href="#tool"><span class="ptag">Part 1 · The tool</span><b>What is in your fund</b><span>Pick a fund and it shows the split: the fund's own report and arithmetic. The only judgment is which companies count, and the list is shown.</span></a>
+    <a href="#research"><span class="ptag">Part 2 · The research</span><b>What those companies owe</b><span>What six companies have borrowed and promised to pay, taken from their filings, and what I make of it.</span></a>
   </div>
+  <p class="small doors">Work in finance? <a href="#pro">The same work in your terms</a>. Want to reach me? <a href="#about">Who made this</a>.</p>
   <noscript><p><b>This page needs JavaScript to show its figures.</b> The same numbers are in README.md and in the CSV files under data/processed in the repository.</p></noscript>
     <div class="tool" id="tool">
       <p class="kicker part-tag">Part 1 · The tool</p>
       <div id="lines"></div>
       <div class="quick" style="margin-top:10px"><button type="button" id="add-line">+ Add another fund</button><span id="quick"></span></div>
+      <p class="small" style="margin:10px 0 0">Not sure which fund you have? Its name is on your 401(k) statement or in your plan's app. If the name has a year in it, it is a target-date fund: choose the nearest year.</p>
       <p class="answer" id="answer"></p>
       <p class="what" id="what"></p>
       <div class="split">
         <div><div class="waffle" id="waffle" role="img"></div><p class="small" style="margin-top:8px">Each square is one cent of every dollar.</p></div>
         <div class="rows" id="rows"></div>
       </div>
+      <p class="few" id="few"></p>
+      <div class="share">
+        <button type="button" class="chip" id="share-copy">Copy my result to share</button>
+        <button type="button" class="chip" id="share-link">Copy a link to this fund</button>
+        <span class="small" id="share-msg" aria-live="polite"></span>
+      </div>
+      <textarea id="share-box" class="share-box" readonly rows="3" aria-label="Text to copy" hidden></textarea>
+      <p class="small" style="margin:6px 0 0">Your balance stays in your browser. It is not sent anywhere, and it is not in the link or the text you copy.</p>
       <p class="small" id="asof" style="margin:14px 0 0"></p>
-      <details class="ev" id="ev-funds"><summary>Compare nine common funds</summary><div class="ev-body">
+      <details class="ev" id="ev-funds"><summary id="compare-title">Compare common funds</summary><div class="ev-body">
         <p id="compare-text"></p>
         <div class="legend" id="legend"></div>
         <div class="chart" id="compare"></div>
@@ -31,7 +41,7 @@
       <details class="ev"><summary>What counts, and where this comes from</summary><div class="ev-body">
         <ul>
           <li><b>Source.</b> Funds must report every holding to the US securities regulator. The tool reads those reports. They are published a few months late, so the date is shown and today's mix will differ, especially after large price moves.</li>
-          <li><b>Tickers.</b> The tool reads the holdings of nine funds. Typing a ticker matches it to one of them: the same fund, another fund tracking the same index, or the nearest kind where the note says how yours differs. The list of tickers is mine and covers common US funds, not all of them.</li>
+          <li><b>Tickers.</b> The tool reads the holdings of <span id="n-funds">these</span> funds. Typing a ticker matches it to one of them: the same fund, another fund tracking the same index, or the nearest kind where the note says how yours differs. The list of tickers is mine and covers common US funds, not all of them.</li>
           <li><b>The six builders</b> are Microsoft, Alphabet, Amazon, Meta, Oracle and CoreWeave, among the largest buyers of AI chips and data center space. NVIDIA does not name its customers, so this is my list. Each company is counted whole, although each also has large businesses unrelated to AI.</li>
           <li><b>The companies selling the equipment</b> are NVIDIA plus my own list of AI hardware makers: <span id="others"></span>. Each of these is also counted whole. The list is a judgment. It leaves out Intel, Samsung, the storage makers (Western Digital, Seagate, Sandisk) and the makers of chip-manufacturing equipment (Applied Materials, Lam Research, KLA). Counting those too would add about 4.6 cents per dollar in an S&P 500 fund.</li>
           <li><b>Sellers and builders are shown apart on purpose.</b> If spending slowed, the sellers would lose sales while the builders would keep more of their cash, so the two groups do not carry the same risk.</li>
@@ -40,10 +50,15 @@
       </div></details>
     </div>
   <p class="small" id="tool-more" style="margin-top:12px"></p>
+  <dl class="ask" id="ask">
+    <div><dt>Did I choose this?</dt><dd>Probably not on purpose. Most index funds buy every company on their list in proportion to its size. These companies have become the largest, so they take the largest share.</dd></div>
+    <div><dt>Is that good or bad?</dt><dd id="ask-so"></dd></div>
+    <div><dt>What do I do with it?</dt><dd>That is your call. If you want to know what those companies have taken on to build all this, that is the research below.</dd></div>
+  </dl>
   <div class="divide" id="research">
     <p class="kicker part-tag">Part 2 · The research</p>
     <p class="divide-head">That was the tool. What follows is research.</p>
-    <p>The tool reported what a fund holds, as the fund itself filed it. From here I look at the six companies those dollars end up in: what they have borrowed and promised to pay, read from their own filings, with my reading of it at the end. It is information to help you understand what you own. It is not advice on what to buy or sell.</p>
+    <p>The tool reported what a fund holds, as the fund itself filed it. From here the page follows those dollars into six companies: what they have borrowed and promised to pay, taken from their own filings, with my own read at the end. It is information to help you understand what you own. It is not advice on what to buy or sell.</p>
     <ul class="toc">
       <li><a href="#ledger">What the six have promised</a></li>
       <li><a href="#why">Why the bill keeps growing</a></li>
@@ -56,7 +71,7 @@
     <p class="kicker">Research · what those six have promised to pay</p>
     <h2 class="num-head">The six have borrowed <b id="h-debt"></b>. Count their leases and they have promised <b id="h-total"></b>.</h2>
     <p class="lede">The gap is rent. <span id="lede-running"></span> is for buildings and equipment they already use. <b id="lede-signed"></b> is for buildings, mostly data centers, that are not ready yet: signed, and not on any balance sheet yet. Each company states that figure in one sentence of a footnote. Lookthrough collects the sentence from every report and puts it in a ledger, one bill per company.</p>
-    <p class="who"><b>The six:</b> Microsoft, Alphabet (Google), Amazon, Meta, Oracle and CoreWeave. OpenAI and Anthropic are not on this list. They are private companies and do not publish financial statements, and they rent much of their computing from companies that do.</p>
+    <p class="who"><b>The six:</b> Microsoft, Alphabet (Google), Amazon, Meta, Oracle and CoreWeave. OpenAI and Anthropic are not on this list. OpenAI is a private company and does not publish financial statements. Anthropic went public in November 2026, as this version was being finished. <a href="https://www.sec.gov/Archives/edgar/data/2130357/000162828026074338/anthropicpbc-sx1ax3.htm" title="As of and subsequent to September 30, 2026, we have entered into purchase commitments and lease agreements, including short-term commitments, as well as leases not yet commenced, with an aggregate committed spend of approximately $900.9 billion, substantially all of which is related to compute and infrastructure.">Its prospectus</a> reports about $901 billion of commitments, nearly all for computing and data centers, including leases that have not started. It has not yet filed a quarterly report and is not yet in the funds the tool reads, so it has no bill here. It is the first company to add.</p>
     <p>In household terms: a mortgage, a car lease you are already paying, and a lease you have signed on an apartment that is still being built.</p>
     <h3 style="margin-top:1.6em">The ledger</h3>
     <p class="result" id="lev-head"></p>
@@ -67,7 +82,7 @@
       <div><dt>Borrowed</dt><dd>Loans and bonds. The mortgage.</dd></div>
       <div><dt>Leases running</dt><dd>Rent on buildings and equipment already in use. The car lease you are paying.</dd></div>
       <div><dt>Leases signed, not started</dt><dd>Rent agreed for buildings that are not handed over yet. The apartment still being built. Shown at what the payments are worth today.</dd></div>
-      <div><dt>Years of profit</dt><dd>The total divided by one year of cash profit: profit before interest, taxes and wear on equipment (EBITDA). Smaller is safer.</dd></div>
+      <div><dt>Years of profit</dt><dd>The total divided by one year of cash profit: profit before interest, taxes and wear on equipment (EBITDA). Smaller is safer. It is not spare money: together the six spend about as much as this each year on new buildings and equipment.</dd></div>
     </dl>
     <p class="small" id="ledger-note"></p>
     <details class="ev" id="ev-pro"><summary>The same table in finance terms</summary><div class="ev-body">
@@ -129,6 +144,27 @@
     </div>
   </section>
 
+  <section id="pro">
+    <p class="kicker">If you work in finance</p>
+    <h2>The same work in your terms, and four calls I would like challenged.</h2>
+    <p id="pro-what"></p>
+    <ol class="calls">
+      <li><b>Tomorrow's leases over today's earnings.</b> The numerator includes leases on buildings that are not earning anything yet. The denominator is the last twelve months of EBITDA. That is a mismatch in timing by design. It shows how much has to go right, not what leverage will be once the buildings are in use.</li>
+      <li><b>EBITDA across different lease mixes.</b> The cost of a finance lease sits outside EBITDA, as depreciation and interest. Operating rent sits inside it. So the ratio is not like for like between a company that mostly signs finance leases and one that mostly signs operating leases, and switching to EBITDAR would not fix the part that has not commenced.</li>
+      <li><b>The discount rate.</b> <span id="pro-rate"></span></li>
+      <li><b>What is left out.</b> <span id="pro-net"></span></li>
+    </ol>
+    <p>If you think one of these is the wrong call, I would like to hear why. <a href="https://www.linkedin.com/in/abhay-kumar2501" rel="me noopener">Message me on LinkedIn</a>, or read <a href="method.html">every assumption and what each one moves</a>.</p>
+  </section>
+
+  <section id="about">
+    <p class="kicker">Who made this</p>
+    <h2>Abhay Kumar</h2>
+    <p>I built Lookthrough with Claude Code; the <a href="method.html">method page</a> says who did what.</p>
+    <p>If you found a mistake, disagree with a call, or want to talk about the work, I would like to hear from you.</p>
+    <p><a class="btn" href="https://www.linkedin.com/in/abhay-kumar2501" rel="me noopener">Message me on LinkedIn →</a></p>
+  </section>
+
 <script>
 const DATA = /*__DATA__*/null;
 const GROUPS = [
@@ -164,7 +200,7 @@ function bill(r, top){
   const rate = v => (v*100).toFixed(2).replace(/\.?0+$/,"")+"%";
   const promised = ln("Borrowed", B(r.debt,1), "loans and bonds" + (inDebt.length ? `, including ${B(sum(inDebt,n=>n.amount),1)} of short-term borrowing and of obligations for buildings it is treated as owning` : "")) +
     ln("Leases running", B(r.leases,1), "on the balance sheet, listed apart from debt" + (r.leases_as_of!==r.as_of ? `. Its finance leases are as last reported, at ${full(r.leases_as_of)}` : "")) +
-    ln("Leases signed, not started", B(r.signed,1), `today's value of ${B(p.undiscounted,1)} of payments, at ${rate(r.rate)} a year, from ${esc(r.rate_source)}. At the older rate on its lease book (${rate(r.rate_book)}) it would be ${B(r.signed_at_book_rate,1)}. <a href="${esc(l.url)}" title="${esc(l.evidence)}">The sentence in its ${esc(l.form)} →</a>`) +
+    ln("Leases signed, not started", B(r.signed,1), `today's value of ${B(p.undiscounted,1)} of payments, at ${rate(r.rate)} a year, from ${esc(r.rate_source)}.${r.rate_book!=null && Math.abs(r.rate-r.rate_book)>1e-9 ? ` At the older rate on its lease book (${rate(r.rate_book)}) it would be ${B(r.signed_at_book_rate,1)}.` : ""} <a href="${esc(l.url)}" title="${esc(l.evidence)}">The sentence in its ${esc(l.form)} →</a>`) +
     ln("Total promised", B(total,1), "", "tot") +
     ln("Cash profit, last twelve months", B(r.ebitda,1), "before interest, taxes and wear on equipment" + (oneOff ? `. It is after a one-off legal charge of ${B(oneOff.amount,1)}; without that charge the line below would be ${x1(total/(r.ebitda+oneOff.amount))} years` : "")) +
     ln("Total ÷ cash profit", x1(r.pro_forma)+" years", `${x1(r.today)} before the signed leases. ${x1(r.pro_forma_low)} to ${x1(r.pro_forma_high)} depending on how the leases are valued.`, "res") +
@@ -188,7 +224,7 @@ function bill(r, top){
   $("#h-debt").textContent = billion(ALL.debt); $("#h-total").textContent = trillion(ALL.total);
   $("#lede-running").textContent = billion(ALL.leases); $("#lede-signed").textContent = billion(ALL.signed);
   $("#lev-head").innerHTML = `${words[COOL.length]} of the six have promised under ${x1(CEIL)} years of their cash profit. ${HOT.map(r=>`${NAME[r.ticker]} has promised <b>${x1(r.pro_forma)}</b>`).join(" and ")}.`;
-  $("#lev-text").textContent = `Each row builds one company's total from three kinds of promise and divides it by what the company earns in a year. The reading is deliberately harsh: it counts leases that have not started and holds earnings at today's level. ${(h=>h.length ? `${list(h.map(r=>`${NAME[r.ticker]} counts ${B(row(r.ticker).backlog)}`))} of signed customer contracts still to be delivered; the bills show how much has to arrive on time.` : "")(HOT.filter(r=>row(r.ticker).backlog!=null))}`;
+  $("#lev-text").textContent = `Each row builds one company's total from three kinds of promise and divides it by what the company earns in a year. The reading sets tomorrow's rent against today's earnings: it counts leases that have not started and holds earnings at today's level. ${(h=>h.length ? `${list(h.map(r=>`${NAME[r.ticker]} counts ${B(row(r.ticker).backlog)}`))} of signed customer contracts still to be delivered; the bills show how much has to arrive on time.` : "")(HOT.filter(r=>row(r.ticker).backlog!=null))}`;
   $("#bills").innerHTML = `<div class="lrow lhead"><span>Company</span><span>Borrowed</span><span>+ Leases running</span><span>+ Leases signed, not started</span><span>= Total promised</span><span>In years of cash profit</span><span></span></div>` +
     LEV.map(r=>bill(r, top)).join("") +
     `<div class="lrow ltotal"><span class="co">Six together</span><span class="v">${B(ALL.debt)}</span><span class="v">${B(ALL.leases)}</span><span class="v">${B(ALL.signed)}</span><span class="v t">${B(ALL.total)}</span><span class="x"><b>${x1(ALL.pro_forma)}</b> years<small>${x1(ALL.today)} before signed leases</small></span><span></span></div>`;
@@ -231,7 +267,7 @@ const options = sel => F.map(f=>`<option value="${f.key}"${f.key===sel?" selecte
 function drawLines(){
   $("#lines").innerHTML = LINES.map((l,i)=>`<div class="fields" style="margin-top:${i?10:0}px">
     <div><label for="fund${i}">${i?"Fund "+(i+1):LINES.length>1?"Fund 1":"The fund in your 401(k) or IRA"}</label><select id="fund${i}" data-i="${i}">${options(l.key)}</select>
-      <input class="tick" id="tick${i}" data-i="${i}" type="text" placeholder="or type its ticker, for example FXAIX" aria-label="Find fund ${i+1} by ticker" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="8" value="${esc(l.ticker||"")}">
+      <input class="tick" id="tick${i}" data-i="${i}" type="text" placeholder="or type its ticker (a short code like FXAIX)" aria-label="Find fund ${i+1} by ticker" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="8" value="${esc(l.ticker||"")}">
       <p class="small tickmsg" id="tickmsg${i}" aria-live="polite">${esc(l.msg||"")}</p></div>
     <div><label for="bal${i}">${LINES.length>1?"Amount":"Your balance"}</label><div style="display:flex;gap:6px"><input id="bal${i}" data-i="${i}" type="text" inputmode="decimal" value="${l.amount?money(l.amount):""}" autocomplete="off">${LINES.length>1?`<button type="button" class="chip" data-rm="${i}" aria-label="Remove fund ${i+1}">×</button>`:""}</div></div></div>`).join("");
   // Choosing from the menu by hand clears any ticker typed for that row.
@@ -288,6 +324,9 @@ function render(){
   const rest = f ? (f.fund_of_funds ? "the rest of the fund, including its bonds" : "every other company in the fund") : "everything else in these funds";
   $("#rows").innerHTML = GROUPS.map(g=>`<div class="row"><span class="sw" style="background:${g.color}"></span><span class="lab">${g.label}<small>${g.note}</small></span><span class="amt">${bal?money(part[g.key]):m[g.key].toFixed(1)+"%"}<small>${m[g.key].toFixed(1)}¢ per dollar</small></span></div>`).join("") +
     `<div class="row"><span class="sw" style="background:var(--rest)"></span><span class="lab">Everything else<small>${rest}</small></span><span class="amt">${bal?money(bal-buy-sell):other.toFixed(1)+"%"}<small>${other.toFixed(1)}¢ per dollar</small></span></div>`;
+  const count = n => n>1000 ? "about "+(Math.round(n/100)*100).toLocaleString("en-US") : n.toLocaleString("en-US");
+  $("#few").innerHTML = f && f.n_ai ? `All of that is in <b>${f.n_ai} companies</b>. The fund holds shares in ${count(f.n_companies)}.` : "";
+  $("#ask-so").textContent = `Neither, by itself. It is not a mistake, and nobody did anything wrong. It means about ${Math.round(m.share)} cents of every dollar here rises and falls with ${f && f.n_ai ? f.n_ai+" companies" : "a small group of companies"}. Whether that is too much is a judgment, and the tool does not make it.`;
   $("#asof").textContent = `Holdings as reported for ${m.dates.map(full).join(" and ")}, the latest filing${m.dates.length>1?"s":""} available${f && !f.fund_of_funds ? ` (${f.n_companies>1000 ? "about "+(Math.round(f.n_companies/100)*100).toLocaleString("en-US") : f.n_companies.toLocaleString("en-US")} companies)` : ""}. Prices have moved since, so today's mix will differ.${f && f.fund_of_funds ? " The stock funds inside this fund are read from their own latest reports, one of which is a month later." : ""}`;
   $("#top-title").textContent = f ? `The ten largest holdings in the ${fundName(f)}` : "The largest holdings across these funds";
   $("#top-note").textContent = f ? "A company's share classes are added together." : "Built from each fund's twenty-five largest holdings, so a company outside one fund's twenty-five largest can be understated.";
@@ -361,7 +400,7 @@ function renderFundLine(m){
 (function(){
   const undisc = sum(LATEST,r=>r.value), ago = sum(LATEST,r=>r.year_ago);
   $("#verdict-head").textContent = `The bill is heaviest at ${HOTNAMES.join(" and ")}, and they are a small part of an ordinary fund.`;
-  $("#verdict-text").textContent = `${words[COOL.length]} of the six could count every signed lease as debt today and still owe under ${Math.ceil(CEIL)} years of cash profit. ${HOTNAMES.join(" and ")} could not${HOT.every(r=>of(SU,r.ticker).shares>0) ? `, and ${HOT.length===2?"both":"all"} sold new shares in the last twelve months` : ""}. That reading is harsh on purpose: it holds profit at today's level and ignores the customer contracts both have signed. It shows how much has to go right, not what will happen.`;
+  $("#verdict-text").textContent = `${words[COOL.length]} of the six could count every signed lease as debt today and still owe under ${Math.ceil(CEIL)} years of cash profit. ${HOTNAMES.join(" and ")} could not${HOT.every(r=>of(SU,r.ticker).shares>0) ? `, and ${HOT.length===2?"both":"all"} sold new shares in the last twelve months` : ""}. That reading leaves out what should help them: it holds profit at today's level and ignores the customer contracts both have signed. It shows how much has to go right, not what will happen.`;
   $("#watch").innerHTML = [
     [`${HOTNAMES.join(" and ")}: total promised ÷ cash profit`, HOT.map(r=>r.pro_forma.toFixed(1)+" years").join(" and "), "Falls if the new data centers start earning before their leases start, or if more shares are sold."],
     ["Six builders: capital spending ÷ operating cash", pct(capexShare), "Above 100%, the group cannot pay for its building from operations at all."],
@@ -371,7 +410,41 @@ function renderFundLine(m){
 })();
 (function(){
   const tot = f => f.nvidia + f.customers + f.other_ai, far = byKey("target_2060"), near = byKey("target_2030");
-  $("#tool-more").textContent = `Funds that also hold bonds have less riding on it: about ${Math.round(tot(far))} cents of each dollar in a 2060 target-date fund and ${Math.round(tot(near))} in a 2030 one. Type a ticker or open "Compare nine common funds" to see others.`;
+  const NUM = ["no","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve"], nWord = NUM[F.length] || String(F.length);
+  const dated = F.filter(f=>/^target_\d{4}$/.test(f.key)).sort((a,b)=>b.key.localeCompare(a.key));
+  $("#compare-title").textContent = `Compare ${nWord} common funds`;
+  $("#n-funds").textContent = nWord;
+  $("#tool-more").textContent = `Funds that also hold bonds have less riding on it. Target-date funds, in cents of each dollar: ${list(dated.map(f=>`about ${Math.round(tot(f))} for ${f.key.slice(7)}`))}. Type a ticker or open "Compare ${nWord} common funds" to see others.`;
+})();
+/* ---------- Passing it on. Only the fund goes in the link, never the balance. ---------- */
+const HERE = location.origin + location.pathname.replace(/index\.html$/, "");
+function shareText(){
+  const m = mix(), f = m.single, buy = Math.round(m.buy), sell = Math.round(m.sell);
+  return `${f ? "My fund ("+fundName(f)+")" : "My funds"}: about ${buy+sell} cents of every dollar is riding on AI's data centers. ${buy} in the six companies building them, ${sell} in the companies selling them equipment. See yours: ${HERE}${f ? "#fund="+f.key : ""}`;
+}
+async function pass(text, done){
+  const box = $("#share-box"), say = t => { $("#share-msg").textContent = t; };
+  box.hidden = true;
+  try { await navigator.clipboard.writeText(text); say(done); setTimeout(()=>{ if($("#share-msg").textContent===done) say(""); }, 4000); }
+  catch(e){
+    // Some browsers refuse to copy for a page. Show the text, selected, so it can be copied by hand.
+    box.value = text; box.hidden = false; box.focus(); box.select();
+    let ok = false; try { ok = document.execCommand("copy"); } catch(_){}
+    if(ok) box.hidden = true;
+    say(ok ? done : "Select the text below and copy it.");
+  }
+}
+$("#share-copy").onclick = () => pass(shareText(), "Copied. Paste it anywhere.");
+$("#share-link").onclick = () => { const f = mix().single; pass(HERE + (f ? "#fund="+f.key : ""), f ? "Link copied. It opens on this fund." : "Link copied."); };
+// A link ending in #fund=sp500 opens on that fund.
+(function(){ const k = (location.hash.match(/^#fund=([a-z0-9_]+)$/)||[])[1]; if(k && byKey(k)) LINES[0].key = k; })();
+/* ---------- For finance readers ---------- */
+(function(){
+  const atBook = sum(LEV,r=>r.signed_at_book_rate), undisc = sum(LATEST,r=>r.value);
+  const lo = LEV[LEV.length-1], hi = LEV[0];
+  $("#pro-what").textContent = `Lease-adjusted leverage for six issuers, built from their 10-K and 10-Q filings: debt at carrying value (${B(ALL.debt)}), plus operating and finance lease liabilities (${B(ALL.leases)}), plus the present value of leases signed but not yet commenced (${B(ALL.signed)}), over trailing-twelve-month EBITDA. By issuer that runs from ${x1(lo.pro_forma)} times at ${NAME[lo.ticker]} to ${x1(hi.pro_forma)} at ${NAME[hi.ticker]}; ${words[COOL.length].toLowerCase()} of the six are under ${CEIL}.`;
+  $("#pro-rate").textContent = `Leases not yet commenced are discounted at the coupon on each company's most recent US dollar note of about ten years, which gives ${B(ALL.signed)}. At the rates on their existing lease books it is ${B(atBook)}. Undiscounted, the payments are ${B(undisc)}. The standard asks for a collateralised borrowing rate, which would sit below an unsecured coupon, so the first figure leans low.`;
+  $("#pro-net").textContent = `Purchase commitments that are not leases are not in the total. Cash and investments are not netted. Contracted backlog is not credited, and I have not assessed who it is owed by or whether its term matches the leases. The backlog matters most for ${list(HOTNAMES)}, whose signed customer contracts are large against what they earn today.`;
 })();
 drawLines(); render();
 </script>

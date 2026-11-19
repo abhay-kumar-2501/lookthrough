@@ -66,7 +66,7 @@ def funds():
     return make_front.funds_payload()
 
 
-FUND_KEYS = {"key", "name", "tickers", "what", "as_of", "nvidia", "customers", "other_ai", "by_customer", "stocks", "n_holdings", "n_companies", "top", "fund_of_funds", "top10", "effective_n"}
+FUND_KEYS = {"key", "name", "tickers", "what", "as_of", "nvidia", "customers", "other_ai", "by_customer", "stocks", "n_holdings", "n_companies", "n_ai", "top", "fund_of_funds", "top10", "effective_n"}
 
 
 def test_funds_payload_shape(funds):
@@ -158,15 +158,17 @@ def test_each_fund_types_own_tickers_are_marked_as_the_same_fund(root):
 def test_target_date_tickers_say_which_way_the_guide_is_off(root, processed):
     t = pd.read_csv(root / "inputs" / "fund_tickers.csv", keep_default_na=False)
     stocks = pd.read_csv(processed / "fund_ai_exposure.csv").set_index("fund_key").pct_stocks
-    assert stocks["target_2060"] > stocks["target_2030"]          # the notes below rely on this
-    rough = t[t.fund_key.isin(["target_2030", "target_2060"]) & (t.match == "similar")]
+    # later-dated funds hold more in stocks; the notes below rely on this
+    assert stocks["target_2060"] >= stocks["target_2050"] > stocks["target_2040"] > stocks["target_2030"]
+    rough = t[t.fund_key.str.startswith("target_") & (t.match == "similar")]
     assert len(rough) >= 6 and rough.note.str.contains("stocks|bonds").all()
     years = rough.fund_name.str.extract(r"(20\d\d)")[0].astype(int)
-    for year, note in zip(years, rough.note):
-        if year < 2030:
-            assert "lower" in note
-        if year in (2035, 2040):
-            assert "higher" in note
+    for year, shown, note in zip(years, rough.fund_key.str[-4:].astype(int), rough.note):
+        assert abs(year - shown) <= 10, "each year points at the nearest fund actually read"
+        if year < shown:
+            assert "lower" in note      # an earlier date means more bonds than the fund shown
+        else:
+            assert "nearly the same" in note or "higher" in note
 
 
 def test_ticker_payload_matches_the_input_file(root):
@@ -180,7 +182,7 @@ def test_ticker_payload_matches_the_input_file(root):
 
 def test_funds_of_funds_are_flagged(funds):
     flagged = {f["key"] for f in funds if f["fund_of_funds"]}
-    assert {"target_2060", "target_2030"} <= flagged and "sp500" not in flagged
+    assert {"target_2060", "target_2050", "target_2040", "target_2030"} <= flagged and "sp500" not in flagged
 
 
 @pytest.fixture(scope="module")
@@ -862,3 +864,52 @@ def test_method_page_lists_the_assumptions_behind_each_headline(root):
     for phrase in ("interest rate for signed leases", "What counts as borrowed", "Cash profit", "Profit is held still", "upper limit",
                    "highest disclosed reading", "counted whole", "long-term lines", "claims no ranking"):
         assert phrase in html, phrase
+
+
+def test_ai_share_is_counted_in_companies(processed):
+    """The tool says how many companies the AI share sits in; a company's share classes count once."""
+    e = pd.read_csv(processed / "fund_ai_exposure.csv").set_index("fund_key")
+    six = [c for c in e.columns if c.startswith("pct_") and c[4:] in {"microsoft", "meta_platforms", "amazon", "alphabet", "oracle", "coreweave"}]
+    assert len(six) == 6
+    others = len(make_front.ai_names())
+    for key, r in e.iterrows():
+        floor = int(sum(r[c] > 0 for c in six)) + int(r.pct_nvidia > 0)
+        assert floor <= r.n_ai_companies <= floor + others, key
+        assert r.n_ai_companies <= r.n_companies
+    funds = {f["key"]: f for f in make_front.funds_payload()}
+    assert all(funds[k]["n_ai"] == int(e.loc[k].n_ai_companies) for k in funds)
+
+
+def test_front_page_can_be_passed_on_and_says_how_to_reach_the_author(root):
+    html = (root / "docs" / "index.html").read_text()
+    order = [html.index(f'id="{i}"') for i in ("tool", "few", "share-copy", "ask", "research", "check", "pro", "about")]
+    assert order == sorted(order)
+    # a shared link carries the fund and nothing about the reader's money
+    share = html[html.index("function shareText"): html.index("/* ---------- For finance readers")]
+    assert "#fund=" in share and "bal" not in share and "money(" not in share
+    assert "It is not sent anywhere" in html
+    # professionals get the work in their terms, the open judgment calls, and a way to reply
+    pro = html[html.index('id="pro"'): html.index('id="about"')]
+    assert "EBITDAR" in pro and pro.count("<li>") == 4 and site_shell.CONTACT in pro
+    assert site_shell.CONTACT in html[html.index('id="about"'):] and site_shell.CONTACT.startswith("https://www.linkedin.com/in/")
+    # "Who made this" carries a name and a way to reach the author, and no other personal details
+    about = html[html.index('id="about"'): html.index("<script>", html.index('id="about"'))]
+    assert f"<h2>{site_shell.AUTHOR}</h2>" in about
+    assert not re.search(r"internship|university|college|junior|sophomore|senior year|GPA|looking for", about, re.I)
+    for page in ALL_PAGES:
+        assert site_shell.CONTACT in (root / "docs" / page).read_text().split("<footer>")[1]
+
+
+def test_the_page_says_why_openai_and_anthropic_are_left_out(root):
+    """Anthropic became a public company in November 2026, so 'private' is no longer the reason for both."""
+    A = site_shell.ANTHROPIC
+    figure = f"about ${A['committed'] / 1e9:,.0f} billion of commitments"
+    assert "$900.9 billion" in A["sentence"] and A["url"].startswith("https://www.sec.gov/Archives/edgar/data/2130357/")
+    front = (root / "docs" / "index.html").read_text()
+    who = front[front.index('class="who"'): front.index("</p>", front.index('class="who"'))]
+    readme = (root / "README.md").read_text()
+    for text in (who, readme):
+        assert "OpenAI and Anthropic are not on this list" in text and A["url"] in text and figure in text
+        assert "OpenAI is a private company" in text.replace("**OpenAI** is", "OpenAI is") and "has not yet filed a quarterly report" in text
+        assert "They are private companies" not in text
+    assert A["url"] in (root / "docs" / "method.html").read_text()

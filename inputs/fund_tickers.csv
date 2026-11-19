@@ -29,11 +29,11 @@ SOXQ,semiconductors,similar,Invesco PHLX Semiconductor ETF,It follows a differen
 VTTSX,target_2060,same_fund,Vanguard Target Retirement 2060 Fund,
 VSVNX,target_2060,similar,Vanguard Target Retirement 2070 Fund,It holds nearly the same mix of stocks and bonds.
 VLXVX,target_2060,similar,Vanguard Target Retirement 2065 Fund,It holds nearly the same mix of stocks and bonds.
-VFFVX,target_2060,similar,Vanguard Target Retirement 2055 Fund,It holds nearly the same mix of stocks and bonds.
-VFIFX,target_2060,similar,Vanguard Target Retirement 2050 Fund,It holds nearly the same mix of stocks and bonds.
-VTIVX,target_2060,similar,Vanguard Target Retirement 2045 Fund,It holds somewhat more in bonds so its true figure is a little lower.
-VFORX,target_2030,similar,Vanguard Target Retirement 2040 Fund,It holds more in stocks than the 2030 fund so its true figure is higher: between this and the 2060 fund.
-VTTHX,target_2030,similar,Vanguard Target Retirement 2035 Fund,It holds somewhat more in stocks so its true figure is a little higher.
+VFFVX,target_2050,similar,Vanguard Target Retirement 2055 Fund,It holds nearly the same mix of stocks and bonds.
+VFIFX,target_2050,same_fund,Vanguard Target Retirement 2050 Fund,
+VTIVX,target_2050,similar,Vanguard Target Retirement 2045 Fund,It holds somewhat more in bonds so its true figure is a little lower: between this and the 2040 fund.
+VFORX,target_2040,same_fund,Vanguard Target Retirement 2040 Fund,
+VTTHX,target_2040,similar,Vanguard Target Retirement 2035 Fund,It holds more in bonds so its true figure is lower: between this and the 2030 fund.
 VTHRX,target_2030,same_fund,Vanguard Target Retirement 2030 Fund,
 VTTVX,target_2030,similar,Vanguard Target Retirement 2025 Fund,It holds less in stocks so its true figure is lower.
 VTWNX,target_2030,similar,Vanguard Target Retirement 2020 Fund,It holds less in stocks so its true figure is lower.

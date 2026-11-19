@@ -199,6 +199,56 @@ target_2060,22,Applied Materials Inc,038222105,US0382221051,199992848.3,0.428854
 target_2060,23,Exxon Mobil Corp,30231G102,US30231G1022,197434440.29,0.4233680573313249,EC,Vanguard Total Stock Market Index Fund,,,
 target_2060,24,Intel Corp,458140100,US4581401001,195599267.97,0.4194328100717002,EC,Vanguard Total Stock Market Index Fund,,,
 target_2060,25,Visa Inc,92826C839,US92826C8394,194526752.83,0.4171329648690421,EC,Vanguard Total Stock Market Index Fund,,,
+target_2050,1,Vanguard Total Bond Market II Index Fund,92203C105,US92203C1053,7155224207.98,6.618296158171,BOND_FUND,,,,
+target_2050,2,NVIDIA Corp,67066G104,US67066G1040,3689062286.81,3.412235039792379,EC,Vanguard Total Stock Market Index Fund,1,NVIDIA,cusip
+target_2050,3,Apple Inc,037833100,US0378331005,3408260085.26,3.1525042364355564,EC,Vanguard Total Stock Market Index Fund,,,
+target_2050,4,Vanguard Total International Bond II Index Fund,92211J308,US92211J3086,3021658764.24,2.794913479911,BOND_FUND,,,,
+target_2050,5,Alphabet Inc,02079K305,US02079K3059,3004177614.56,2.778744115765243,EC,Vanguard Total Stock Market Index Fund,2,Alphabet,cusip
+target_2050,6,Microsoft Corp,594918104,US5949181045,2222180476.88,2.0554280460535272,EC,Vanguard Total Stock Market Index Fund,2,Microsoft,cusip
+target_2050,7,Vanguard Cmt Funds-Vanguard Market Liquidity Fund,,,1895395587.1,1.753165095558277,STIV,Vanguard Total International Stock Index Fund,,,
+target_2050,8,Amazon.com Inc,023135106,US0231351067,1850484818.75,1.7116244314237794,EC,Vanguard Total Stock Market Index Fund,2,Amazon,cusip
+target_2050,9,Taiwan Semiconductor Manufacturing Co Ltd,,TW0002330008,1608961197.37,1.48822474344175,EC,Vanguard Total International Stock Index Fund,3,Taiwan Semiconductor Manufacturing (Taiwan shares),isin
+target_2050,10,Broadcom Inc,11135F101,US11135F1012,1434319323.84,1.3266879967222187,EC,Vanguard Total Stock Market Index Fund,3,Broadcom,cusip
+target_2050,11,Micron Technology Inc,595112103,US5951121038,1043932052.73,0.965595387813285,EC,Vanguard Total Stock Market Index Fund,3,Micron Technology,cusip
+target_2050,12,Meta Platforms Inc,30303M102,US30303M1027,992030050.25,0.9175881117793941,EC,Vanguard Total Stock Market Index Fund,2,Meta Platforms,cusip
+target_2050,13,Tesla Inc,88160R101,US88160R1014,950109102.68,0.8788129122647592,EC,Vanguard Total Stock Market Index Fund,,,
+target_2050,14,Eli Lilly & Co,532457108,US5324571083,815284676.47,0.7541057114744227,EC,Vanguard Total Stock Market Index Fund,,,
+target_2050,15,Samsung Electronics Co Ltd,Y74718100,KR7005930003,809579457.31,0.7488286119746076,EC,Vanguard Total International Stock Index Fund,,,
+target_2050,16,Advanced Micro Devices Inc,007903107,US0079031078,759638874.39,0.7026355705755899,EC,Vanguard Total Stock Market Index Fund,3,Advanced Micro Devices,cusip
+target_2050,17,Berkshire Hathaway Inc,084670702,US0846707026,743943959.66,0.6881184023026177,EC,Vanguard Total Stock Market Index Fund,,,
+target_2050,18,JPMorgan Chase & Co,46625H100,US46625H1005,649364573.6,0.600636253710506,EC,Vanguard Total Stock Market Index Fund,,,
+target_2050,19,ASML Holding NV,N07059202,NL0010273215,568585810.26,0.5259191290483444,EC,Vanguard Total International Stock Index Fund,,,
+target_2050,20,SK hynix Inc,,KR7000660001,563624333.14,0.5213299611888805,EC,Vanguard Total International Stock Index Fund,3,SK hynix (Korea shares),isin
+target_2050,21,Johnson & Johnson,478160104,US4781601046,490290355.54,0.4534989655322664,EC,Vanguard Total Stock Market Index Fund,,,
+target_2050,22,Applied Materials Inc,038222105,US0382221051,460350399.53,0.42580570392811057,EC,Vanguard Total Stock Market Index Fund,,,
+target_2050,23,Exxon Mobil Corp,30231G102,US30231G1022,454461368.2,0.420358585528587,EC,Vanguard Total Stock Market Index Fund,,,
+target_2050,24,Intel Corp,458140100,US4581401001,450237105.59,0.4164513116019986,EC,Vanguard Total Stock Market Index Fund,,,
+target_2050,25,Visa Inc,92826C839,US92826C8394,447768353.45,0.41416781463149505,EC,Vanguard Total Stock Market Index Fund,,,
+target_2040,1,Vanguard Total Bond Market II Index Fund,92203C105,US92203C1053,20866779166.3,17.43817278686,BOND_FUND,,,,
+target_2040,2,Vanguard Total International Bond II Index Fund,92211J308,US92211J3086,8532850453.54,7.130823563495,BOND_FUND,,,,
+target_2040,3,NVIDIA Corp,67066G104,US67066G1040,3398488786.19,2.8400853910159447,EC,Vanguard Total Stock Market Index Fund,1,NVIDIA,cusip
+target_2040,4,Apple Inc,037833100,US0378331005,3139804313.3,2.623905189005174,EC,Vanguard Total Stock Market Index Fund,,,
+target_2040,5,Alphabet Inc,02079K305,US02079K3059,2767549892.37,2.3128156403424582,EC,Vanguard Total Stock Market Index Fund,2,Alphabet,cusip
+target_2040,6,Microsoft Corp,594918104,US5949181045,2047147715.17,1.7107822579057346,EC,Vanguard Total Stock Market Index Fund,2,Microsoft,cusip
+target_2040,7,Vanguard Cmt Funds-Vanguard Market Liquidity Fund,,,1884792411.73,1.5751034446225833,STIV,Vanguard Total International Stock Index Fund,,,
+target_2040,8,Amazon.com Inc,023135106,US0231351067,1704729119.92,1.424626230580069,EC,Vanguard Total Stock Market Index Fund,2,Amazon,cusip
+target_2040,9,Taiwan Semiconductor Manufacturing Co Ltd,,TW0002330008,1474919783.19,1.2325767106160248,EC,Vanguard Total International Stock Index Fund,3,Taiwan Semiconductor Manufacturing (Taiwan shares),isin
+target_2040,10,Broadcom Inc,11135F101,US11135F1012,1321343408.95,1.1042343666209598,EC,Vanguard Total Stock Market Index Fund,3,Broadcom,cusip
+target_2040,11,Micron Technology Inc,595112103,US5951121038,961705468.47,0.8036882930338084,EC,Vanguard Total Stock Market Index Fund,3,Micron Technology,cusip
+target_2040,12,Meta Platforms Inc,30303M102,US30303M1027,913891590.66,0.7637306811646625,EC,Vanguard Total Stock Market Index Fund,2,Meta Platforms,cusip
+target_2040,13,Tesla Inc,88160R101,US88160R1014,875272597.77,0.7314571488929982,EC,Vanguard Total Stock Market Index Fund,,,
+target_2040,14,Eli Lilly & Co,532457108,US5324571083,751067782.31,0.6276603426974094,EC,Vanguard Total Stock Market Index Fund,,,
+target_2040,15,Samsung Electronics Co Ltd,Y74718100,KR7005930003,742133967.93,0.6201944373188361,EC,Vanguard Total International Stock Index Fund,,,
+target_2040,16,Advanced Micro Devices Inc,007903107,US0079031078,699804989.85,0.5848205050145978,EC,Vanguard Total Stock Market Index Fund,3,Advanced Micro Devices,cusip
+target_2040,17,Berkshire Hathaway Inc,084670702,US0846707026,685346304.26,0.5727375162842855,EC,Vanguard Total Stock Market Index Fund,,,
+target_2040,18,JPMorgan Chase & Co,46625H100,US46625H1005,598216579.17,0.49992401742101245,EC,Vanguard Total Stock Market Index Fund,,,
+target_2040,19,ASML Holding NV,N07059202,NL0010273215,521217330.38,0.43557646315791504,EC,Vanguard Total International Stock Index Fund,,,
+target_2040,20,SK hynix Inc,,KR7000660001,516669190.4,0.4317756249783258,EC,Vanguard Total International Stock Index Fund,3,SK hynix (Korea shares),isin
+target_2040,21,Johnson & Johnson,478160104,US4781601046,451672036.34,0.3774581093708601,EC,Vanguard Total Stock Market Index Fund,,,
+target_2040,22,Applied Materials Inc,038222105,US0382221051,424090337.57,0.35440834087767586,EC,Vanguard Total Stock Market Index Fund,,,
+target_2040,23,Exxon Mobil Corp,30231G102,US30231G1022,418665162.99,0.34987457306590103,EC,Vanguard Total Stock Market Index Fund,,,
+target_2040,24,Intel Corp,458140100,US4581401001,414773629.59,0.3466224548887556,EC,Vanguard Total Stock Market Index Fund,,,
+target_2040,25,Visa Inc,92826C839,US92826C8394,412499331.73,0.34472184537307854,EC,Vanguard Total Stock Market Index Fund,,,
 target_2030,1,Vanguard Total Bond Market II Index Fund,92203C105,US92203C1053,31303284092.8,27.38194014111,BOND_FUND,,,,
 target_2030,2,Vanguard Total International Bond II Index Fund,92211J308,US92211J3086,13293758174.78,11.62845692206,BOND_FUND,,,,
 target_2030,3,NVIDIA Corp,67066G104,US67066G1040,2562012561.02,2.24107075726156,EC,Vanguard Total Stock Market Index Fund,1,NVIDIA,cusip

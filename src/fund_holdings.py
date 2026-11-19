@@ -283,6 +283,8 @@ def fund_row(spec: pd.Series, fund: dict, lines: list, used: list, names: pd.Dat
         fund_key=spec.fund_key, display_name=spec.display_name, as_of=fund["as_of"], n_holdings=len(fund["holdings"]), n_companies=conc["n_companies"],
         pct_nvidia=by_tier["1"], pct_tier2=by_tier["2"],
     )
+    # how many separate companies the AI share sits in (a company's share classes count once)
+    row["n_ai_companies"] = sum(1 for v in by_company.values() if v > 0)
     for company in TIER2:
         row[_slug(company)] = by_company.get(company, 0.0)
     row.update(
