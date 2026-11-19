@@ -1,5 +1,7 @@
 requests>=2.31
-pandas>=2.0
+# Every figure was built and checked with pandas 2. Version 3 represents blanks differently
+# (three tests of the filing reader fail on it), so it is held back until that is worked through.
+pandas>=2.0,<3
 lxml>=5.0
 beautifulsoup4>=4.12
 matplotlib>=3.8

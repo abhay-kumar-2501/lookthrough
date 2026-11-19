@@ -2,6 +2,8 @@
 
 **How much of your retirement fund is riding on AI's data centers? Pick a fund and see, then look through to what the six companies building them have promised to pay.**
 
+[![Tests](https://github.com/abhay-kumar-2501/lookthrough/actions/workflows/tests.yml/badge.svg)](https://github.com/abhay-kumar-2501/lookthrough/actions/workflows/tests.yml)
+
 **[Open the site](https://abhay-kumar-2501.github.io/lookthrough/)** · By Abhay Kumar ([LinkedIn](https://www.linkedin.com/in/abhay-kumar2501)) · Figures are from filings read up to 17 November 2026.
 
 [![Lookthrough](docs/assets/card.png)](https://abhay-kumar-2501.github.io/lookthrough/)
@@ -90,4 +92,4 @@ cp .env.example .env    # the SEC asks automated readers to identify themselves
 
 ## Credits
 
-Built with Claude Code; [`method.html`](docs/method.html) says who did what. Code under the [MIT license](LICENSE). I am a finance student. This is information, not investment advice, and nothing here is a claim that any company has acted improperly.
+Built with Claude Code; [`method.html`](docs/method.html) says who did what. Code: [MIT license](LICENSE). I am a finance student. This is information, not investment advice, and nothing here is a claim that any company has acted improperly.
